@@ -1,7 +1,7 @@
 import { PropsWithChildren, ReactNode, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { MenuItemProp, User } from "@/types";
-import { CircleUser, Search, UserIcon } from "lucide-react";
+import { CalendarIcon, CircleUser, Clipboard, KeyRound, LayoutDashboard, UserRound } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import {
     DropdownMenu,
@@ -28,12 +28,31 @@ const links: MenuItemProp[] = [
         title: "Dashboard",
         href: route("dashboard"),
         variant: "default",
+        icon: LayoutDashboard
     },
     {
-        title: "Profile",
+        title: "Projects",
         href: route("profile.edit"),
         variant: "ghost",
-        icon: UserIcon,
+        icon: Clipboard,
+    },
+    {
+        title: "Monitoring",
+        href: route("profile.edit"),
+        variant: "ghost",
+        icon: CalendarIcon,
+    },
+    {
+        title: "Users",
+        href: route("profile.edit"),
+        variant: "ghost",
+        icon: UserRound,
+    },
+    {
+        title: "Guest Token",
+        href: route("profile.edit"),
+        variant: "ghost",
+        icon: KeyRound,
     },
 ];
 
@@ -41,9 +60,11 @@ export default function AuthenticatedLayout({
     user,
     header,
     children,
+    title,
 }: PropsWithChildren<{
     user: User;
     header?: ReactNode;
+    title: String;
 }>) {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -53,7 +74,7 @@ export default function AuthenticatedLayout({
             className="h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] fixed"
         >
             <ResizablePanel
-                defaultSize={14}
+                defaultSize={16}
                 minSize={8}
                 maxSize={20}
                 collapsedSize={3.5}
@@ -78,16 +99,11 @@ export default function AuthenticatedLayout({
                     <MobileMenu links={links} />
 
                     <div className="w-full flex-1 flex gap-4 justify-between items-center">
-                        <form className="flex-1">
+                        <div className="flex-1">
                             <div className="relative">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    type="search"
-                                    placeholder="Search products..."
-                                    className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-                                />
+                                <h1>{title}</h1>
                             </div>
-                        </form>
+                        </div>
 
                         <div className="space-x-4">
                             <AppearanceDropdown />

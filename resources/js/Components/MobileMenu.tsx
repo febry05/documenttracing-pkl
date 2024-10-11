@@ -27,7 +27,7 @@ const MobileMenu = ({ links }: { links: MenuItemProp[] }) => {
                     >
                         <ApplicationLogo className="h-8 w-8 fill-current text-gray-500" />
 
-                        <span>Acme Inc</span>
+                        <span>Document Tracing</span>
                     </Link>
 
                     <DropdownMenuSeparator />

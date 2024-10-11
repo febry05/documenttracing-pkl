@@ -84,7 +84,7 @@ const Sidebar = ({ links, isCollapsed }: Props) => {
                         >
                             <ApplicationLogo className="h-6 w-6 fill-current text-gray-500" />
                             {!isCollapsed && (
-                                <span className="pl-2">Acme Inc</span>
+                                <span className="pl-2">Document Tracing</span>
                             )}
                         </Link>
                     </div>
