@@ -11,25 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('projects_documents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('code')->unique();
-            $table->tinyInteger('business_type');
-            $table->string('customer');
-            $table->string('contract_number');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->unsignedBigInteger('user_id')->default(0);
+            $table->string('document_number');
+            $table->tinyInteger('priority'); // 1: Low, 2: Medium, 3: High
+            $table->date('due_at');
+            $table->unsignedBigInteger('project_id')->default(0);
             $table->timestamps();
         });
-    } 
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('documents');
     }
 };

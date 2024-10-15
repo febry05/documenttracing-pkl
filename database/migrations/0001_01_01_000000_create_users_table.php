@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('position');
-            $table->tinyInteger('role');
+            $table->tinyInteger('role'); //0:Superadmin 1: Admin, 2: Guest 
             $table->string('password');
             $table->timestamps();
+            $table->timestamp('email_verified_at')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
