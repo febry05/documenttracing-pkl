@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->tinyInteger('business_type');
             $table->string('customer');
             $table->string('contract_number');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->unsignedBigInteger('user_id')->default(0);
+            $table->date('contract_start');
+            $table->date('contract_end');
             $table->timestamps();
+            $table->foreignId('user_id')->constrained()->default(0);
+            $table->foreignId('project_business_type');
         });
     } 
 

@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects_documents', function (Blueprint $table) {
+        Schema::create('project_business_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('document_number');
-            $table->tinyInteger('priority'); // 1: Low, 2: Medium, 3: High
-            $table->date('due_at');
-            $table->unsignedBigInteger('project_id')->default(0);
+            $table->string('description');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('project_business_types');
     }
 };

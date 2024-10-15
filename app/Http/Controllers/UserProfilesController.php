@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class GuestTokenController extends Controller
+class UserProfilesController extends Controller
 {
     //
 }
