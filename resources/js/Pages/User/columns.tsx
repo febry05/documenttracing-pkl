@@ -42,8 +42,8 @@ export const columns: ColumnDef<User>[] = [
             const payment = row.original
 
             return (
-                <Button>
-                    <Pencil size={16}/>
+                <Button className="bg-emerald-500 hover:bg-emerald-600 py-3 px-4">
+                    <Pencil size={14}/>
                 </Button>
             )
         },
