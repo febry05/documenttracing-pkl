@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import {
+    Row,
     ColumnDef,
     ColumnFiltersState,
     SortingState,
@@ -31,8 +32,10 @@ interface FilterOption {
     label: string;
 }
 
-interface ColumnFilterConfig {
+export interface ColumnFilterConfig {
     columnId: string;
+    label?: string;
+    compare?: '<' | '>';
     options: FilterOption[];
 }
 
@@ -74,22 +77,39 @@ export function DataTable<TData, TValue>({
     return (
       <div>
         <div className="flex flex-row-reverse gap-4 pb-4">
-            {filters.map(filter => (
-                <Select key={filter.columnId} onValueChange={(value) => {
-                    table.getColumn(filter.columnId)?.setFilterValue(value === 'all' ? '' : value);
-                }}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder={`Filter ${filter.columnId}`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {filter.options.map(option => (
-                            <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            ))}
+            {filters.map(filter => {
+                const label = filter.label || filter.columnId;
+                return (
+                    <Select key={filter.columnId} onValueChange={(value) => {
+                        const column = table.getColumn(filter.columnId);
+                        if (column) {
+                            if (value === 'all') {
+                                column.setFilterValue(''); // Clear the filter
+                            } else if (filter.compare) {
+                                // Apply comparison logic based on the compare operator
+                                column.setFilterValue({
+                                    compare: filter.compare,
+                                    filterValue: value, // We pass the value and comparison together
+                                });
+                            } else {
+                                // Default filter behavior
+                                column.setFilterValue(value);
+                            }
+                        }
+                    }}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder={`Filter ${label}`} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {filter.options.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                )
+            })}
             <Input
                 value={globalFilter}
                 onChange={event => {
