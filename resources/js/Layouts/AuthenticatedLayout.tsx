@@ -44,7 +44,7 @@ const links: MenuItemProp[] = [
     },
     {
         title: "Users",
-        href: route("profile.edit"),
+        href: route("users.index"),
         variant: "ghost",
         icon: UserRound,
     },
