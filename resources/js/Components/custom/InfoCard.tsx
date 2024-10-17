@@ -1,5 +1,5 @@
 import { Card } from "@/Components/ui/card";
-import { AlignJustifyIcon, Clipboard, LucideIcon } from "lucide-react";
+import { AlignJustifyIcon, LucideIcon } from "lucide-react";
 import { PropsWithChildren } from "react";
 
 export function InfoCard({ title, caption, icon }: PropsWithChildren<{title: String, caption: String, icon: LucideIcon}>) {
