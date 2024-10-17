@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('email')->unique(); 
             $table->string('password');
             $table->timestamps();
+            // $table->foreignId('user_profiles_id')->nullable()->index();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

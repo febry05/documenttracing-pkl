@@ -22,17 +22,17 @@ class UserProfiles extends Model
 
     public function roles()
     {
-        return $this->belongsTo(UserRoles::class);
+        return $this->hasOne(UserRoles::class);
     }
 
     public function position()
     {
-        return $this->belongsTo(UserPosition::class);
+        return $this->hasOne(UserPosition::class);
     }
 
     public function division()
     {
-        return $this->belongsTo(UserDivisions::class);
+        return $this->hasOne(UserDivisions::class);
     }
 
 }
