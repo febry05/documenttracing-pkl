@@ -11,8 +11,12 @@ class UserProfiles extends Model
 
     protected $fillable = [
         'name',
+        'employee_no',
         'nik',
         'phone',
+        'user_id', 
+        'user_division_id',
+        'user_position_id',
     ];
 
     public function user()
@@ -20,19 +24,13 @@ class UserProfiles extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function roles()
-    {
-        return $this->hasOne(UserRoles::class);
-    }
-
     public function position()
     {
-        return $this->hasOne(UserPosition::class);
+        return $this->belongsTo(UserPosition::class, 'user_position_id');
     }
 
     public function division()
     {
-        return $this->hasOne(UserDivisions::class);
+        return $this->belongsTo(UserDivisions::class, 'user_division_id');
     }
-
 }

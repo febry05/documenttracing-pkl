@@ -87,53 +87,58 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'email' => 'verif@example.com',
             'password' => bcrypt('password'),
+            'user_roles_id' => '1',
         ]);
 
         //2
-        User::factory()->create([
+        User::create([
             'email' => 'notverif@example.com',
             'password' => bcrypt('password'),
+            'user_roles_id' => '2',
         ]);
 
         //3
-        User::factory()->create([
+        User::create([
             'email' => 'hrd@example.com',
             'password' => bcrypt('password'),
+            'user_roles_id' => '2',
         ]);
+
+        User::factory(10)->create();
 
         //1
-        UserProfiles::create([
-            'user_id' => 1,
-            'name' => 'Muhammad Azhim Nugroho',
-            'NIK' => '1111222233334444',
-            'phone' => '081234567890',
-            'user_role_id' => UserRoles::where('name', 'superadmin')->first()->id,
-            'user_division_id' => UserDivisions::where('name', 'ICT')->first()->id,
-            'user_position_id' => UserPosition::where('name', 'Cyber Security')->first()->id,
+        // UserProfiles::create([
+        //     'user_id' => 1,
+        //     'name' => 'Muhammad Azhim Nugroho',
+        //     'NIK' => '1111222233334444',
+        //     'phone' => '081234567890',
+        //     'user_role_id' => UserRoles::where('name', 'superadmin')->first()->id,
+        //     'user_division_id' => UserDivisions::where('name', 'ICT')->first()->id,
+        //     'user_position_id' => UserPosition::where('name', 'Cyber Security')->first()->id,
 
-        ]);
+        // ]);
 
-        //2
-        UserProfiles::create([
-            'user_id' => 2,
-            'name' => 'Muhammad Ferdy Maulana',
-            'NIK' => '1111222233334445',
-            'phone' => '081234567893',
-            'user_role_id' => UserRoles::where('name', 'pic')->first()->id,
-            'user_division_id' => UserDivisions::where('name', 'HRD')->first()->id,
-            'user_position_id' => UserPosition::where('name', 'Payment Roll')->first()->id,
-        ]);
+        // //2
+        // UserProfiles::create([
+        //     'user_id' => 2,
+        //     'name' => 'Muhammad Ferdy Maulana',
+        //     'NIK' => '1111222233334445',
+        //     'phone' => '081234567893',
+        //     'user_role_id' => UserRoles::where('name', 'pic')->first()->id,
+        //     'user_division_id' => UserDivisions::where('name', 'HRD')->first()->id,
+        //     'user_position_id' => UserPosition::where('name', 'Payment Roll')->first()->id,
+        // ]);
 
-        //3
-        UserProfiles::create([
-            'user_id' => 3,
-            'name' => 'Teddy',
-            'NIK' => '1111222233334446',
-            'phone' => '081234567892',
-            'user_role_id' => UserRoles::where('name', 'guest')->first()->id,
-            'user_division_id' => UserDivisions::where('name', 'GA')->first()->id,
-            'user_position_id' => UserPosition::where('name', 'Head of General Affair')->first()->id,
-        ]);
+        // //3
+        // UserProfiles::create([
+        //     'user_id' => 3,
+        //     'name' => 'Teddy',
+        //     'NIK' => '1111222233334446',
+        //     'phone' => '081234567892',
+        //     'user_role_id' => UserRoles::where('name', 'guest')->first()->id,
+        //     'user_division_id' => UserDivisions::where('name', 'GA')->first()->id,
+        //     'user_position_id' => UserPosition::where('name', 'Head of General Affair')->first()->id,
+        // ]);
 
 
         // User::factory(10)->create();
