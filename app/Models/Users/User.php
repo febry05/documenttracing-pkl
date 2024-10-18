@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'user_role_id',
     ];
 
     /**
@@ -44,9 +45,24 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Automatically create a UserProfile for the new User
+            UserProfiles::create([
+                'user_id' => $user->id,
+            ]);
+        });
+    }
+
     public function profile()
     {
         return $this->hasOne(UserProfiles::class);
+    }
+
+    public function role()
+    {
+        return $this->hasOne(UserRoles::class, 'user_role_id');
     }
 
     
