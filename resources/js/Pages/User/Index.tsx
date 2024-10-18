@@ -21,9 +21,10 @@ function getData(): User[] {
     return mockData;
 }
 
-export default function Dashboard({ auth }: PageProps) {
+export default function Dashboard({ auth, users }: PageProps) {
     const data = getData()
 
+    console.log(users);
     const filters = [
         {
             columnId: "position",

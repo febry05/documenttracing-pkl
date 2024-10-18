@@ -14,6 +14,9 @@ class UserController extends Controller
         $users = UserProfiles::with('user:email')
         ->select('name', 'nik', 'phone')->get();
 
-            return Inertia::render('User/Index');
+        // dd($users);
+        return Inertia::render('User/Index', [
+            'users' => $users
+        ]);
     }
 }

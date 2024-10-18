@@ -71,10 +71,9 @@ export default function AuthenticatedLayout({
 }: PropsWithChildren<{
     user: User;
     header?: ReactNode;
-    title: String;
+    title: string;
 }>) {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    console.log(user);
 
     return (
         <ResizablePanelGroup
@@ -136,7 +135,8 @@ export default function AuthenticatedLayout({
                                     <DropdownMenuLabel className="font-normal">
                                         <div className="flex flex-col space-y-1">
                                             <p className="text-sm font-medium leading-none">
-                                                {user.profile.name}
+                                                {user.name}
+                                                {/* {user.profile.name} */}
                                             </p>
                                             <p className="text-xs leading-none text-muted-foreground">
                                                 {user.email}
