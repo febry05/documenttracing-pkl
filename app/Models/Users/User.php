@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable 
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -45,15 +45,15 @@ class User extends Authenticatable
         ];
     }
 
-    protected static function booted()
-    {
-        static::created(function ($user) {
-            // Automatically create a UserProfile for the new User
-            UserProfiles::create([
-                'user_id' => $user->id,
-            ]);
-        });
-    }
+    // protected static function booted()
+    // {
+    //     static::created(function ($user) {
+    //         // Automatically create a UserProfile for the new User
+    //         UserProfiles::create([
+    //             'user_id' => $user->id,
+    //         ]);
+    //     });
+    // }
 
     public function profile()
     {
@@ -65,5 +65,5 @@ class User extends Authenticatable
         return $this->hasOne(UserRoles::class, 'user_role_id');
     }
 
-    
+
 }

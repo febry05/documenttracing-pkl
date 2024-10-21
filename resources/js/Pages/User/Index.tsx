@@ -6,6 +6,7 @@ import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Plus, ChevronLeft } from "lucide-react";
 import { User, columns } from "./columns";
+import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 
 function getData(): User[] {
     let mockData: User[] = [];
@@ -24,7 +25,6 @@ function getData(): User[] {
 export default function Dashboard({ auth, users }: PageProps) {
     const data = getData()
 
-    console.log(users);
     const filters = [
         {
             columnId: "position",
@@ -45,29 +45,20 @@ export default function Dashboard({ auth, users }: PageProps) {
         }
     ];
 
+    const button = {
+        text: "Create User",
+        icon: Plus,
+        link: route('users.create'),
+    }
+
+    console.log(users);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="grid grid-col-2">
-                    <span className="font-semibold text-xl leading-tight">
-                        Users List
-                    </span>
-                    <div className="flex justify-between">
-                        <Button variant="link" className="p-0">
-                            <ChevronLeft className="me-1" size={18}/>
-                            <span className="mb-0.5">Back</span>
-                        </Button>
-                        <Link href={route('users.create')}>
-                            <Button className="bg-blue-500 hover:bg-blue-600">
-                                <Plus className="me-2" size={18}/>
-                                Create User
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
+                <HeaderNavigation title="Users List" back={true} button={button}/>
             }
-            title=""
         >
             <Head title="Users" />
 

@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Inertia } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
 import { Head } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -44,19 +44,26 @@ interface PageProps {
 export default function Dashboard({ auth, roles, divisions, positions }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-    })
+        defaultValues: {
+            email: '',
+            password: '',
+            user_role_id: undefined,
+            name: '',
+            nik: undefined,
+            phone: undefined,
+            employee_no: '',
+            user_division_id: undefined,
+            user_position_id: undefined,
+        },
+    });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Handle submission using Inertia
         try {
-            await Inertia.post(route('users.create'), values); // Replace '/your-endpoint' with your actual endpoint
+            await Inertia.post(route('users.store'), values);
         } catch (error) {
-            // Handle errors (optional)
             console.error('Submission error:', error);
         }
     }
-
-    console.log(roles);
 
     return (
         <AuthenticatedLayout
@@ -64,7 +71,6 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
             header={
                 <HeaderNavigation title="Create User" back={true}/>
             }
-            title=""
         >
             <Head title="Users" />
 
@@ -78,7 +84,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                 <span className="font-bold text-sm">
                                     User Credentials Information
                                 </span>
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
 
                                     {/* Email Field */}
                                     <FormField
@@ -91,7 +97,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input type="email" placeholder="Enter the user's email" {...field} minLength={5} maxLength={255} />
+                                                        <Input type="email" placeholder="Enter the user's email" {...field} minLength={5} maxLength={255} value={field.value || ''} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -109,7 +115,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input type="password" placeholder="Enter the user's password" {...field} minLength={6} maxLength={255} />
+                                                        <Input type="password" placeholder="Enter the user's password" {...field} minLength={6} maxLength={255} value={field.value || ''} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -126,7 +132,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     Role
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's role" />
@@ -135,7 +141,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <SelectContent>
                                                         {roles.map(role => {
                                                             return (
-                                                                <SelectItem value={role.id.toString()}>{role.name}</SelectItem>
+                                                                <SelectItem key={role.id} value={role.id.toString()}>{role.name}</SelectItem>
                                                             )
                                                         })}
                                                     </SelectContent>
@@ -153,7 +159,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                 <span className="font-bold text-sm">
                                     User Personal Information
                                 </span>
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
 
                                     {/* Name Field */}
                                     <FormField
@@ -166,7 +172,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Enter the user's full name" {...field} minLength={3} maxLength={255}/>
+                                                        <Input placeholder="Enter the user's full name" {...field} minLength={3} maxLength={255} value={field.value || ''}/>
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -180,7 +186,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                             <FormItem>
                                                 <FormLabel>NIK</FormLabel>
                                                     <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's NIK" {...field} minLength={16} maxLength={16} onKeyDown={handleNumericInput} />
+                                                        <Input type="text" placeholder="Enter the user's NIK" {...field} minLength={16} maxLength={16} value={field.value || ''} onKeyDown={handleNumericInput} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -194,7 +200,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                             <FormItem>
                                                 <FormLabel>Phone Number</FormLabel>
                                                     <FormControl>
-                                                        <Input type="text" placeholder="0812xxx" {...field} minLength={10} maxLength={15} onKeyDown={handleNumericInput} />
+                                                        <Input type="text" placeholder="0812xxx" {...field} minLength={10} maxLength={15} value={field.value || ''} onKeyDown={handleNumericInput} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -209,7 +215,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                 <span className="font-bold text-sm">
                                     User Employee Information
                                 </span>
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
 
                                     {/* Employee Number FIeld */}
                                     <FormField
@@ -222,7 +228,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's employee number" {...field} minLength={7} maxLength={7} onKeyDown={handleNumericInput} />
+                                                        <Input type="text" placeholder="Enter the user's employee number" {...field} minLength={7} maxLength={7} value={field.value || ''} onKeyDown={handleNumericInput} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -239,7 +245,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     Division
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's division" />
@@ -248,7 +254,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <SelectContent>
                                                         {divisions.map(division => {
                                                             return (
-                                                                <SelectItem value={division.id.toString()}>{division.name}</SelectItem>
+                                                                <SelectItem key={division.id} value={division.id.toString()}>{division.name}</SelectItem>
                                                             )
                                                         })}
                                                     </SelectContent>
@@ -268,7 +274,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     Position
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's position" />
@@ -277,7 +283,7 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                                                     <SelectContent>
                                                         {positions.map(position => {
                                                             return (
-                                                                <SelectItem value={position.id.toString()}>{position.name}</SelectItem>
+                                                                <SelectItem key={position.id} value={position.id.toString()}>{position.name}</SelectItem>
                                                             )
                                                         })}
                                                     </SelectContent>
