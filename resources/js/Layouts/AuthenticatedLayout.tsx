@@ -7,6 +7,7 @@ import {
     Clipboard,
     KeyRound,
     LayoutDashboard,
+    Settings,
     UserRound,
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
@@ -56,10 +57,10 @@ const links: MenuItemProp[] = [
         icon: UserRound,
     },
     {
-        title: "Guest Token",
+        title: "Settings",
         href: route("profile.edit"),
         variant: "ghost",
-        icon: KeyRound,
+        icon: Settings,
     },
 ];
 

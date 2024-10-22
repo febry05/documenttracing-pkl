@@ -24,7 +24,6 @@ const formSchema = z.object({
     phone: z.string().min(10).max(15).optional(),
     employee_no: z.string().min(7).max(7),
     user_division_id: z.number(),
-    user_position_id: z.number(),
 })
 
 type UserMasterData = {

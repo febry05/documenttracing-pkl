@@ -1,10 +1,9 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
-import { PageProps } from "@/types";
+import { Head } from "@inertiajs/react";
+// import { PageProps } from "@/types";
 import { DataTable } from "@/Components/ui/data-table"
-import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
-import { Plus, ChevronLeft } from "lucide-react";
+import { Plus } from "lucide-react";
 import { User, columns } from "./columns";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 
@@ -22,8 +21,22 @@ function getData(): User[] {
     return mockData;
 }
 
-export default function Dashboard({ auth, users }: PageProps) {
-    const data = getData()
+type Filter = {
+    id: number;
+    name: string;
+}
+
+interface PageProps {
+    auth: {
+        user: any;
+    }
+    users: User[],
+    positions: Filter[],
+    roles: Filter[]
+}
+
+export default function Dashboard({ auth, users, positions, roles }: PageProps) {
+    // const data = getData()
 
     const filters = [
         {
@@ -51,8 +64,6 @@ export default function Dashboard({ auth, users }: PageProps) {
         link: route('users.create'),
     }
 
-    console.log(users);
-
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -63,7 +74,7 @@ export default function Dashboard({ auth, users }: PageProps) {
             <Head title="Users" />
 
             <Card className="flex-auto basis-1/2 p-4">
-                <DataTable columns={columns} data={data} filters={filters} />
+                <DataTable columns={columns} data={users} filters={filters} />
             </Card>
 
             {/* <div className="z-50 absolute bottom-20 right-10">

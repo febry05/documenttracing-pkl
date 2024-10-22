@@ -15,12 +15,54 @@ use App\Http\Controllers\Controller;
 class UserController extends Controller
 {
     public function index (){
-        $users = UserProfiles::with('user:email')
-        ->select('name', 'nik', 'phone')->get();
+        $usersUnfiltered = UserProfiles::with(['user:id,email,user_role_id', 'position:id,name'])
+                            ->select('name', 'user_id')
+                            ->get();
 
-        // dd($users);
+        $users = [];
+        $positions = [];
+        $roles = [];
+        // foreach($usersUnfiltered as $user) {
+        //     array_push($users, [
+        //         'id' => $user->id,
+        //         'name' => $user->name,
+        //         'email' => $user->user->email,
+        //         // 'position' => $user->position->name,
+        //         'role' => $user->user->role->name,
+        //     ]);
+        // }
+
+        /* FE requirements:
+            - Buat variable 'users' strukturnya seperti berikut:
+            $users = [
+                {
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->user->email,
+                    'position' => $user->position->name,
+                    'role' => $user->user->role->name,
+                },
+                ...
+            ];
+
+            - Tampilkan juga semua record 'user_positions' & 'user_roles' dengan struktur seperti berikut. (used for filters)
+            $positions = [
+                {                                    // This item is mandatory, for filter reset
+                    'value' => 'all',
+                    'label' => 'All Positions',
+                },
+                {
+                    'value' => $user_position->name,
+                    'label' => $user_position->name,
+                },
+                ...
+            ];
+
+        */
         return Inertia::render('User/Index', [
-            'users' => $users
+            'users' => $users,
+            'positions' => $positions,
+            'roles' => $roles,
         ]);
     }
 
