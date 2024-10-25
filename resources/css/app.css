@@ -40,9 +40,7 @@
 
         --radius: 0.5rem}
     .dark {
-        /* --background: 240 7% 8%;
-        --foreground: 300 9% 98%; */
-        --background: 240 6% 10%;
+        --background: 240 7% 8%;
         --foreground: 300 9% 98%;
 
         --card: 240 6% 10%;

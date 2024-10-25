@@ -6,59 +6,115 @@ use Inertia\Inertia;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Models\Users\UserRoles;
-use App\Models\Users\UserProfiles;
-use App\Http\Controllers\Controller;
-use App\Models\Users\UserDivisions;
 use App\Models\Users\UserPosition;
+use App\Models\Users\UserProfiles;
+use Illuminate\Support\Facades\DB;
+use App\Models\Users\UserDivisions;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
     public function index (){
+        $usersUnfiltered = UserProfiles::with(['user:id,email,user_role_id', 'position:id,name'])
+                            ->select('name', 'user_id')
+                            ->get();
 
-            return Inertia::render('User/Index',[
-                'users' => UserProfiles::with('user:email')->select('name', 'nik', 'phone')->get(),
-            ]);
+        $users = [];
+        $positions = [];
+        $roles = [];
+        // foreach($usersUnfiltered as $user) {
+        //     array_push($users, [
+        //         'id' => $user->id,
+        //         'name' => $user->name,
+        //         'email' => $user->user->email,
+        //         // 'position' => $user->position->name,
+        //         'role' => $user->user->role->name,
+        //     ]);
+        // }
+
+        /* FE requirements:
+            - Buat variable 'users' strukturnya seperti berikut:
+            $users = [
+                {
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->user->email,
+                    'position' => $user->position->name,
+                    'role' => $user->user->role->name,
+                },
+                ...
+            ];
+
+            - Tampilkan juga semua record 'user_positions' & 'user_roles' dengan struktur seperti berikut. (used for filters)
+            $positions = [
+                {                                    // This item is mandatory, for filter reset
+                    'value' => 'all',
+                    'label' => 'All Positions',
+                },
+                {
+                    'value' => $user_position->name,
+                    'label' => $user_position->name,
+                },
+                ...
+            ];
+
+        */
+        return Inertia::render('User/Index', [
+            'users' => $users,
+            'positions' => $positions,
+            'roles' => $roles,
+        ]);
     }
 
     public function create(){
-        return Inertia::render('User/Create',[
-            'divisions' => UserDivisions::select('id', 'name')->get(), 
-            'positions' => UserPosition::select('id', 'name')->get(), 
+        return Inertia::render('User/Create', [
             'roles' => UserRoles::select('id', 'name')->get(),
-        ] );
+            'divisions' => UserDivisions::select('id', 'name')->get(),
+            'positions' => UserPosition::select('id', 'name')->get(),
+        ]);
     }
 
     public function store(Request $request){
-        $validatedData = $request->validate([
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6',
-        'name' => 'required|string|max:255', 
-        'nik' => 'nullable|string|unique:user_profiles,nik',
-        'phone' => 'nullable|string|unique:user_profiles,phone',
-        'employee_no' => 'nullable|stringunique:user_profiles,empeloyee_no',
-        'user_roles_id' => 'required|integer',
-        'user_divisions_id' => 'required|integer',
-        'user_positions_id' => 'required|integer',
-    ]);
+        DB::beginTransaction();
+        try {
+            // dd($request);
+            $validatedData = $request->validate([
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'name' => 'required|string|max:255',
+                'nik' => 'nullable|string|unique:user_profiles,nik',
+                'phone' => 'nullable|string|unique:user_profiles,phone',
+                'employee_no' => 'nullable|string|unique:user_profiles,employee_no',
+                'user_role_id' => 'required|integer',
+                'user_division_id' => 'required|integer',
+                'user_position_id' => 'required|integer',
+            ]);
 
-    $user = User::create([
-        'email' => $validatedData['email'],
-        'password' => bcrypt($validatedData['password']),  
-    ]);
+            // dd($validatedData);
 
-    $userProfile = UserProfiles::create([
-        'user_id' => $user->id,  
-        'name' => $validatedData['name'],
-        'nik' => $validatedData['nik'] ?? null,  
-        'phone' => $validatedData['phone'] ?? null,  
-        'employee_no' => 'nullable|stringunique:user_profiles,nik',
-        'user_roles_id' => $validatedData['user_roles_id'],  
-        'user_divisions_id' => $validatedData['user_divisions_id'],  
-        'user_positions_id' => $validatedData['user_positions_id'],  
-    ]);
+            $user = User::create([
+                'email' => $validatedData['email'],
+                'password' => bcrypt($validatedData['password']),
+                'user_role_id' => $validatedData['user_role_id'],
+            ]);
 
-    $userProfile->save();
-    return Inertia::render('User/Index');
+            UserProfiles::create([
+                'user_id' => $user->id,
+                'name' => $validatedData['name'],
+                'nik' => $validatedData['nik'] ?? null,
+                'phone' => $validatedData['phone'] ?? null,
+                'employee_no' => 'nullable|string|unique:user_profiles,nik',
+                'user_division_id' => $validatedData['user_division_id'],
+                'user_position_id' => $validatedData['user_position_id'],
+            ]);
+
+            DB::commit();
+            return redirect()->route('users.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+        }
+        // return Inertia::location('User/Index');
     }
 
 

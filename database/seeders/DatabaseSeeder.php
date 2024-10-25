@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         //User Roles
-         
+
         //1
         UserRoles::create([
             'name' => 'superadmin',
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'HRD',
             'description' => 'Human Research Development',
         ]);
-        
+
         //3
         UserDivisions::create([
             'name' => 'GA',
@@ -64,44 +64,44 @@ class DatabaseSeeder extends Seeder
         UserPosition::create([
             'name' => 'Cyber Security',
             'description' => 'Cyber Security from ICT Division',
-            'user_divisions_id' => UserDivisions::where('name', 'ICT')->first()->id,
+            'division_id' => UserDivisions::where('name', 'ICT')->first()->id,
         ]);
 
         //2
         UserPosition::create([
             'name' => 'Payment Roll',
             'description' => 'Payment Roll from HRD Division',
-            'user_divisions_id' => UserDivisions::where('name', 'HRD')->first()->id,
+            'division_id' => UserDivisions::where('name', 'HRD')->first()->id,
         ]);
 
         //3
         UserPosition::create([
             'name' => 'Head of General Affair',
             'description' => 'General Affair in General',
-            'user_divisions_id' => UserDivisions::where('name', 'GA')->first()->id,
+            'division_id' => UserDivisions::where('name', 'GA')->first()->id,
         ]);
-        
+
         //User
 
         //1
         User::factory()->create([
             'email' => 'verif@example.com',
             'password' => bcrypt('password'),
-            'user_roles_id' => '1',
+            'user_role_id' => '1',
         ]);
 
         //2
         User::create([
             'email' => 'notverif@example.com',
             'password' => bcrypt('password'),
-            'user_roles_id' => '2',
+            'user_role_id' => '2',
         ]);
 
         //3
         User::create([
             'email' => 'hrd@example.com',
             'password' => bcrypt('password'),
-            'user_roles_id' => '2',
+            'user_role_id' => '2',
         ]);
 
         User::factory(10)->create();

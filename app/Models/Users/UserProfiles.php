@@ -14,7 +14,7 @@ class UserProfiles extends Model
         'employee_no',
         'nik',
         'phone',
-        'user_id', 
+        'user_id',
         'user_division_id',
         'user_position_id',
     ];

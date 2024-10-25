@@ -57,7 +57,6 @@ export default function Dashboard({ auth }: PageProps) {
                     Overview - Last 30 Days
                 </span>
             }
-            title="Dashboard"
         >
             <Head title="Dashboard" />
             <div className="flex flex-col gap-4 md:gap-4">

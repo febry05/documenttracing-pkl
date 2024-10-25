@@ -2,7 +2,7 @@ import { Card } from "@/Components/ui/card";
 import { AlignJustifyIcon, LucideIcon } from "lucide-react";
 import { PropsWithChildren } from "react";
 
-export function InfoCard({ title, caption, icon }: PropsWithChildren<{title: String, caption: String, icon: LucideIcon}>) {
+export function InfoCard({ title, caption, icon }: PropsWithChildren<{title: string, caption: string, icon: LucideIcon}>) {
     const Icon = (icon ?? AlignJustifyIcon) as React.ElementType;
 
     return (

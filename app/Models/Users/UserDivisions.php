@@ -11,7 +11,7 @@ class UserDivisions extends Model
     use HasFactory;
 
     protected $table = 'user_divisions';
-    
+
     protected $fillable = [
         'name',
         'description',

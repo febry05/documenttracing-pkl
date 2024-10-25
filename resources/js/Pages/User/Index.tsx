@@ -1,11 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
-import { PageProps } from "@/types";
+import { Head } from "@inertiajs/react";
+// import { PageProps } from "@/types";
 import { DataTable } from "@/Components/ui/data-table"
-import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
-import { Plus, ChevronLeft } from "lucide-react";
+import { Plus } from "lucide-react";
 import { User, columns } from "./columns";
+import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 
 function getData(): User[] {
     let mockData: User[] = [];
@@ -21,8 +21,22 @@ function getData(): User[] {
     return mockData;
 }
 
-export default function Dashboard({ auth }: PageProps) {
-    const data = getData()
+type Filter = {
+    id: number;
+    name: string;
+}
+
+interface PageProps {
+    auth: {
+        user: any;
+    }
+    users: User[],
+    positions: Filter[],
+    roles: Filter[]
+}
+
+export default function Dashboard({ auth, users, positions, roles }: PageProps) {
+    // const data = getData()
 
     const filters = [
         {
@@ -44,34 +58,23 @@ export default function Dashboard({ auth }: PageProps) {
         }
     ];
 
+    const button = {
+        text: "Create User",
+        icon: Plus,
+        link: route('users.create'),
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="grid grid-col-2">
-                    <span className="font-semibold text-xl leading-tight">
-                        Users List
-                    </span>
-                    <div className="flex justify-between">
-                        <Button variant="link" className="p-0">
-                            <ChevronLeft className="me-1" size={18}/>
-                            <span className="mb-0.5">Back</span>
-                        </Button>
-                        <Link href={route('users.create')}>
-                            <Button className="bg-blue-500 hover:bg-blue-600">
-                                <Plus className="me-2" size={18}/>
-                                Create User
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
+                <HeaderNavigation title="Users List" back={true} button={button}/>
             }
-            title=""
         >
             <Head title="Users" />
 
             <Card className="flex-auto basis-1/2 p-4">
-                <DataTable columns={columns} data={data} filters={filters} />
+                <DataTable columns={columns} data={users} filters={filters} />
             </Card>
 
             {/* <div className="z-50 absolute bottom-20 right-10">

@@ -7,6 +7,7 @@ import {
     Clipboard,
     KeyRound,
     LayoutDashboard,
+    Settings,
     UserRound,
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
@@ -56,10 +57,10 @@ const links: MenuItemProp[] = [
         icon: UserRound,
     },
     {
-        title: "Guest Token",
+        title: "Settings",
         href: route("profile.edit"),
         variant: "ghost",
-        icon: KeyRound,
+        icon: Settings,
     },
 ];
 
@@ -67,14 +68,11 @@ export default function AuthenticatedLayout({
     user,
     header,
     children,
-    title,
 }: PropsWithChildren<{
     user: User;
     header?: ReactNode;
-    title: String;
 }>) {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    console.log(user);
 
     return (
         <ResizablePanelGroup
@@ -109,7 +107,7 @@ export default function AuthenticatedLayout({
                     <div className="w-full flex-1 flex gap-4 justify-between items-center">
                         <div className="flex-1">
                             <div className="relative">
-                                <h1>{title}</h1>
+                                {/* <span className="text-xl font-semibold"></span> */}
                             </div>
                         </div>
 
@@ -136,7 +134,8 @@ export default function AuthenticatedLayout({
                                     <DropdownMenuLabel className="font-normal">
                                         <div className="flex flex-col space-y-1">
                                             <p className="text-sm font-medium leading-none">
-                                                {user.name}
+                                                {/* {user.name} */}
+                                                {user.profile.name}
                                             </p>
                                             <p className="text-xs leading-none text-muted-foreground">
                                                 {user.email}
