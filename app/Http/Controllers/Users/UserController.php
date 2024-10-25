@@ -5,21 +5,27 @@ namespace App\Http\Controllers\Users;
 use Inertia\Inertia;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
+use App\Models\Users\UserRoles;
 use App\Models\Users\UserProfiles;
 use App\Http\Controllers\Controller;
-
+use App\Models\Users\UserDivisions;
+use App\Models\Users\UserPosition;
 
 class UserController extends Controller
 {
     public function index (){
-        $users = UserProfiles::with('user:email')
-        ->select('name', 'nik', 'phone')->get();
 
-            return Inertia::render('User/Index');
+            return Inertia::render('User/Index',[
+                'users' => UserProfiles::with('user:email')->select('name', 'nik', 'phone')->get(),
+            ]);
     }
 
     public function create(){
-        return Inertia::render('User/Create');
+        return Inertia::render('User/Create',[
+            'divisions' => UserDivisions::select('id', 'name')->get(), 
+            'positions' => UserPosition::select('id', 'name')->get(), 
+            'roles' => UserRoles::select('id', 'name')->get(),
+        ] );
     }
 
     public function store(Request $request){

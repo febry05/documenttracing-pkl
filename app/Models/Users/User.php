@@ -47,12 +47,12 @@ class User extends Authenticatable
 
     protected static function booted()
     {
-        static::created(function ($user) {
-            // Automatically create a UserProfile for the new User
-            UserProfiles::create([
-                'user_id' => $user->id,
-            ]);
-        });
+        // static::created(function ($user) {
+        //     // Automatically create a UserProfile for the new User
+        //     UserProfiles::create([
+        //         'user_id' => $user->id,
+        //     ]);
+        // });
     }
 
     public function profile()
