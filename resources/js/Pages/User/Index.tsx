@@ -6,6 +6,7 @@ import { Card } from "@/Components/ui/card";
 import { Plus } from "lucide-react";
 import { User, columns } from "./columns";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
+import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 
 function getData(): User[] {
     let mockData: User[] = [];
@@ -35,8 +36,8 @@ interface PageProps {
     roles: Filter[]
 }
 
-export default function Dashboard({ auth, users, positions, roles }: PageProps) {
-    // const data = getData()
+export default function UsersIndex({ auth, users, positions, roles }: PageProps) {
+    const data = getData()
 
     const filters = [
         {
@@ -65,8 +66,9 @@ export default function Dashboard({ auth, users, positions, roles }: PageProps) 
     }
 
     return (
-        <AuthenticatedLayout
-            user={auth.user}
+        <DashboardLayout
+        // <DashboardLayout
+            // user={auth.user}
             header={
                 <HeaderNavigation title="Users List" back={true} button={button}/>
             }
@@ -74,12 +76,12 @@ export default function Dashboard({ auth, users, positions, roles }: PageProps) 
             <Head title="Users" />
 
             <Card className="flex-auto basis-1/2 p-4">
-                <DataTable columns={columns} data={users} filters={filters} />
+                <DataTable columns={columns} data={data} filters={filters} />
             </Card>
 
             {/* <div className="z-50 absolute bottom-20 right-10">
                 <Button variant="ghost" className="rounded-full shadow-xl bg-green-700 hover:bg-green-600">+</Button>
             </div> */}
-        </AuthenticatedLayout>
+        </DashboardLayout>
     );
 }

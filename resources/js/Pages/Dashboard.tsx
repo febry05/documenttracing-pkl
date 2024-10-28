@@ -6,6 +6,7 @@ import { InfoCard } from "@/Components/custom/InfoCard";
 import { FileBarChart, FileCog, FileClock, FileCheck2  } from "lucide-react";
 import { ColumnFilterConfig, DataTable } from "@/Components/ui/data-table";
 import { columns, Project } from "./columns";
+import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 
 function getData(): Project[] {
     let mockData: Project[] = [];
@@ -50,8 +51,7 @@ export default function Dashboard({ auth }: PageProps) {
     ];
 
     return (
-        <AuthenticatedLayout
-            user={auth.user}
+        <DashboardLayout
             header={
                 <span className="font-semibold text-xl leading-tight">
                     Overview - Last 30 Days
@@ -73,6 +73,6 @@ export default function Dashboard({ auth }: PageProps) {
                     <Card className="flex-auto basis-1/4 p-4">Filler</Card>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </DashboardLayout>
     );
 }

@@ -14,6 +14,7 @@ import { Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { handleNumericInput } from "@/lib/utils";
+import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -40,7 +41,7 @@ interface PageProps {
     positions: UserMasterData[];
 }
 
-export default function Dashboard({ auth, roles, divisions, positions }: PageProps) {
+export default function UsersCreate({ auth, roles, divisions, positions }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -65,8 +66,8 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
     }
 
     return (
-        <AuthenticatedLayout
-            user={auth.user}
+        <DashboardLayout
+            // user={auth.user}
             header={
                 <HeaderNavigation title="Create User" back={true}/>
             }
@@ -305,6 +306,6 @@ export default function Dashboard({ auth, roles, divisions, positions }: PagePro
                     </form>
                 </Form>
             </Card>
-        </AuthenticatedLayout>
+        </DashboardLayout>
     );
 }

@@ -26,6 +26,9 @@ import {
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Components/ui/tooltip"
+import { Inertia } from "@inertiajs/inertia-react"
+import { router } from "@inertiajs/react"
 
 interface FilterOption {
     value: string;
@@ -43,6 +46,10 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     filters?: ColumnFilterConfig[]; // New prop for custom filters
+}
+
+function redirectToLocation() {
+
 }
 
 export function DataTable<TData, TValue>({
@@ -144,22 +151,33 @@ export function DataTable<TData, TValue>({
                 <TableBody>
                 {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
-                    <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                    >
-                        {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                        ))}
-                    </TableRow>
+                        <TooltipProvider key={row.id}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className="cursor-pointer"
+                                        onClick={() => router.visit('/dashboard')}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Click to edit</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     ))
                 ) : (
                     <TableRow>
-                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                        No results.
-                    </TableCell>
+                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                            No results.
+                        </TableCell>
                     </TableRow>
                 )}
                 </TableBody>
