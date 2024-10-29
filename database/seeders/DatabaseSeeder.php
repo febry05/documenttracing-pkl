@@ -64,21 +64,21 @@ class DatabaseSeeder extends Seeder
         UserPosition::create([
             'name' => 'Cyber Security',
             'description' => 'Cyber Security from ICT Division',
-            'division_id' => UserDivisions::where('name', 'ICT')->first()->id,
+            'user_division_id' => UserDivisions::where('name', 'ICT')->first()->id,
         ]);
 
         //2
         UserPosition::create([
             'name' => 'Payment Roll',
             'description' => 'Payment Roll from HRD Division',
-            'division_id' => UserDivisions::where('name', 'HRD')->first()->id,
+            'user_division_id' => UserDivisions::where('name', 'HRD')->first()->id,
         ]);
 
         //3
         UserPosition::create([
             'name' => 'Head of General Affair',
             'description' => 'General Affair in General',
-            'division_id' => UserDivisions::where('name', 'GA')->first()->id,
+            'user_division_id' => UserDivisions::where('name', 'GA')->first()->id,
         ]);
 
         //User

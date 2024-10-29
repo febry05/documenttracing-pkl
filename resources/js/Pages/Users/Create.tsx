@@ -25,6 +25,7 @@ const formSchema = z.object({
     phone: z.string().min(10).max(15).optional(),
     employee_no: z.string().min(7).max(7),
     user_division_id: z.number(),
+    user_position_id: z.number(),
 })
 
 type UserMasterData = {
@@ -41,7 +42,7 @@ interface PageProps {
     positions: UserMasterData[];
 }
 
-export default function UsersCreate({ auth, roles, divisions, positions }: PageProps) {
+export default function UsersCreate({ roles, divisions, positions }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

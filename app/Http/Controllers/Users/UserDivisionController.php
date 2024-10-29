@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users;
 
 use App\Models\Users\UserDivisions;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class UserDivisionsController extends Controller
+class UserDivisionController extends Controller
 {
     public function index()
     {
-        return Inertia::render('UserDivision/Index');
+        return Inertia::render('Master/UserDivisions/Index');
     }
 
     public function store(Request $request){

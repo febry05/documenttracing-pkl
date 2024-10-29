@@ -14,60 +14,67 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function index (){
-        $usersUnfiltered = UserProfiles::with(['user:id,email,user_role_id', 'position:id,name'])
-                            ->select('name', 'user_id')
-                            ->get();
+    public function index ()
+    {
+        $mockUsers = [
+            [
+                'id' => 1,
+                'name' => "Pebri Prasetyo",
+                'position' => "Supervisor",
+                'role' => "Administrator",
+                'email' => "febry05@gmail.com",
+            ],
+            [
+                'id' => 2,
+                'name' => "R.M Angga N H",
+                'position' => "Equipment & ICT Support",
+                'role' => "Administrator",
+                'email' => "supanova@gmail.com",
+            ],
+            [
+                'id' => 3,
+                'name' => "Trya Suma A",
+                'position' => "ICT Staff",
+                'role' => "Project Manager",
+                'email' => "sumsumm@gmail.com",
+            ],
+            [
+                'id' => 4,
+                'name' => "Muhammad Azhim Nugroho",
+                'position' => "Karyawan Magang",
+                'role' => "Guest",
+                'email' => "mazhn34@gmail.com",
+            ],
+            [
+                'id' => 5,
+                'name' => "Muhammad Ferdy Maulana",
+                'position' => "Karyawan Magang",
+                'role' => "Guest",
+                'email' => "ferdymaulana7404@gmail.com",
+            ],
+        ];
 
-        $users = [];
-        $positions = [];
-        $roles = [];
-        // foreach($usersUnfiltered as $user) {
-        //     array_push($users, [
-        //         'id' => $user->id,
-        //         'name' => $user->name,
-        //         'email' => $user->user->email,
-        //         // 'position' => $user->position->name,
-        //         'role' => $user->user->role->name,
-        //     ]);
-        // }
+        $mockPositions = [
+            ['value' => 'Karyawan Magang', 'label' => 'Karyawan Magang'],
+            ['value' => 'ICT Staff', 'label' => 'ICT Staff'],
+        ];
 
-        /* FE requirements:
-            - Buat variable 'users' strukturnya seperti berikut:
-            $users = [
-                {
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->user->email,
-                    'position' => $user->position->name,
-                    'role' => $user->user->role->name,
-                },
-                ...
-            ];
+        $mockRoles = [
+            ['value' => 'Administrator', 'label' => 'Administrator'],
+            ['value' => 'Project Manager', 'label' => 'Project Manager'],
+            ['value' => 'Guest', 'label' => 'Guest'],
+        ];
 
-            - Tampilkan juga semua record 'user_positions' & 'user_roles' dengan struktur seperti berikut. (used for filters)
-            $positions = [
-                {                                    // This item is mandatory, for filter reset
-                    'value' => 'all',
-                    'label' => 'All Positions',
-                },
-                {
-                    'value' => $user_position->name,
-                    'label' => $user_position->name,
-                },
-                ...
-            ];
-
-        */
-        return Inertia::render('User/Index', [
-            'users' => $users,
-            'positions' => $positions,
-            'roles' => $roles,
+        return Inertia::render('Users/Index', [
+            'users' => $mockUsers,
+            'positions' => $mockPositions,
+            'roles' => $mockRoles,
         ]);
     }
 
-    public function create(){
-        return Inertia::render('User/Create', [
+    public function create()
+    {
+        return Inertia::render('Users/Create', [
             'roles' => UserRoles::select('id', 'name')->get(),
             'divisions' => UserDivisions::select('id', 'name')->get(),
             'positions' => UserPosition::select('id', 'name')->get(),
@@ -77,7 +84,6 @@ class UserController extends Controller
     public function store(Request $request){
         DB::beginTransaction();
         try {
-            // dd($request);
             $validatedData = $request->validate([
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
@@ -89,8 +95,6 @@ class UserController extends Controller
                 'user_division_id' => 'required|integer',
                 'user_position_id' => 'required|integer',
             ]);
-
-            // dd($validatedData);
 
             $user = User::create([
                 'email' => $validatedData['email'],
@@ -114,7 +118,7 @@ class UserController extends Controller
             DB::rollBack();
             dd($e);
         }
-        // return Inertia::location('User/Index');
+        // return Inertia::location('Users/Index');
     }
 
 

@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Users\UserPosition;
+use App\Http\Controllers\Controller;
 
 class UserPositionController extends Controller
 {
-    // public function index()
-    // {
-    //     return Inertia::render('UserPosition/Index');
-    // }
+    public function index()
+    {
+        return Inertia::render('Master/UserPositions/Index');
+    }
 
     // public function store(Request $request){
     //     {

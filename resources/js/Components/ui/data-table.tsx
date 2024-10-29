@@ -2,16 +2,16 @@
 
 import * as React from "react"
 import {
-    Row,
-    ColumnDef,
-    ColumnFiltersState,
-    SortingState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
+  Row,
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table"
 
 import {
@@ -27,183 +27,173 @@ import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Components/ui/tooltip"
-import { Inertia } from "@inertiajs/inertia-react"
-import { router } from "@inertiajs/react"
+import { Inertia } from "@inertiajs/inertia";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/dialog"
 
-interface FilterOption {
-    value: string;
-    label: string;
+export interface FilterOption {
+  value: string;
+  label: string;
 }
 
 export interface ColumnFilterConfig {
-    columnId: string;
-    label?: string;
-    compare?: '<' | '>';
-    options: FilterOption[];
+  columnId: string;
+  label?: string;
+  compare?: '<' | '>';
+  options: FilterOption[];
 }
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
-    filters?: ColumnFilterConfig[]; // New prop for custom filters
-}
-
-function redirectToLocation() {
-
+interface DataTableProps<TData extends { id: number }, TValue> {
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+  filters?: ColumnFilterConfig[];
+  detailPage?: string;
+  detailDialog?: string;
+  renderDialogContent?: (data: TData) => React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
-    columns,
-    data,
-    filters = [], // Default to an empty array if no filters are provided
+  columns,
+  data,
+  filters = [],
+  detailPage,
+  detailDialog,
+  renderDialogContent,
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [globalFilter, setGlobalFilter] = React.useState<string>("")
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = React.useState<string>("")
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+  const [selectedRowData, setSelectedRowData] = React.useState<TData | null>(null)
 
-    // React Table will handle the pagination state internally
-    const table = useReactTable({
-      data,
-      columns,
-      onSortingChange: setSorting,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      onColumnFiltersChange: setColumnFilters,
-      getFilteredRowModel: getFilteredRowModel(),
-      state: {
-        sorting,
-        columnFilters,
-        globalFilter,
-      },
-    })
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter,
+    },
+  })
 
-    // Extract pagination state from the table instance
-    const { pageIndex, pageSize } = table.getState().pagination;
+  const handleRowClick = (row: Row<TData>) => {
+    const rowData = row.original
+    if (detailDialog && renderDialogContent) {
+      setSelectedRowData(rowData)
+      setIsDialogOpen(true)
+    } else if (detailPage) {
+      Inertia.visit(route(detailPage, { id: rowData.id }))
+    }
+  }
 
-    return (
-      <div>
-        <div className="flex flex-row-reverse gap-4 pb-4">
-            {filters.map(filter => {
-                const label = filter.label || filter.columnId;
-                return (
-                    <Select key={filter.columnId} onValueChange={(value) => {
-                        const column = table.getColumn(filter.columnId);
-                        if (column) {
-                            if (value === 'all') {
-                                column.setFilterValue(''); // Clear the filter
-                            } else if (filter.compare) {
-                                // Apply comparison logic based on the compare operator
-                                column.setFilterValue({
-                                    compare: filter.compare,
-                                    filterValue: value, // We pass the value and comparison together
-                                });
-                            } else {
-                                // Default filter behavior
-                                column.setFilterValue(value);
-                            }
-                        }
-                    }}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder={`Filter ${label}`} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {filter.options.map(option => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                )
-            })}
-            <Input
-                value={globalFilter}
-                onChange={event => {
-                    const value = String(event.target.value);
-                    setGlobalFilter(value);
-                    table.setGlobalFilter(value);
-                }}
-                placeholder="Search in table..."
-                className="max-w-sm me-auto"
-            />
-        </div>
-        <div className="rounded-md border">
-            <Table>
-                <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                        return (
-                        <TableHead key={header.id}>
-                            {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                                )}
-                        </TableHead>
-                        )
-                    })}
-                    </TableRow>
+  const closeDialog = () => {
+    setIsDialogOpen(false)
+    setSelectedRowData(null)
+  }
+
+  return (
+    <div>
+      <div className="flex flex-row-reverse gap-4 pb-4">
+        {filters.map(filter => {
+          const label = filter.label || filter.columnId;
+          return (
+            <Select key={filter.columnId} onValueChange={(value) => {
+              const column = table.getColumn(filter.columnId);
+              if (column) {
+                if (value === 'all') {
+                  column.setFilterValue('');
+                } else if (filter.compare) {
+                  column.setFilterValue({ compare: filter.compare, filterValue: value });
+                } else {
+                  column.setFilterValue(value);
+                }
+              }
+            }}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={`Filter ${label}`} />
+              </SelectTrigger>
+              <SelectContent>
+                {filter.options.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
                 ))}
-                </TableHeader>
-                <TableBody>
-                {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
-                        <TooltipProvider key={row.id}>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                        className="cursor-pointer"
-                                        onClick={() => router.visit('/dashboard')}
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Click to edit</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    ))
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={columns.length} className="h-24 text-center">
-                            No results.
-                        </TableCell>
-                    </TableRow>
-                )}
-                </TableBody>
-            </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-            >
-                Previous
-            </Button>
-            <span>
-                Page {pageIndex + 1} of {table.getPageCount()}
-            </span>
-            <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-            >
-                Next
-            </Button>
-        </div>
+              </SelectContent>
+            </Select>
+          )
+        })}
+        <Input
+          value={globalFilter}
+          onChange={event => {
+            const value = String(event.target.value);
+            setGlobalFilter(value);
+            table.setGlobalFilter(value);
+          }}
+          placeholder="Search in table..."
+          className="max-w-sm me-auto"
+        />
       </div>
-    )
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map(row => (
+                <TooltipProvider key={row.id}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                        className="cursor-pointer"
+                        onClick={() => handleRowClick(row)}
+                      >
+                        {row.getVisibleCells().map(cell => (
+                          <TableCell key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Click to view details</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{detailDialog}</DialogTitle>
+          </DialogHeader>
+          {selectedRowData && renderDialogContent && renderDialogContent(selectedRowData)}
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
 }
