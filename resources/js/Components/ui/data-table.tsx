@@ -153,37 +153,50 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(row => (
-                <TooltipProvider key={row.id}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                        className="cursor-pointer"
-                        onClick={() => handleRowClick(row)}
-                      >
-                        {row.getVisibleCells().map(cell => (
-                          <TableCell key={cell.id}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Click to view details</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))
+                table.getRowModel().rows.map((row) => (
+                detailPage ? (
+                    <TooltipProvider key={row.id}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                        <TableRow
+                            key={row.id}
+                            data-state={row.getIsSelected() && "selected"}
+                            className="cursor-pointer"
+                            onClick={() => Inertia.visit(route(detailPage, { id: row.original.id }))}
+                        >
+                            {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                            ))}
+                        </TableRow>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                        <p>Click to edit</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    </TooltipProvider>
+                ) : (
+                    <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    >
+                    {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                    ))}
+                    </TableRow>
+                )
+                ))
             ) : (
-              <TableRow>
+                <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                    No results.
                 </TableCell>
-              </TableRow>
+                </TableRow>
             )}
-          </TableBody>
+            </TableBody>
         </Table>
       </div>
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
