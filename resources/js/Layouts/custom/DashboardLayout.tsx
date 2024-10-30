@@ -107,8 +107,6 @@ export default function DashboardLayout({
                             <Button variant="secondary" className="rounded-full p-4 md:hidden w-12 h-12">
                                 <UserRound size={20}/>
                             </Button>
-                            {/* <div className="rounded-full bg-gray-100 hover:bg-gray-200 flex"> */}
-                            {/* </div> */}
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col gap-4">
                             Profile Panel

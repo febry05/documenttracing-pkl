@@ -8,7 +8,8 @@ import { Pencil } from "lucide-react"
 // You can use a Zod schema here if you want.
 export type Project = {
   id: number
-  name: string
+  document: string
+  project: string
   pic: string
   due_date: string
   days_left: string
@@ -21,8 +22,12 @@ export const columns: ColumnDef<Project>[] = [
         accessorFn: (row, index) => index + 1,
     },
     {
-        accessorKey: "name",
-        header: "Name",
+        accessorKey: "document",
+        header: "Document",
+    },
+    {
+        accessorKey: "project",
+        header: "Project",
     },
     {
         accessorKey: "pic",

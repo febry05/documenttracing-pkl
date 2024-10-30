@@ -55,7 +55,6 @@ interface PageProps {
 }
 
 export default function UsersCreate({
-    auth,
     roles,
     divisions,
     positions,

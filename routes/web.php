@@ -4,10 +4,14 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Users\ProfileController;
+use App\Http\Controllers\Users\UserRoleController;
+use App\Http\Controllers\Users\UserDivisionController;
+use App\Http\Controllers\Users\UserPositionController;
+use App\Http\Controllers\Projects\ProjectBusinessTypeController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -18,18 +22,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+    Route::resource('/users', UserController::class);
+
+    Route::resource('/master/user-positions', UserPositionController::class);
+    Route::resource('/master/user-divisions', UserDivisionController::class);
+    Route::resource('/master/user-roles', userRoleController::class);
+    Route::resource('/master/project-business-types', ProjectBusinessTypeController::class);
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

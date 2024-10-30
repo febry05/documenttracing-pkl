@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users;
 
 use App\Models\Users\UserDivisions;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Users\UserPosition;
+use App\Http\Controllers\Controller;
 
 class UserPositionController extends Controller
 {
