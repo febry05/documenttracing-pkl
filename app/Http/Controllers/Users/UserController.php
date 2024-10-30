@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Users;
 use Inertia\Inertia;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
-use App\Models\Users\UserRoles;
 use App\Models\Users\UserPosition;
 use App\Models\Users\UserProfiles;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +14,7 @@ use App\Http\Controllers\Controller;
 class UserController extends Controller
 {
     public function index (){
-        $usersUnfiltered = UserProfiles::with(['user:id,email,user_role_id', 'position:id,name'])
+        $usersUnfiltered = UserProfiles::with(['user:id,email,roles_id', 'position:id,name'])
                             ->select('name', 'user_id')
                             ->get();
 
@@ -68,7 +67,7 @@ class UserController extends Controller
 
     public function create(){
         return Inertia::render('User/Create', [
-            'roles' => UserRoles::select('id', 'name')->get(),
+            // 'roles' => UserRoles::select('id', 'name')->get(),
             'divisions' => UserDivisions::select('id', 'name')->get(),
             'positions' => UserPosition::select('id', 'name')->get(),
         ]);
@@ -85,7 +84,7 @@ class UserController extends Controller
                 'nik' => 'nullable|string|unique:user_profiles,nik',
                 'phone' => 'nullable|string|unique:user_profiles,phone',
                 'employee_no' => 'nullable|string|unique:user_profiles,employee_no',
-                'user_role_id' => 'required|integer',
+                'roles_id' => 'required|integer',
                 'user_division_id' => 'required|integer',
                 'user_position_id' => 'required|integer',
             ]);
@@ -95,7 +94,7 @@ class UserController extends Controller
             $user = User::create([
                 'email' => $validatedData['email'],
                 'password' => bcrypt($validatedData['password']),
-                'user_role_id' => $validatedData['user_role_id'],
+                'roles_id' => $validatedData['roles_id'],
             ]);
 
             UserProfiles::create([

@@ -1,15 +1,28 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Inertia } from '@inertiajs/inertia';
+import { Inertia } from "@inertiajs/inertia";
 import { Head } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/Components/ui/form";
 import { Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
@@ -19,18 +32,18 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
     password: z.string().min(6).max(255),
-    user_role_id: z.number(),
+    roles_id: z.number(),
     name: z.string().min(3).max(255),
     nik: z.string().min(16).max(16).optional(),
     phone: z.string().min(10).max(15).optional(),
     employee_no: z.string().min(7).max(7),
     user_division_id: z.number(),
-})
+});
 
 type UserMasterData = {
     id: number;
     name: string;
-}
+};
 
 interface PageProps {
     auth: {
@@ -41,17 +54,22 @@ interface PageProps {
     positions: UserMasterData[];
 }
 
-export default function UsersCreate({ auth, roles, divisions, positions }: PageProps) {
+export default function UsersCreate({
+    auth,
+    roles,
+    divisions,
+    positions,
+}: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: '',
-            password: '',
-            user_role_id: undefined,
-            name: '',
+            email: "",
+            password: "",
+            roles_id: undefined,
+            name: "",
             nik: undefined,
             phone: undefined,
-            employee_no: '',
+            employee_no: "",
             user_division_id: undefined,
             user_position_id: undefined,
         },
@@ -59,33 +77,33 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('users.store'), values);
+            await Inertia.post(route("users.store"), values);
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error("Submission error:", error);
         }
     }
 
     return (
         <DashboardLayout
             // user={auth.user}
-            header={
-                <HeaderNavigation title="Create User" back={true}/>
-            }
+            header={<HeaderNavigation title="Create User" back={true} />}
         >
             <Head title="Users" />
 
             <Card className="p-8">
                 <Form {...form}>
-                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
+                    <form
+                        action=""
+                        method="POST"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                    >
                         <div className="flex flex-col gap-8">
-
                             {/* Credentials info [START] */}
                             <div className="flex flex-col gap-2">
                                 <span className="font-bold text-sm">
                                     User Credentials Information
                                 </span>
                                 <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
-
                                     {/* Email Field */}
                                     <FormField
                                         control={form.control}
@@ -94,11 +112,22 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                             <FormItem>
                                                 <FormLabel>
                                                     Email
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input type="email" placeholder="Enter the user's email" {...field} minLength={5} maxLength={255} value={field.value || ''} />
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="email"
+                                                        placeholder="Enter the user's email"
+                                                        {...field}
+                                                        minLength={5}
+                                                        maxLength={255}
+                                                        value={
+                                                            field.value || ""
+                                                        }
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -112,11 +141,22 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                             <FormItem>
                                                 <FormLabel>
                                                     Password
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input type="password" placeholder="Enter the user's password" {...field} minLength={6} maxLength={255} value={field.value || ''} />
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="password"
+                                                        placeholder="Enter the user's password"
+                                                        {...field}
+                                                        minLength={6}
+                                                        maxLength={255}
+                                                        value={
+                                                            field.value || ""
+                                                        }
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -125,24 +165,44 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                     {/* Role Field */}
                                     <FormField
                                         control={form.control}
-                                        name="user_role_id"
+                                        name="roles_id"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
                                                     Role
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
+                                                <Select
+                                                    onValueChange={(value) =>
+                                                        field.onChange(
+                                                            Number(value)
+                                                        )
+                                                    }
+                                                    defaultValue={
+                                                        field.value
+                                                            ? field.value.toString()
+                                                            : ""
+                                                    }
+                                                >
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's role" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {roles.map(role => {
+                                                        {roles.map((role) => {
                                                             return (
-                                                                <SelectItem key={role.id} value={role.id.toString()}>{role.name}</SelectItem>
-                                                            )
+                                                                <SelectItem
+                                                                    key={
+                                                                        role.id
+                                                                    }
+                                                                    value={role.id.toString()}
+                                                                >
+                                                                    {role.name}
+                                                                </SelectItem>
+                                                            );
                                                         })}
                                                     </SelectContent>
                                                 </Select>
@@ -160,7 +220,6 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                     User Personal Information
                                 </span>
                                 <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
-
                                     {/* Name Field */}
                                     <FormField
                                         control={form.control}
@@ -169,11 +228,21 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                             <FormItem>
                                                 <FormLabel>
                                                     Full Name
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Enter the user's full name" {...field} minLength={3} maxLength={255} value={field.value || ''}/>
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Enter the user's full name"
+                                                        {...field}
+                                                        minLength={3}
+                                                        maxLength={255}
+                                                        value={
+                                                            field.value || ""
+                                                        }
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -185,9 +254,21 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>NIK</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's NIK" {...field} minLength={16} maxLength={16} value={field.value || ''} onKeyDown={handleNumericInput} />
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter the user's NIK"
+                                                        {...field}
+                                                        minLength={16}
+                                                        maxLength={16}
+                                                        value={
+                                                            field.value || ""
+                                                        }
+                                                        onKeyDown={
+                                                            handleNumericInput
+                                                        }
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -198,10 +279,24 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                         name="phone"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Phone Number</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="text" placeholder="0812xxx" {...field} minLength={10} maxLength={15} value={field.value || ''} onKeyDown={handleNumericInput} />
-                                                    </FormControl>
+                                                <FormLabel>
+                                                    Phone Number
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="0812xxx"
+                                                        {...field}
+                                                        minLength={10}
+                                                        maxLength={15}
+                                                        value={
+                                                            field.value || ""
+                                                        }
+                                                        onKeyDown={
+                                                            handleNumericInput
+                                                        }
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -216,7 +311,6 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                     User Employee Information
                                 </span>
                                 <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
-
                                     {/* Employee Number FIeld */}
                                     <FormField
                                         control={form.control}
@@ -225,11 +319,25 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                             <FormItem>
                                                 <FormLabel>
                                                     Employee Number
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's employee number" {...field} minLength={7} maxLength={7} value={field.value || ''} onKeyDown={handleNumericInput} />
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter the user's employee number"
+                                                        {...field}
+                                                        minLength={7}
+                                                        maxLength={7}
+                                                        value={
+                                                            field.value || ""
+                                                        }
+                                                        onKeyDown={
+                                                            handleNumericInput
+                                                        }
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -243,20 +351,44 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                             <FormItem>
                                                 <FormLabel>
                                                     Division
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
+                                                <Select
+                                                    onValueChange={(value) =>
+                                                        field.onChange(
+                                                            Number(value)
+                                                        )
+                                                    }
+                                                    defaultValue={
+                                                        field.value
+                                                            ? field.value.toString()
+                                                            : ""
+                                                    }
+                                                >
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's division" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {divisions.map(division => {
-                                                            return (
-                                                                <SelectItem key={division.id} value={division.id.toString()}>{division.name}</SelectItem>
-                                                            )
-                                                        })}
+                                                        {divisions.map(
+                                                            (division) => {
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            division.id
+                                                                        }
+                                                                        value={division.id.toString()}
+                                                                    >
+                                                                        {
+                                                                            division.name
+                                                                        }
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -272,20 +404,44 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
                                             <FormItem>
                                                 <FormLabel>
                                                     Position
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
+                                                <Select
+                                                    onValueChange={(value) =>
+                                                        field.onChange(
+                                                            Number(value)
+                                                        )
+                                                    }
+                                                    defaultValue={
+                                                        field.value
+                                                            ? field.value.toString()
+                                                            : ""
+                                                    }
+                                                >
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's position" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {positions.map(position => {
-                                                            return (
-                                                                <SelectItem key={position.id} value={position.id.toString()}>{position.name}</SelectItem>
-                                                            )
-                                                        })}
+                                                        {positions.map(
+                                                            (position) => {
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            position.id
+                                                                        }
+                                                                        value={position.id.toString()}
+                                                                    >
+                                                                        {
+                                                                            position.name
+                                                                        }
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -298,7 +454,7 @@ export default function UsersCreate({ auth, roles, divisions, positions }: PageP
 
                             <div className="flex">
                                 <Button className="ms-auto" type="submit">
-                                    <Save size={18} className="me-2"/>
+                                    <Save size={18} className="me-2" />
                                     Save
                                 </Button>
                             </div>

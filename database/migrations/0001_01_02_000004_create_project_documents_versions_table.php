@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_versions');
+        Schema::dropIfExists('projects_documents_versions');
     }
 };

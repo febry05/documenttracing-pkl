@@ -24,6 +24,11 @@ class UserProfiles extends Model
         return $this->belongsTo(User::class);
     }
 
+    // public function role()
+    // {
+    //     return $this->
+    // }
+
     public function position()
     {
         return $this->belongsTo(UserPosition::class, 'user_position_id');
