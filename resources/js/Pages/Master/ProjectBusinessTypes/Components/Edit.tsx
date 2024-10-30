@@ -8,7 +8,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { Save, Trash2 } from "lucide-react";
-import { UserRoleDeleteDialog } from "./Delete";
+import { ProjectBusinessTypesDeleteDialog } from "./Delete";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -19,12 +19,12 @@ interface PageProps {
     data: any,
 }
 
-export default function UserRolesEditDialog({ data }: PageProps) {
+export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: data.name || '',
-            description: data.description || '',
+            name: '',
+            description: '',
         },
     });
 
@@ -51,7 +51,7 @@ export default function UserRolesEditDialog({ data }: PageProps) {
                                         <span className="text-destructive ms-1">*</span>
                                     </FormLabel>
                                         <FormControl>
-                                            <Input type="text" placeholder="Enter the user role's name" {...field} minLength={3} maxLength={255} value={field.value || data.name} />
+                                            <Input type="text" placeholder="Enter the project business type's name" {...field} minLength={3} maxLength={255} value={field.value || data.name} />
                                         </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -66,7 +66,7 @@ export default function UserRolesEditDialog({ data }: PageProps) {
                                     <FormLabel>Description</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                        placeholder="Enter the user role's description"
+                                        placeholder="Enter the project business type's description"
                                         className="resize-none"
                                         {...field}
                                         minLength={3} maxLength={255} value={field.value || data.description}
@@ -82,7 +82,7 @@ export default function UserRolesEditDialog({ data }: PageProps) {
                                 <Save className="me-2" size={18} />
                                 Save
                             </Button>
-                            <UserRoleDeleteDialog data={data} />
+                            <ProjectBusinessTypesDeleteDialog data={data} />
                         </div>
                     </div>
                 </form>

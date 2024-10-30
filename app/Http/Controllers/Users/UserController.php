@@ -41,21 +41,21 @@ class UserController extends Controller
             [
                 'id' => 4,
                 'name' => "Muhammad Azhim Nugroho",
-                'position' => "Karyawan Magang",
+                'position' => "Intern",
                 'role' => "Guest",
                 'email' => "mazhn34@gmail.com",
             ],
             [
                 'id' => 5,
                 'name' => "Muhammad Ferdy Maulana",
-                'position' => "Karyawan Magang",
+                'position' => "Intern",
                 'role' => "Guest",
                 'email' => "ferdymaulana7404@gmail.com",
             ],
         ];
 
         $mockPositions = [
-            ['value' => 'Karyawan Magang', 'label' => 'Karyawan Magang'],
+            ['value' => 'Intern', 'label' => 'Intern'],
             ['value' => 'ICT Staff', 'label' => 'ICT Staff'],
         ];
 

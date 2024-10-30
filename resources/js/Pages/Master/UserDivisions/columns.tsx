@@ -2,13 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-export type UserRole = {
-  id: number
-  name: string
-  description?: string | undefined
+export type UserDivision = {
+    id: number
+    name: string
+    description?: string | undefined
 }
 
-export const columns: ColumnDef<UserRole>[] = [
+export const columns: ColumnDef<UserDivision>[] = [
     {
         header: 'No',
         accessorFn: (row, index) => index + 1,
