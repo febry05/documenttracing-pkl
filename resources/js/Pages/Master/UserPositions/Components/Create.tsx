@@ -111,11 +111,11 @@ export default function UserPositionsCreateDialog({ userDivisions }: PageProps) 
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {/* {userDivisions.map((division) => (
+                                                    {userDivisions.map((division) => (
                                                         <SelectItem key={division.id} value={String(division.id)}>
                                                             {division.name}
                                                         </SelectItem>
-                                                    ))} */}
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                         <FormMessage />

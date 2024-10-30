@@ -8,6 +8,7 @@
     "devDependencies": {
         "@headlessui/react": "^1.4.2",
         "@inertiajs/react": "^1.2.0",
+        "@radix-ui/react-focus-scope": "^1.1.0",
         "@tailwindcss/forms": "^0.5.3",
         "@types/node": "^18.13.0",
         "@types/react": "^18.0.28",
@@ -16,6 +17,7 @@
         "autoprefixer": "^10.4.12",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
+        "npm-force-resolutions": "^0.0.10",
         "postcss": "^8.4.31",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -52,5 +54,8 @@
         "tailwind-merge": "^2.3.0",
         "tailwindcss-animate": "^1.0.7",
         "zod": "^3.23.8"
+    },
+    "resolutions": {
+        "@radix-ui/react-focus-scope": "1.1.0"
     }
 }
