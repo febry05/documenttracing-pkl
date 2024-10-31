@@ -1,12 +1,9 @@
-import React from "react"
-import { usePage } from "@inertiajs/react";
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -14,56 +11,56 @@ import {
     SidebarMenuSub,
     SidebarMenuSubItem,
   } from "@/Components/ui/sidebar-alt"
-import { Calendar, CalendarIcon, ChevronsUpDown, Clipboard, Home, Inbox, KeyRound, Search, Settings, UserRound } from "lucide-react"
+import { CalendarIcon, ChevronsUpDown, Clipboard, Home, KeyRound, UserRound } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/Components/ui/collapsible";
 
 
 export function AppSidebar(url: any) {
     const items = [
         {
-          title: "Home",
-          href: "/dashboard",
-          icon: Home,
+            title: "Home",
+            href: "/dashboard",
+            icon: Home,
         },
         {
-          title: "Projects",
-          href: "/projects",
-          icon: Clipboard,
+            title: "Projects",
+            href: "/projects",
+            icon: Clipboard,
         },
         {
-          title: "Monitoring",
-          href: "/monitoring",
-          icon: CalendarIcon,
+            title: "Monitoring",
+            href: "/monitoring",
+            icon: CalendarIcon,
         },
         {
-          title: "User",
-          href: "/users",
-          icon: UserRound,
+            title: "User",
+            href: "/users",
+            icon: UserRound,
         },
         {
-          title: "Master Data",
-          href: "/settings",
-          icon: KeyRound,
-          submenu : [
-            {
-                title: "User Role",
-                href: route('user-roles.index'),
-            },
-            {
-                title: "User Position",
-                href: route('user-positions.index'),
-            },
-            {
-                title: "User Division",
-                href: route('user-divisions.index'),
-            },
-            {
-                title: "Project Business Type",
-                href: route('project-business-types.index'),
-            },
+            title: "Master Data",
+            href: "/settings",
+            icon: KeyRound,
+            submenu : [
+                {
+                    title: "User Role",
+                    href: route('user-roles.index'),
+                },
+                {
+                    title: "User Position",
+                    href: route('user-positions.index'),
+                },
+                {
+                    title: "User Division",
+                    href: route('user-divisions.index'),
+                },
+                {
+                    title: "Project Business Type",
+                    href: route('project-business-types.index'),
+                },
             ]
         },
-      ]
+    ];
 
     return (
         <Sidebar collapsible="icon" className="flex">
@@ -90,7 +87,7 @@ export function AppSidebar(url: any) {
                                     let listSubMenu = item.submenu.map(sub =>
                                         <SidebarMenuSub key={sub.title} className="text-muted-foreground">
                                             <SidebarMenuSubItem>
-                                                <SidebarMenuButton>
+                                                <SidebarMenuButton asChild>
                                                 <a href={sub.href}>
                                                     <span className="ms-7">{sub.title}</span>
                                                 </a>
@@ -102,7 +99,7 @@ export function AppSidebar(url: any) {
                                         <Collapsible key={item.title} className="group/collapsible">
                                             <SidebarMenuItem>
                                             <CollapsibleTrigger asChild>
-                                                <SidebarMenuButton asChild isActive={item.href.includes(url) ?? 'true'}>
+                                                <SidebarMenuButton asChild {...(item.href.includes(url.url) ? { isActive: true } : {})}>
                                                     <div>
                                                         <item.icon size={32}/>
                                                         <span className="ms-7">{item.title}</span>
@@ -119,7 +116,7 @@ export function AppSidebar(url: any) {
                                 } else {
                                     return (
                                         <SidebarMenuItem key={item.title} className="py-1">
-                                            <SidebarMenuButton asChild isActive={item.href.includes(url) ?? 'true'}>
+                                            <SidebarMenuButton asChild {...(item.href.includes(url.url) ? { isActive: true } : {})}>
                                                 <a href={item.href}>
                                                     <item.icon size={32}/>
                                                     <span className="ms-7">{item.title}</span>

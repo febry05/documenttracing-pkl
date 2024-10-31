@@ -87,7 +87,7 @@ export default function DashboardLayout({
 
                     {/* Notification Panel */}
                     <Popover>
-                        <PopoverTrigger className="ms-4">
+                        <PopoverTrigger className="ms-4" asChild>
                             <Button variant="secondary" size="icon" className="shadow-none rounded-full w-12 h-12">
                                 <Bell size={20}/>
                             </Button>
@@ -97,16 +97,18 @@ export default function DashboardLayout({
 
                     {/* Profile Panel */}
                     <Popover>
-                        <PopoverTrigger className="ms-4 ">
-                            <Button variant="secondary" size="icon" className="shadow-none rounded-full w-40 h-12 hidden md:block">
-                                <div className="my-auto px-6 flex flex-col pe-6 text-left">
-                                    <span className="text-sm">{user.name}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">{user.role}</span>
-                                </div>
-                            </Button>
-                            <Button variant="secondary" className="rounded-full p-4 md:hidden w-12 h-12">
-                                <UserRound size={20}/>
-                            </Button>
+                        <PopoverTrigger className="ms-4" asChild>
+                            <div>
+                                <Button variant="secondary" size="icon" className="shadow-none rounded-full w-40 h-12 hidden md:block">
+                                    <div className="my-auto px-6 flex flex-col pe-6 text-left">
+                                        <span className="text-sm">{user.name}</span>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">{user.role}</span>
+                                    </div>
+                                </Button>
+                                <Button variant="secondary" className="rounded-full p-4 md:hidden w-12 h-12">
+                                    <UserRound size={20}/>
+                                </Button>
+                            </div>
                         </PopoverTrigger>
                         <PopoverContent className="flex flex-col gap-4">
                             Profile Panel

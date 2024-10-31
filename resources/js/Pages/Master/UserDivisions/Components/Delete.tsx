@@ -9,12 +9,12 @@ interface PageProps {
     data: any,
 }
 
-export function UserRoleDeleteDialog({data}: PageProps) {
+export function UserDivisionDeleteDialog({data}: PageProps) {
     const form = useForm();
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-roles.destroy', data.id));
+            await Inertia.delete(route('user-divisions.destroy', data.id));
         } catch (error) {
             console.error('Submission error:', error);
         }
@@ -29,10 +29,10 @@ export function UserRoleDeleteDialog({data}: PageProps) {
                     variant: "destructive"
                 }
             }
-            title="Delete User Role"
+            title="Delete User Division"
             description={
                 <span>
-                    Are you sure want to delete user role "
+                    Are you sure want to delete user division "
                     <strong>{data.name}</strong>
                     "?
                 </span>

@@ -16,10 +16,11 @@ interface PageProps {
     trigger: {
         text: string,
         icon?: LucideIcon,
+        variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link',
     }
     title: string,
-    description?: JSX.Element,
-    content: JSX.Element,
+    description?: JSX.Element | string,
+    content?: JSX.Element | string,
     footer?: JSX.Element,
 }
 
@@ -29,7 +30,7 @@ export function FormDialog({ trigger, title, description, content, footer }: Pag
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>
+                <Button variant={trigger.variant}>
                     <Icon className="me-2" size={18} />
                     {trigger.text}
                 </Button>

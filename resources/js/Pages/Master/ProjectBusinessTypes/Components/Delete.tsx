@@ -9,7 +9,7 @@ interface PageProps {
     data: any,
 }
 
-export function UserRoleDeleteDialog({data}: PageProps) {
+export function ProjectBusinessTypesDeleteDialog({data}: PageProps) {
     const form = useForm();
 
     async function onSubmit() {
@@ -29,10 +29,10 @@ export function UserRoleDeleteDialog({data}: PageProps) {
                     variant: "destructive"
                 }
             }
-            title="Delete User Role"
+            title="Delete Project Business Type"
             description={
                 <span>
-                    Are you sure want to delete user role "
+                    Are you sure want to delete project business type "
                     <strong>{data.name}</strong>
                     "?
                 </span>
