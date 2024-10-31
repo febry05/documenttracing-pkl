@@ -3,29 +3,31 @@
 namespace App\Models\Projects;
 
 use App\Models\Users\User;
-use App\Models\Projects\Project;
-use App\Models\Projects\Updates;
-use App\Models\Projects\Documents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ProjectsDocumentsVersion extends Model
+class Update extends Model
 {
     use HasFactory;
 
+
     protected $fillable = [
-        'version',
-        'release_date'
+        'name',
+        
+        'description',
+        'priority',
+        'due_at',
+
     ];
 
-    public function documents()
+    public function document_version()
     {
-        return $this->belongsTo(Documents::class);
+        return $this->belongsTo(ProjectDocumentVersion::class);
     }
 
-    public function document_updates()
+    public function document()
     {
-        return $this->hasMany(Updates::class);
+        return $this->belongsTo(Document::class);
     }
 
     public function project()
@@ -37,4 +39,6 @@ class ProjectsDocumentsVersion extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    
 }

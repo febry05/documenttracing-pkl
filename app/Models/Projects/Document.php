@@ -5,7 +5,7 @@ namespace App\Models\Projects;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Documents extends Model
+class Document extends Model
 {
     use HasFactory;
 
@@ -23,12 +23,12 @@ class Documents extends Model
 
     public function document_version()
     {
-        return $this->hasMany(ProjectsDocumentsVersion::class);
+        return $this->hasMany(ProjectDocumentVersion::class);
     }
 
     public function document_updates()
     {
-        return $this->hasMany(Updates::class);
+        return $this->hasMany(Update::class);
     }
 
     

@@ -18,6 +18,6 @@ class UserRoleController extends Controller
     {
         $user->syncRoles($request->roles);
         return redirect()->route('users.index');
-    }
+    }   
 }
 

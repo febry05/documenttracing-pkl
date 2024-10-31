@@ -5,16 +5,18 @@ namespace App\Http\Controllers\Users;
 use Inertia\Inertia;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
-use App\Models\Users\UserPosition;
-use App\Models\Users\UserProfiles;
 use Illuminate\Support\Facades\DB;
-use App\Models\Users\UserDivisions;
+use App\Models\Users\UserProfile;
+use App\Models\MasterData\UserPosition;
+use App\Models\MasterData\UserDivision;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
     public function index ()
     {
+        $users = User::with('profile')->get();
         $mockUsers = [
             [
                 'id' => 1,
@@ -40,21 +42,21 @@ class UserController extends Controller
             [
                 'id' => 4,
                 'name' => "Muhammad Azhim Nugroho",
-                'position' => "Karyawan Magang",
+                'position' => "Intern",
                 'role' => "Guest",
                 'email' => "mazhn34@gmail.com",
             ],
             [
                 'id' => 5,
                 'name' => "Muhammad Ferdy Maulana",
-                'position' => "Karyawan Magang",
+                'position' => "Intern",
                 'role' => "Guest",
                 'email' => "ferdymaulana7404@gmail.com",
             ],
         ];
 
         $mockPositions = [
-            ['value' => 'Karyawan Magang', 'label' => 'Karyawan Magang'],
+            ['value' => 'Intern', 'label' => 'Intern'],
             ['value' => 'ICT Staff', 'label' => 'ICT Staff'],
         ];
 
@@ -74,9 +76,9 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render('Users/Create', [
-            'roles' => UserRoles::select('id', 'name')->get(),
-            'divisions' => UserDivisions::select('id', 'name')->get(),
+            'divisions' => UserDivision::select('id', 'name')->get(),
             'positions' => UserPosition::select('id', 'name')->get(),
+            'roles' => Role::select('id', 'name')->get(),
         ]);
     }
 
@@ -89,7 +91,7 @@ class UserController extends Controller
                 'name' => 'required|string|max:255',
                 'nik' => 'nullable|string|unique:user_profiles,nik',
                 'phone' => 'nullable|string|unique:user_profiles,phone',
-                'employee_no' => 'nullable|string|unique:user_profiles,employee_no',
+                'employee_no' => 'string|unique:user_profiles,employee_no',
                 'roles_id' => 'required|integer',
                 'user_division_id' => 'required|integer',
                 'user_position_id' => 'required|integer',
@@ -101,12 +103,12 @@ class UserController extends Controller
                 'roles_id' => $validatedData['roles_id'],
             ]);
 
-            UserProfiles::create([
+            UserProfile::create([
                 'user_id' => $user->id,
                 'name' => $validatedData['name'],
                 'nik' => $validatedData['nik'] ?? null,
                 'phone' => $validatedData['phone'] ?? null,
-                'employee_no' => 'nullable|string|unique:user_profiles,nik',
+                'employee_no' => $validatedData['employee_no'],
                 'user_division_id' => $validatedData['user_division_id'],
                 'user_position_id' => $validatedData['user_position_id'],
             ]);
@@ -118,6 +120,16 @@ class UserController extends Controller
             dd($e);
         }
         // return Inertia::location('Users/Index');
+    }
+
+    public function edit(User $user)
+    {
+        return Inertia::render('Users/Edit', [
+            'user' => $user,
+            'divisions' => UserDivision::select('id', 'name')->get(),
+            'positions' => UserPosition::select('id', 'name')->get(),
+            'roles' => Role::select('id', 'name')->get(),
+        ]);
     }
 
 

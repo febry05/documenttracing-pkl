@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Users;
+namespace App\Http\Controllers\MasterData;
 
-use App\Models\Users\UserDivisions;
+use App\Models\MasterData\UserDivision;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,7 +20,7 @@ class UserDivisionController extends Controller
                 'description' => 'nullable|string',
             ]);
 
-            $userDivision = new UserDivisions();
+            $userDivision = new UserDivision();
             $userDivision->name = $request->input('name');
             $userDivision->description = $request->input('description');
             $userDivision->save();
@@ -33,7 +33,7 @@ class UserDivisionController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $userDivision = UserDivisions::find($id);
+        $userDivision = UserDivision::find($id);
         $userDivision->name = $request->input('name');
         $userDivision->description = $request->input('description');
         $userDivision->save();
@@ -42,7 +42,7 @@ class UserDivisionController extends Controller
     }
 
     public function destroy($id){
-        $userDivision = UserDivisions::find($id);
+        $userDivision = UserDivision::find($id);
         $userDivision->delete();
 
         return redirect()->route('userdivisions.index')->with('success', 'User division deleted successfully.');

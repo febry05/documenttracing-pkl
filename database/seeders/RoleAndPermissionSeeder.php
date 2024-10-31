@@ -46,11 +46,16 @@ class RoleAndPermissionSeeder extends Seeder
         }
 
         // Create the admin role
-        $adminRole = Role::firstOrCreate(['name' => 'administrator']);
+        $adminRole = Role::firstOrCreate([
+            'name' => 'Administrator',
+            'description' => 'Web administrator adalah profesional teknis yang mengelola website.']); 
         $adminRole->syncPermissions($permissions);
         
 
-        $projectManagerRole = Role::create(['name' => 'project_manager',]);
+        $projectManagerRole = Role::create([
+            'name' => 'project_manager',
+            'description' => 'Can Handle Project where he’s have. And only can see other Project if here doesn’t added in the project',
+    ]);
         $projectManagerRole->givePermissionTo([
             'view_project',
             'update_project',
@@ -66,7 +71,10 @@ class RoleAndPermissionSeeder extends Seeder
             ]);
 
 
-        $guestRole = Role::create(['name' => 'guest',]);
+        $guestRole = Role::create([
+            'name' => 'guest',
+            'description' => 'Only see project and Document Project',
+        ]);
         $guestRole->givePermissionTo([
             'view_project',
             'view_document_project',

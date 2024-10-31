@@ -5,9 +5,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Users\User;
-use App\Models\Users\UserDivisions;
-use App\Models\Users\UserPosition;
-use App\Models\Users\UserProfiles;
+use App\Models\MasterData\UserDivision;
+use App\Models\MasterData\UserPosition;
+use App\Models\Users\UserProfile;
 use App\Models\Users\UserRoles;
 use Illuminate\Database\Seeder;
 
@@ -21,19 +21,19 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleAndPermissionSeeder::class);
 
         //1
-        UserDivisions::create([
+        UserDivision::create([
             'name' => 'ICT',
             'description' => 'Information and Communication Technology',
         ]);
 
         //2
-        UserDivisions::create([
+        UserDivision::create([
             'name' => 'HRD',
             'description' => 'Human Research Development',
         ]);
 
         //3
-        UserDivisions::create([
+        UserDivision::create([
             'name' => 'GA',
             'description' => 'General Affair',
         ]);
@@ -44,21 +44,21 @@ class DatabaseSeeder extends Seeder
         UserPosition::create([
             'name' => 'Cyber Security',
             'description' => 'Cyber Security from ICT Division',
-            'user_division_id' => UserDivisions::where('name', 'ICT')->first()->id,
+            'user_division_id' => UserDivision::where('name', 'ICT')->first()->id,
         ]);
 
         //2
         UserPosition::create([
             'name' => 'Payment Roll',
             'description' => 'Payment Roll from HRD Division',
-            'user_division_id' => UserDivisions::where('name', 'HRD')->first()->id,
+            'user_division_id' => UserDivision::where('name', 'HRD')->first()->id,
         ]);
 
         //3
         UserPosition::create([
             'name' => 'Head of General Affair',
             'description' => 'General Affair in General',
-            'user_division_id' => UserDivisions::where('name', 'GA')->first()->id,
+            'user_division_id' => UserDivision::where('name', 'GA')->first()->id,
         ]);
 
         //User
@@ -87,33 +87,36 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         //1
-        UserProfiles::create([
+        UserProfile::create([
             'user_id' => 1,
             'name' => 'Muhammad Azhim Nugroho',
+            'employee_no' => '1234567',
             'NIK' => '1111222233334444',
             'phone' => '081234567890',
-            'user_division_id' => UserDivisions::where('name', 'ICT')->first()->id,
+            'user_division_id' => UserDivision::where('name', 'ICT')->first()->id,
             'user_position_id' => UserPosition::where('name', 'Cyber Security')->first()->id,
 
         ]);
 
         //2
-        UserProfiles::create([
+        UserProfile::create([
             'user_id' => 2,
             'name' => 'Muhammad Ferdy Maulana',
+            'employee_no' => '1234561',
             'NIK' => '1111222233334445',
             'phone' => '081234567893',
-            'user_division_id' => UserDivisions::where('name', 'HRD')->first()->id,
+            'user_division_id' => UserDivision::where('name', 'HRD')->first()->id,
             'user_position_id' => UserPosition::where('name', 'Payment Roll')->first()->id,
         ]);
 
         //3
-        UserProfiles::create([
+        UserProfile::create([
             'user_id' => 3,
             'name' => 'Teddy',
+            'employee_no' => '1234562',
             'NIK' => '1111222233334446',
             'phone' => '081234567892',
-            'user_division_id' => UserDivisions::where('name', 'GA')->first()->id,
+            'user_division_id' => UserDivision::where('name', 'GA')->first()->id,
             'user_position_id' => UserPosition::where('name', 'Head of General Affair')->first()->id,
         ]);
 

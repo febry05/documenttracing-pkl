@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Models\Users\UserDivisions;
+use App\Models\MasterData\UserDivision;
+use App\Models\MasterData\UserPosition;
+
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use App\Models\Users\UserPosition;
 use App\Http\Controllers\Controller;
 
 class UserPositionController extends Controller
@@ -13,7 +14,7 @@ class UserPositionController extends Controller
     public function index()
     {
         return Inertia::render('Master/UserPosition/Index',[
-            'userdivisions' => UserDivisions::select('id', 'name')->get(),
+            'userdivisions' => UserDivision::select('id', 'name')->get(),
             'userpositions' => UserPosition::select('id', 'name')->get(),
         ]);
     }

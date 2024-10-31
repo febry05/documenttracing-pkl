@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Models\Users;
+namespace App\Models\MasterData;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Division;
+use App\Models\Users\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class UserDivisions extends Model
+class UserDivision extends Model
 {
     use HasFactory;
 

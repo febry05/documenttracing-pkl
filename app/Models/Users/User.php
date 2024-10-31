@@ -13,7 +13,6 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     use HasRoles;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -48,25 +47,8 @@ class User extends Authenticatable
         ];
     }
 
-    // protected static function booted()
-    // {
-    //     static::created(function ($user) {
-    //         // Automatically create a UserProfile for the new User
-    //         UserProfiles::create([
-    //             'user_id' => $user->id,
-    //         ]);
-    //     });
-    // }
-
     public function profile()
     {
-        return $this->hasOne(UserProfiles::class);
+        return $this->hasOne(UserProfile::class);
     }
-
-    // public function role()
-    // {
-    //     return $this->hasOne(UserRoles::class, 'roles_id');
-    // }
-
-
 }
