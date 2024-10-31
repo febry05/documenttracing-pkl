@@ -23,8 +23,8 @@ export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
-            description: '',
+            name: data.name || '',
+            description: data.description || '',
         },
     });
 
@@ -51,7 +51,7 @@ export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
                                         <span className="text-destructive ms-1">*</span>
                                     </FormLabel>
                                         <FormControl>
-                                            <Input type="text" placeholder="Enter the project business type's name" {...field} minLength={3} maxLength={255} value={field.value || data.name} />
+                                            <Input type="text" placeholder="Enter the project business type's name" {...field} minLength={3} maxLength={255} />
                                         </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -69,7 +69,7 @@ export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
                                         placeholder="Enter the project business type's description"
                                         className="resize-none"
                                         {...field}
-                                        minLength={3} maxLength={255} value={field.value || data.description}
+                                        minLength={3} maxLength={255}
                                         />
                                     </FormControl>
                                     <FormMessage />

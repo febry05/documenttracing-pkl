@@ -35,17 +35,4 @@ export const columns: ColumnDef<User>[] = [
         accessorKey: "role",
         header: "Role",
     },
-    // {
-    //     id: "actions",
-    //     header: "Actions",
-    //     cell: ({ row }) => {
-    //         const payment = row.original
-
-    //         return (
-    //             <Button className="bg-emerald-500 hover:bg-emerald-600 py-3 px-4">
-    //                 <Pencil size={14}/>
-    //             </Button>
-    //         )
-    //     },
-    // },
 ]

@@ -36,33 +36,43 @@ type UserMasterData = {
 }
 
 interface PageProps {
-    auth: {
-        user: any;
+    user: {
+        id: number,
+        email: string,
+        password: string,
+        user_role_id: number,
+        name: string,
+        nik: string,
+        phone: string,
+        employee_no: string,
+        user_division_id: number,
+        user_position_id: number
     };
     userRoles: UserMasterData[];
     userDivisions: UserMasterData[];
     userPositions: UserMasterData[];
 }
 
-export default function UsersCreate({ userRoles, userDivisions, userPositions }: PageProps) {
+export default function UsersEdit({ user, userRoles, userDivisions, userPositions }: PageProps) {
+    console.log(user);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: '',
-            password: '',
-            user_role_id: undefined,
-            name: '',
-            nik: undefined,
-            phone: undefined,
-            employee_no: '',
-            user_division_id: undefined,
-            user_position_id: undefined,
+            email: user.email || '',
+            password: user.password || '',
+            user_role_id: Number(user.user_role_id),
+            name: user.name || '',
+            nik: user.nik || '',
+            phone: user.phone || '',
+            employee_no: user.employee_no,
+            user_division_id: Number(user.user_division_id),
+            user_position_id: Number(user.user_position_id),
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('users.store'), values);
+            await Inertia.put(route('users.store', user.id), values);
         } catch (error) {
             console.error('Submission error:', error);
         }
@@ -80,10 +90,10 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
     return (
         <DashboardLayout
             header={
-                <HeaderNavigation title="Create User" back={true}/>
+                <HeaderNavigation title="Edit User" back={true}/>
             }
         >
-            <Head title="Create User" />
+            <Head title="Edit User" />
 
             <Card className="p-8">
                 <Form {...form}>
@@ -108,7 +118,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input type="email" placeholder="Enter the user's email" {...field} minLength={5} maxLength={255} value={field.value || ''} />
+                                                        <Input type="email" placeholder="Enter the user's email" {...field} minLength={5} maxLength={255} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -126,7 +136,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input type="password" placeholder="Enter the user's password" {...field} minLength={6} maxLength={255} value={field.value || ''} />
+                                                        <Input type="password" placeholder="Enter the user's password" {...field} minLength={6} maxLength={255} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -183,7 +193,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Enter the user's full name" {...field} minLength={3} maxLength={255} value={field.value || ''}/>
+                                                        <Input placeholder="Enter the user's full name" {...field} minLength={3} maxLength={255}/>
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -197,7 +207,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                             <FormItem>
                                                 <FormLabel>NIK</FormLabel>
                                                     <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's NIK" {...field} minLength={16} maxLength={16} value={field.value || ''} onKeyDown={handleNumericInput} />
+                                                        <Input type="text" placeholder="Enter the user's NIK" {...field} minLength={16} maxLength={16} onKeyDown={handleNumericInput} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -211,7 +221,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                             <FormItem>
                                                 <FormLabel>Phone Number</FormLabel>
                                                     <FormControl>
-                                                        <Input type="text" placeholder="0812xxx" {...field} minLength={10} maxLength={15} value={field.value || ''} onKeyDown={handleNumericInput} />
+                                                        <Input type="text" placeholder="0812xxx" {...field} minLength={10} maxLength={15} onKeyDown={handleNumericInput} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -239,7 +249,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                     <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's employee number" {...field} minLength={7} maxLength={7} value={field.value || ''} onKeyDown={handleNumericInput} />
+                                                        <Input type="text" placeholder="Enter the user's employee number" {...field} minLength={7} maxLength={7} onKeyDown={handleNumericInput} />
                                                     </FormControl>
                                                 <FormMessage />
                                             </FormItem>

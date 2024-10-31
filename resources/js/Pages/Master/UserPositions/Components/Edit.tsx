@@ -56,7 +56,7 @@ export default function UserRolesEditDialog({ data, userDivisions }: PageProps) 
                                         <span className="text-destructive ms-1">*</span>
                                     </FormLabel>
                                         <FormControl>
-                                            <Input type="text" placeholder="Enter the user position's name" {...field} minLength={3} maxLength={255} value={field.value || data.name} />
+                                            <Input type="text" placeholder="Enter the user position's name" {...field} minLength={3} maxLength={255} />
                                         </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -74,7 +74,7 @@ export default function UserRolesEditDialog({ data, userDivisions }: PageProps) 
                                         placeholder="Enter the user position's description"
                                         className="resize-none"
                                         {...field}
-                                        minLength={3} maxLength={255} value={field.value || data.description}
+                                        minLength={3} maxLength={255}
                                         />
                                     </FormControl>
                                     <FormMessage />
