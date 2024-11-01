@@ -33,9 +33,17 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->user->email,
                 'position' => $user->position->name ?? 'N/A',
-                'role' => $user->user->getRoleNames() ?? 'N/A',
+                'roles' => $user->user->getRoleNames() ?? 'N/A',
             ];
         });
+
+         $mockRoles = [
+            ['value' => 'Administrator', 'label' => 'Administrator'],
+            ['value' => 'Project Manager', 'label' => 'Project Manager'],
+            ['value' => 'Guest', 'label' => 'Guest'],
+        ];
+        // $roles = Role::all();
+        
         // dd($userProfile);
 
         return Inertia::render('Users/Index', [
