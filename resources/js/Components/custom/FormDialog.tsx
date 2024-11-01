@@ -22,13 +22,15 @@ interface PageProps {
     description?: JSX.Element | string,
     content?: JSX.Element | string,
     footer?: JSX.Element,
+    open?: boolean,
+    onOpenChange?: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export function FormDialog({ trigger, title, description, content, footer }: PageProps) {
+export function FormDialog({ trigger, title, description, content, footer, open, onOpenChange }: PageProps) {
     const Icon = trigger?.icon || AlignJustifyIcon;
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
                 <Button variant={trigger.variant}>
                     <Icon className="me-2" size={18} />

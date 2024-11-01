@@ -91,9 +91,9 @@ export function DataTable<TData, TValue>({
   }
 
   const closeDialog = () => {
-    setIsDialogOpen(false)
-    setSelectedRowData(null)
-  }
+    setIsDialogOpen(false);
+    setSelectedRowData(null);
+  };
 
   return (
     <div>

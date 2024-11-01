@@ -21,9 +21,10 @@ const formSchema = z.object({
 interface PageProps {
     data: any,
     userDivisions: UserDivision[],
+    closeDialog: () => void;
 }
 
-export default function UserRolesEditDialog({ data, userDivisions }: PageProps) {
+export default function UserRolesEditDialog({ data, userDivisions, closeDialog }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -35,7 +36,9 @@ export default function UserRolesEditDialog({ data, userDivisions }: PageProps) 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route('user-positions.update', data.id), values);
+            await Inertia.put(route('user-positions.update', data.id), values, {
+                onSuccess: () => closeDialog(),
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }

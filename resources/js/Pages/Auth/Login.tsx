@@ -40,15 +40,15 @@ export default function Login({
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="Login" />
 
             <form onSubmit={submit}>
                 <Card className="mx-auto max-w-sm">
                     <CardHeader>
-                        <CardTitle className="text-2xl">Login</CardTitle>
-                        <CardDescription>
+                        <CardTitle className="text-2xl mx-auto font-bold">LOGIN</CardTitle>
+                        {/* <CardDescription>
                             Enter your email below to login to your account
-                        </CardDescription>
+                        </CardDescription> */}
                     </CardHeader>
                     <CardContent>
                         {status && (
@@ -93,16 +93,10 @@ export default function Login({
                                 />
                                 <InputError message={errors.password} />
                             </div>
-                            <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full mt-4">
                                 Login
                             </Button>
                         </div>
-                        {/* <div className="mt-4 text-center text-sm">
-                            Don&apos;t have an account?{" "}
-                            <Link href="/register" className="underline">
-                                Sign up
-                            </Link>
-                        </div> */}
                     </CardContent>
                 </Card>
             </form>
