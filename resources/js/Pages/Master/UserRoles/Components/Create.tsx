@@ -1,7 +1,7 @@
 import { Button } from "@/Components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { Input } from "@/Components/ui/input";
-import { Plus } from "lucide-react";
+import { CircleAlert, CircleCheck, Plus, TriangleAlert } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -29,8 +30,36 @@ export default function UserRolesCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('user-roles.store'), values, {
-                onSuccess: () => setIsOpen(false),
+            Inertia.post(route('user-roles.store'), values, {
+                onSuccess: () => {
+                    setIsOpen(false);
+                    toast(
+                        <span className="text-primary">
+                            <CircleCheck size={16} className="me-1"/>
+                            Success!
+                        </span>
+                        , {
+                        description: <span>User Role "<strong>{values.name}</strong>" has been added.</span>,
+                        action: {
+                            label: "Close",
+                            onClick: () => console.log('User Role has been added.'),
+                        }
+                    });
+                },
+                onError: () => {
+                    toast(
+                    <span className="text-red">
+                        <TriangleAlert size={16} className="me-1"/>
+                        Error!
+                    </span>
+                    , {
+                        description: <span>Problem occurred when adding User Role.</span>,
+                        action: {
+                            label: "Close",
+                            onClick: () => console.log('Error adding User Role'),
+                        }
+                    });
+                }
             });
         } catch (error) {
             console.error('Submission error:', error);

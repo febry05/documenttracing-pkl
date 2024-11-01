@@ -3,13 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt"
 import { AppSidebar } from "@/Components/app-sidebar"
 import { ScrollArea } from "@/Components/ui/scroll-area";
-import { Bell, UserRound, Search, UserCog, LogOut, SunMoon } from "lucide-react";
+import { Bell, UserRound, UserCog, LogOut } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
 import { z } from "zod"
 import { useForm } from "react-hook-form";
 import { Link, usePage } from "@inertiajs/react";
 import { ModeToggle } from "@/Components/mode-toggle";
 import { Button } from "@/Components/ui/button";
+import { Toaster } from "@/Components/ui/sonner";
+import { toast } from "sonner";
 
 type User = {
     name: string,
@@ -80,9 +82,24 @@ export default function DashboardLayout({
                     </div> */}
 
                     {/* Theme Mode Toggle */}
-                    {/* <div className="ms-auto">
-                        <ModeToggle />
-                    </div> */}
+                    <div className="ms-auto">
+                        {/* <ModeToggle /> */}
+                        <Button
+                            variant="outline"
+                            onClick={() =>
+                                toast("Event has been created", {
+                                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                                    action: {
+                                        label: "Undo",
+                                        onClick: () => console.log("Undo"),
+                                    },
+                                })
+                            }
+                            >
+                            Show Toast
+                        </Button>
+                    </div>
+
 
                     {/* Notification Panel */}
                     <Popover>
@@ -135,6 +152,7 @@ export default function DashboardLayout({
                             {header}
                         </div>
                         <div className="mb-6">{children}</div>
+                        <Toaster />
                 </ScrollArea>
             </main>
         </SidebarProvider>
