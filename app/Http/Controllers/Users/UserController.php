@@ -33,7 +33,7 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->user->email,
                 'position' => $user->position->name ?? 'N/A',
-                'roles' => $user->user->getRoleNames() ?? 'N/A',
+                'role' => $user->user->getRoleNames() ?? 'N/A',
             ];
         });
 
@@ -101,10 +101,23 @@ class UserController extends Controller
         }
     }
 
-    public function edit(UserProfile $userProfile)
+    public function edit($id)
     {
+        // Retrieve the user with related position, division, and roles
+        $user = User::with('roles', 'profile.position', 'profile.division')->findOrFail($id);
+
         return Inertia::render('Users/Edit', [
-            'user' => $userProfile,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->profile->name ,
+                'email' => $user->email,
+                'nik' => $user->profile->nik ,
+                'phone' => $user->profile->phone ,
+                'employee_no' => $user->profile->employee_no ,
+                'role' => $user->getRoleNames()->first() ,
+                'position' => $user->profile->position->name ,
+                'division' => $user->profile->division->name ,
+            ],
             'userRoles' => Role::select('id', 'name')->get(),
             'userDivisions' => UserDivision::select('id', 'name')->get(),
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),

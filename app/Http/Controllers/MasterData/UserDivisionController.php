@@ -49,7 +49,7 @@ class UserDivisionController extends Controller
         $userDivision->description = $request->input('description');
         $userDivision->save();
 
-        return redirect()->route('userdivisions.index')->with('success', 'User division updated successfully.');
+        return redirect()->route('user-divisions.index')->with('success', 'User division updated successfully.');
     }
 
     public function destroy($id){
