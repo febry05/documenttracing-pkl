@@ -11,7 +11,18 @@ class UserDivisionController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Master/UserDivisions/Index');
+        $userDivisions = UserDivision::all()->map(function ($position){
+            return [
+                'id' => $position->id,
+                'name' => $position->name,
+                'description' => $position->description,
+                'division' => $userDivisions[$position->user_division_id]->name ?? 'N/A',
+            ];
+        });
+
+        return Inertia::render('Master/UserDivisions/Index', [
+            'userDivisions' => $userDivisions
+        ]);
     }
 
     public function store(Request $request){
@@ -25,7 +36,7 @@ class UserDivisionController extends Controller
             $userDivision->description = $request->input('description');
             $userDivision->save();
 
-            return redirect()->route('userdivisions.index')->with('success', 'User division created successfully.');
+            return redirect()->route('user-divisions.index')->with('success', 'User division created successfully.');
     }
     public function update($id, Request $request){
         $request->validate([

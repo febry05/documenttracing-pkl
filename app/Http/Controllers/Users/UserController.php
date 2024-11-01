@@ -16,7 +16,6 @@ class UserController extends Controller
 {
     public function index ()
     {
-        $users = User::with('profile')->get();
         $mockUsers = [
             [
                 'id' => 1,
@@ -66,8 +65,19 @@ class UserController extends Controller
             ['value' => 'Guest', 'label' => 'Guest'],
         ];
 
+        $userProfile = UserProfile::with('user.roles','position')->get()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->user->email,
+                'position' => $user->position->name ?? 'N/A',
+                'role' => $user->user->getRoleNames() ?? 'N/A',
+            ];
+        });
+        // dd($userProfile);
+
         return Inertia::render('Users/Index', [
-            'users' => $mockUsers,
+            'users' => $userProfile,
             'positions' => $mockPositions,
             'roles' => $mockRoles,
         ]);

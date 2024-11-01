@@ -18,4 +18,9 @@ class UserPosition extends Model
     {
         return $this->hasMany(UserProfile::class);
     }
+
+    public function division()
+    {
+        return $this->belongsTo(UserDivision::class, 'user_division_id');
+    }
 }
