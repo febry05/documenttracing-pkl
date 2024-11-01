@@ -20,7 +20,7 @@ class UserPositionController extends Controller
             ],
             [
                 'id' => 2,
-                'name' => 'ICT Staff',
+                'name' => 'Facility Management & HSE',
                 'description' => 'Be no surprise he honoured indulged.',
                 'division' => 'Operational',
             ],
@@ -35,7 +35,43 @@ class UserPositionController extends Controller
                 'name' => 'Intern',
                 'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
                 'division' => 'Operational',
-            ]
+            ],
+            [
+                'id' => 5,
+                'name' => 'Accounting & Budgeting',
+                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
+                'division' => 'Accounting & Asset Management',
+            ],
+            [
+                'id' => 6,
+                'name' => 'Treasury & Collections',
+                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
+                'division' => 'Accounting & Asset Management',
+            ],
+            [
+                'id' => 7,
+                'name' => 'Asset Management',
+                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
+                'division' => 'Accounting & Asset Management',
+            ],
+            [
+                'id' => 8,
+                'name' => 'HR Service',
+                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
+                'division' => 'HC & GA Procurement',
+            ],
+            [
+                'id' => 9,
+                'name' => 'Relation',
+                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
+                'division' => 'HC & GA Procurement',
+            ],
+            [
+                'id' => 10,
+                'name' => 'General Affair',
+                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
+                'division' => 'HC & GA Procurement',
+            ],
         ];
 
         $mockUserDivisions = [

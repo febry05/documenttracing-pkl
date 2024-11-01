@@ -6,6 +6,8 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import UserPositionsCreateDialog from "./Components/Create";
 import UserPositionsEditDialog from "./Components/Edit";
 import { UserDivision } from "../UserDivisions/columns";
+import { Head } from "@inertiajs/react";
+import { useState } from "react";
 
 interface PageProps {
     userPositions: UserPosition[],
@@ -13,6 +15,8 @@ interface PageProps {
 }
 
 export default function UserPositionsIndex({ userPositions, userDivisions }: PageProps) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     return (
         <DashboardLayout
             header={
@@ -23,13 +27,16 @@ export default function UserPositionsIndex({ userPositions, userDivisions }: Pag
                 />
             }
         >
+
+            <Head title="User Positions" />
+
             <Card className="flex-auto basis-1/2 p-4">
                 <DataTable<UserPosition, any>
                     columns={columns}
                     data={userPositions}
                     detailDialog="Edit User Position"
                     renderDialogContent={(data) => (
-                        <UserPositionsEditDialog data={data} userDivisions={userDivisions} />
+                        <UserPositionsEditDialog data={data} userDivisions={userDivisions} closeDialog={() => setIsDialogOpen(false)} />
                     )}
                 />
             </Card>

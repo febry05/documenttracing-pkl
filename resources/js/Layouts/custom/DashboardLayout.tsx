@@ -1,13 +1,13 @@
-import React, { PropsWithChildren, ReactNode } from "react"
+import { PropsWithChildren, ReactNode } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt"
 import { AppSidebar } from "@/Components/app-sidebar"
 import { ScrollArea } from "@/Components/ui/scroll-area";
-import { Bell, UserRound, Search } from "lucide-react";
+import { Bell, UserRound, Search, UserCog, LogOut, SunMoon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
 import { z } from "zod"
 import { useForm } from "react-hook-form";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { ModeToggle } from "@/Components/mode-toggle";
 import { Button } from "@/Components/ui/button";
 
@@ -22,18 +22,17 @@ const FormSchema = z.object({
     }),
 })
 
-
 export default function DashboardLayout({
-    // user,
     header,
     children,
 }: PropsWithChildren<{
     header?: ReactNode;
-    // user: User;
 }>) {
+    const { auth } = usePage().props
+
     const user:User = {
-        name: "Edmund Ovdisav",
-        role: "Administrator",
+        name: auth.user.profile.name,
+        role: auth.user.role.name,
     };
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -81,13 +80,13 @@ export default function DashboardLayout({
                     </div> */}
 
                     {/* Theme Mode Toggle */}
-                    <div className="ms-auto">
+                    {/* <div className="ms-auto">
                         <ModeToggle />
-                    </div>
+                    </div> */}
 
                     {/* Notification Panel */}
                     <Popover>
-                        <PopoverTrigger className="ms-4" asChild>
+                        <PopoverTrigger className="ms-auto" asChild>
                             <Button variant="secondary" size="icon" className="shadow-none rounded-full w-12 h-12">
                                 <Bell size={20}/>
                             </Button>
@@ -97,6 +96,7 @@ export default function DashboardLayout({
 
                     {/* Profile Panel */}
                     <Popover>
+
                         <PopoverTrigger className="ms-4" asChild>
                             <div>
                                 <Button variant="secondary" size="icon" className="shadow-none rounded-full w-40 h-12 hidden md:block">
@@ -110,10 +110,23 @@ export default function DashboardLayout({
                                 </Button>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="flex flex-col gap-4">
-                            Profile Panel
-                            <hr />
+
+                        <PopoverContent className="flex flex-col">
+                            <Link href={route('profile.edit')}>
+                                <Button variant="ghost" className="justify-start w-full">
+                                    <UserCog className="me-6" size={18}/>
+                                    Profile Settings
+                                </Button>
+                            </Link>
+
                             <ModeToggle />
+
+                            <Link href={route('logout')} method="post">
+                                <Button variant="ghost" className="justify-start w-full">
+                                    <LogOut className="me-6" size={18}/>
+                                    Log out
+                                </Button>
+                            </Link>
                         </PopoverContent>
                     </Popover>
                 </nav>

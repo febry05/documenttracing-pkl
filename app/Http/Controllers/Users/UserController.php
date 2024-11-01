@@ -16,44 +16,6 @@ class UserController extends Controller
 {
     public function index ()
     {
-        $mockUsers = [
-            [
-                'id' => 1,
-                'name' => "Pebri Prasetyo",
-                'position' => "Supervisor",
-                'role' => "Administrator",
-                'email' => "febry05@gmail.com",
-            ],
-            [
-                'id' => 2,
-                'name' => "R.M Angga N H",
-                'position' => "Equipment & ICT Support",
-                'role' => "Administrator",
-                'email' => "supanova@gmail.com",
-            ],
-            [
-                'id' => 3,
-                'name' => "Trya Suma A",
-                'position' => "ICT Staff",
-                'role' => "Project Manager",
-                'email' => "sumsumm@gmail.com",
-            ],
-            [
-                'id' => 4,
-                'name' => "Muhammad Azhim Nugroho",
-                'position' => "Intern",
-                'role' => "Guest",
-                'email' => "mazhn34@gmail.com",
-            ],
-            [
-                'id' => 5,
-                'name' => "Muhammad Ferdy Maulana",
-                'position' => "Intern",
-                'role' => "Guest",
-                'email' => "ferdymaulana7404@gmail.com",
-            ],
-        ];
-
         $mockPositions = [
             ['value' => 'Intern', 'label' => 'Intern'],
             ['value' => 'ICT Staff', 'label' => 'ICT Staff'],
@@ -86,9 +48,9 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render('Users/Create', [
-            'divisions' => UserDivision::select('id', 'name')->get(),
-            'positions' => UserPosition::select('id', 'name')->get(),
-            'roles' => Role::select('id', 'name')->get(),
+            'userRoles' => Role::select('id', 'name')->get(),
+            'userDivisions' => UserDivision::select('id', 'name')->get(),
+            'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
         ]);
     }
 
@@ -129,18 +91,19 @@ class UserController extends Controller
             DB::rollBack();
             dd($e);
         }
-        // return Inertia::location('Users/Index');
     }
 
-    public function edit(User $user)
+    public function edit(UserProfile $userProfile)
     {
         return Inertia::render('Users/Edit', [
-            'user' => $user,
-            'divisions' => UserDivision::select('id', 'name')->get(),
-            'positions' => UserPosition::select('id', 'name')->get(),
-            'roles' => Role::select('id', 'name')->get(),
+            'user' => $userProfile,
+            'userRoles' => Role::select('id', 'name')->get(),
+            'userDivisions' => UserDivision::select('id', 'name')->get(),
+            'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
         ]);
     }
 
 
+
+    // Delete this if all the functions are finishe
 }

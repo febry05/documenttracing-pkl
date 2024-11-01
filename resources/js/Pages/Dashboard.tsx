@@ -62,7 +62,6 @@ export default function Dashboard({ stats, documents }: PageProps) {
                     <Card className="flex-auto basis-1/2 p-4">
                         <DataTable columns={columns} data={documents} filters={filters} />
                     </Card>
-                    {/* <Card className="flex-auto basis-1/4 p-4">Filler</Card> */}
                 </div>
             </div>
         </DashboardLayout>

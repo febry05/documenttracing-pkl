@@ -1,5 +1,5 @@
 import { Button } from "@/Components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { Input } from "@/Components/ui/input";
 import { Plus } from "lucide-react";
 
@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
+import { useState } from "react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -16,6 +17,8 @@ const formSchema = z.object({
 })
 
 export default function UserRolesCreateDialog() {
+    const [isOpen, setIsOpen] = useState(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -26,14 +29,16 @@ export default function UserRolesCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('user-roles.store'), values);
+            await Inertia.post(route('user-roles.store'), values, {
+                onSuccess: () => setIsOpen(false),
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }
     }
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button>
                     <Plus className="me-2" size={18} />

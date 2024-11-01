@@ -4,24 +4,28 @@ import { FormDialog } from "@/Components/custom/FormDialog";
 import { Button } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface PageProps {
     data: any,
 }
 
 export function UserDivisionDeleteDialog({data}: PageProps) {
+    const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-divisions.destroy', data.id));
+            await Inertia.delete(route('user-divisions.destroy', data.id), {
+                onSuccess: () => setIsOpen(false),
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }
     }
 
     return(
-        <FormDialog
+        <FormDialog open={isOpen} onOpenChange={setIsOpen}
             trigger={
                 {
                     text: "Delete",

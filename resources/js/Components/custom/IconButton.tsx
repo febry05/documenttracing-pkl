@@ -8,12 +8,12 @@ interface PageProps {
     text: string | JSX.Element,
 }
 
-export function iconButton({variant, className, icon, text}: PageProps) {
+export function IconButton({variant, className, icon, text}: PageProps) {
     const Icon = icon || AlignJustifyIcon;
 
     return (
         <Button className={className} variant={variant}>
-            <Icon className="me-1" size={18} />
+            <Icon className="me-auto" size={18} />
             {text}
         </Button>
     )

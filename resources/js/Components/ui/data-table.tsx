@@ -26,7 +26,7 @@ import {
 import { Input } from "@/Components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Components/ui/tooltip"
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/dialog"
 
 export interface FilterOption {
@@ -86,14 +86,14 @@ export function DataTable<TData, TValue>({
       setSelectedRowData(rowData)
       setIsDialogOpen(true)
     } else if (detailPage) {
-      Inertia.visit(route(detailPage, { id: rowData.id }))
+      router.visit(route(detailPage, { id: rowData.id }));
     }
   }
 
   const closeDialog = () => {
-    setIsDialogOpen(false)
-    setSelectedRowData(null)
-  }
+    setIsDialogOpen(false);
+    setSelectedRowData(null);
+  };
 
   return (
     <div>

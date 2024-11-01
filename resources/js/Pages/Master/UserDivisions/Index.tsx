@@ -5,14 +5,17 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import UserDivisionsCreateDialog from "./Components/Create";
 import UserDivisionsEditDialog from "./Components/Edit";
+import { Head } from "@inertiajs/react";
+import { useState } from "react";
 
 interface PageProps {
     userDivisions: UserDivision[],
 }
 
 export default function UserDivisionsIndex({ userDivisions }: PageProps) {
-    return (
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    return (
         <DashboardLayout
             header={
                 <HeaderNavigation
@@ -22,15 +25,19 @@ export default function UserDivisionsIndex({ userDivisions }: PageProps) {
                 />
             }
         >
+
+            <Head title="User Divisions" />
+
             <Card className="flex-auto basis-1/2 p-4">
-                <DataTable<UserDivision, any>
-                    columns={columns}
-                    data={userDivisions}
-                    detailDialog="Edit User Division"
-                    renderDialogContent={(data) => (
-                        <UserDivisionsEditDialog data={data} />
-                    )}
-                />
+            <DataTable<UserDivision, any>
+                columns={columns}
+                data={userDivisions}
+                detailDialog="Edit User Division"
+                renderDialogContent={(data) => (
+                    <UserDivisionsEditDialog data={data} closeDialog={() => setIsDialogOpen(false)} />
+                )}
+            />
+
             </Card>
         </DashboardLayout>
 

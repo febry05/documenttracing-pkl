@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/Components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { UserDivision } from "../../UserDivisions/columns";
+import { useState } from "react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -23,6 +24,7 @@ interface PageProps {
 }
 
 export default function UserPositionsCreateDialog({ userDivisions }: PageProps) {
+    const [isOpen, setIsOpen] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -34,14 +36,16 @@ export default function UserPositionsCreateDialog({ userDivisions }: PageProps) 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('user-positions.store'), values);
+            await Inertia.post(route('user-positions.store'), values, {
+                onSuccess: () => setIsOpen(false),
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }
     }
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button>
                     <Plus className="me-2" size={18} />

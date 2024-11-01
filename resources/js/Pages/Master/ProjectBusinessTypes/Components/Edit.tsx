@@ -17,20 +17,23 @@ const formSchema = z.object({
 
 interface PageProps {
     data: any,
+    closeDialog: () => void;
 }
 
-export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
+export default function ProjectBusinessTypesEditDialog({ data, closeDialog }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
-            description: '',
+            name: data.name || '',
+            description: data.description || '',
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route('user-roles.update', data.id), values);
+            await Inertia.put(route('user-roles.update', data.id), values, {
+                onSuccess: () => closeDialog(),
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }
@@ -51,7 +54,7 @@ export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
                                         <span className="text-destructive ms-1">*</span>
                                     </FormLabel>
                                         <FormControl>
-                                            <Input type="text" placeholder="Enter the project business type's name" {...field} minLength={3} maxLength={255} value={field.value || data.name} />
+                                            <Input type="text" placeholder="Enter the project business type's name" {...field} minLength={3} maxLength={255} />
                                         </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -69,7 +72,7 @@ export default function ProjectBusinessTypesEditDialog({ data }: PageProps) {
                                         placeholder="Enter the project business type's description"
                                         className="resize-none"
                                         {...field}
-                                        minLength={3} maxLength={255} value={field.value || data.description}
+                                        minLength={3} maxLength={255}
                                         />
                                     </FormControl>
                                     <FormMessage />
