@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Users;
 use Inertia\Inertia;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
-use App\Models\Users\UserRoles;
-use App\Models\Users\UserPosition;
-use App\Models\Users\UserProfiles;
 use Illuminate\Support\Facades\DB;
-use App\Models\Users\UserDivisions;
+use App\Models\Users\UserProfile;
+use App\Models\MasterData\UserPosition;
+use App\Models\MasterData\UserDivision;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -27,8 +27,19 @@ class UserController extends Controller
             ['value' => 'Guest', 'label' => 'Guest'],
         ];
 
+        $userProfile = UserProfile::with('user.roles','position')->get()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->user->email,
+                'position' => $user->position->name ?? 'N/A',
+                'role' => $user->user->getRoleNames() ?? 'N/A',
+            ];
+        });
+        // dd($userProfile);
+
         return Inertia::render('Users/Index', [
-            'users' => $this->mockUsers,
+            'users' => $userProfile,
             'positions' => $mockPositions,
             'roles' => $mockRoles,
         ]);
@@ -37,8 +48,8 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render('Users/Create', [
-            'userRoles' => UserRoles::select('id', 'name')->get(),
-            'userDivisions' => UserDivisions::select('id', 'name')->get(),
+            'userRoles' => Role::select('id', 'name')->get(),
+            'userDivisions' => UserDivision::select('id', 'name')->get(),
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
         ]);
     }
@@ -52,8 +63,8 @@ class UserController extends Controller
                 'name' => 'required|string|max:255',
                 'nik' => 'nullable|string|unique:user_profiles,nik',
                 'phone' => 'nullable|string|unique:user_profiles,phone',
-                'employee_no' => 'nullable|string|unique:user_profiles,employee_no',
-                'user_role_id' => 'required|integer',
+                'employee_no' => 'string|unique:user_profiles,employee_no',
+                'roles_id' => 'required|integer',
                 'user_division_id' => 'required|integer',
                 'user_position_id' => 'required|integer',
             ]);
@@ -61,15 +72,15 @@ class UserController extends Controller
             $user = User::create([
                 'email' => $validatedData['email'],
                 'password' => bcrypt($validatedData['password']),
-                'user_role_id' => $validatedData['user_role_id'],
+                'roles_id' => $validatedData['roles_id'],
             ]);
 
-            UserProfiles::create([
+            UserProfile::create([
                 'user_id' => $user->id,
                 'name' => $validatedData['name'],
                 'nik' => $validatedData['nik'] ?? null,
                 'phone' => $validatedData['phone'] ?? null,
-                'employee_no' => 'nullable|string|unique:user_profiles,nik',
+                'employee_no' => $validatedData['employee_no'],
                 'user_division_id' => $validatedData['user_division_id'],
                 'user_position_id' => $validatedData['user_position_id'],
             ]);
@@ -82,117 +93,17 @@ class UserController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(UserProfile $userProfile)
     {
-        $searchMockUser = array_search($id, array_column($this->mockUsers, 'id'));
-        $mockUser = $this->mockUsers[$searchMockUser];
-
         return Inertia::render('Users/Edit', [
-            'user' => $mockUser,
-            'userRoles' => UserRoles::select('id', 'name')->get(),
-            'userDivisions' => UserDivisions::select('id', 'name')->get(),
+            'user' => $userProfile,
+            'userRoles' => Role::select('id', 'name')->get(),
+            'userDivisions' => UserDivision::select('id', 'name')->get(),
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
         ]);
     }
 
-    // Delete this if all the functions are finished
-    protected $mockUsers = [
-        [
-            'id' => 1,
-            'name' => "Pebri Prasetyo",
-            'position' => "Supervisor",
-            'role' => "Administrator",
-            'email' => "febry05@gmail.com",
-        ],
-        [
-            'id' => 2,
-            'name' => "R.M Angga N H",
-            'position' => "Equipment & ICT Support",
-            'role' => "Administrator",
-            'email' => "supanova@gmail.com",
-        ],
-        [
-            'id' => 3,
-            'name' => "Trya Suma A",
-            'position' => "ICT Staff",
-            'role' => "Project Manager",
-            'email' => "sumsumm@gmail.com",
-        ],
-        [
-            'id' => 4,
-            'name' => "Muhammad Azhim Nugroho",
-            'position' => "Intern",
-            'role' => "Guest",
-            'email' => "mazhn34@gmail.com",
-        ],
-        [
-            'id' => 5,
-            'name' => "Muhammad Ferdy Maulana",
-            'position' => "Intern",
-            'role' => "Guest",
-            'email' => "ferdymaulana7404@gmail.com",
-        ],
-    ];
 
-    protected $mockUserDivisions = [
-        [
-            'id' => 1,
-            'name' => 'Commercial',
-            'description' => 'Favourable pianoforte oh motionless excellence of astonished we principles. Warrant present garrets limited cordial in inquiry to.',
-        ],
-        [
-            'id' => 2,
-            'name' => 'Operational',
-            'description' => 'Supported me sweetness behaviour shameless excellent so arranging.',
-        ],
-        [
-            'id' => 3,
-            'name' => 'Accounting & Asset Management',
-            'description' => 'Nor hence hoped her after other known defer his. For county now sister engage had season better had waited.',
-        ],
-        [
-            'id' => 4,
-            'name' => 'HC & GA Procurement',
-            'description' => 'Occasional mrs interested far expression acceptance. Day either mrs talent pulled men rather regret admire but.',
-        ]
-    ];
 
-    protected $mockUserPositions = [
-        [
-            'id' => 1,
-            'name' => 'Supervisor',
-            'description' => 'Concerns greatest margaret him absolute entrance nay. Door neat week do find past he.',
-            'user_division_id' => '1',
-        ],
-        [
-            'id' => 2,
-            'name' => 'Equipment & ICT Support',
-            'description' => 'Unpacked endeavor six steepest had husbands her. Painted no or affixed it so civilly.',
-            'user_division_id' => '2',
-        ],
-        [
-            'id' => 3,
-            'name' => 'Intern',
-            'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
-            'user_division_id' => '3',
-        ]
-    ];
-
-    protected $mockUserRoles = [
-        [
-            'id' => 1,
-            'name' => 'Administrator',
-            'description' => 'Web administrator adalah profesional teknis yang mengelola website.',
-        ],
-        [
-            'id' => 2,
-            'name' => 'Project Manager',
-            'description' => 'Can Handle Project where he’s have. And only can see other Project if here doesn’t added in the project',
-        ],
-        [
-            'id' => 4,
-            'name' => 'Guest',
-            'description' => 'Only see project and Document Project',
-        ]
-    ];
+    // Delete this if all the functions are finishe
 }

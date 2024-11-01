@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Models\Users;
+namespace App\Models\MasterData;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserPosition extends Model
+class ProjectBusinessType extends Model
 {
     use HasFactory;
 
@@ -12,9 +13,4 @@ class UserPosition extends Model
         'name',
         'description',
     ];
-
-    public function profiles()
-    {
-        return $this->hasMany(UserProfiles::class);
-    }
 }

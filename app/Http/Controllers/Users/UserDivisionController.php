@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Models\Users\UserDivisions;
+use App\Models\MasterData\UserDivision;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -45,7 +45,7 @@ class UserDivisionController extends Controller
                 'description' => 'nullable|string',
             ]);
 
-            $userDivision = new UserDivisions();
+            $userDivision = new UserDivision();
             $userDivision->name = $request->input('name');
             $userDivision->description = $request->input('description');
             $userDivision->save();

@@ -5,7 +5,8 @@ namespace App\Http\Middleware;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role as ModelsRole;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -32,10 +33,12 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         if (Auth::check()) {
+            $user = Auth::user();
             return [
                 ...parent::share($request),
                 'auth' => [
-                    'user' => $request->user()->load('profile', 'role'),
+                    'name' => $user->profile->name,
+                    'role' => ModelsRole::findByName($user->getRoleNames()[0])->name,
                 ],
             ];
         } else {

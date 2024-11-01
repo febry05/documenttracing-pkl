@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('projects_documents_versions', function (Blueprint $table) {
             $table->id();
             $table->string('version');
+            $table->string('document_number', 30);
             $table->date('release_date');
             $table->foreignId('projects_documents_id')->constrained();
             $table->timestamps();
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_versions');
+        Schema::dropIfExists('projects_documents_versions');
     }
 };

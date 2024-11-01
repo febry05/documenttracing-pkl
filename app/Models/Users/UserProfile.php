@@ -2,10 +2,14 @@
 
 namespace App\Models\Users;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Users\User;
 
-class UserProfiles extends Model
+use App\Models\MasterData\UserDivision;
+use App\Models\MasterData\UserPosition;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class UserProfile extends Model
 {
     use HasFactory;
 
@@ -24,6 +28,11 @@ class UserProfiles extends Model
         return $this->belongsTo(User::class);
     }
 
+    // public function role()
+    // {
+    //     return $this->
+    // }
+
     public function position()
     {
         return $this->belongsTo(UserPosition::class, 'user_position_id');
@@ -31,6 +40,6 @@ class UserProfiles extends Model
 
     public function division()
     {
-        return $this->belongsTo(UserDivisions::class, 'user_division_id');
+        return $this->belongsTo(UserDivision::class, 'user_division_id');
     }
 }

@@ -1,11 +1,28 @@
-import { PropsWithChildren, ReactNode } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt"
-import { AppSidebar } from "@/Components/app-sidebar"
+import { PropsWithChildren, ReactNode } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt";
+import { AppSidebar } from "@/Components/app-sidebar";
 import { ScrollArea } from "@/Components/ui/scroll-area";
+<<<<<<< HEAD
 import { Bell, UserRound, UserCog, LogOut } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
 import { z } from "zod"
+=======
+import {
+    Bell,
+    UserRound,
+    Search,
+    UserCog,
+    LogOut,
+    SunMoon,
+} from "lucide-react";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/Components/ui/popover";
+import { z } from "zod";
+>>>>>>> 0f95fa4b482aac437f2c87ddfdcb97a8387b54bc
 import { useForm } from "react-hook-form";
 import { Link, usePage } from "@inertiajs/react";
 import { ModeToggle } from "@/Components/mode-toggle";
@@ -14,15 +31,15 @@ import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 
 type User = {
-    name: string,
-    role: string
-}
+    name: string;
+    role: string;
+};
 
 const FormSchema = z.object({
     search: z.string().min(2, {
-      message: "Search must be at least 4 characters.",
+        message: "Search must be at least 4 characters.",
     }),
-})
+});
 
 export default function DashboardLayout({
     header,
@@ -30,23 +47,21 @@ export default function DashboardLayout({
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth } = usePage().props
+    const { auth } = usePage().props;
 
-    const user:User = {
-        name: auth.user.profile.name,
-        role: auth.user.role.name,
+    const user: User = {
+        name: auth.name,
+        role: auth.role,
     };
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-          search: "",
+            search: "",
         },
-      })
+    });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-
-    }
+    function onSubmit(data: z.infer<typeof FormSchema>) {}
 
     const { url } = usePage();
 
@@ -55,7 +70,7 @@ export default function DashboardLayout({
             <AppSidebar url={url} />
             <main className="w-full">
                 <nav className="w-full p-3 px-4 flex border-b sticky top-0 z-10 bg-sidebar dark:bg-sidebar">
-                    <SidebarTrigger className="my-auto"/>
+                    <SidebarTrigger className="my-auto" />
 
                     {/* Search Bar */}
                     {/* <div className="rounded-full bg-white hover:bg-gray-100 flex ms-4 w-72">
@@ -104,8 +119,12 @@ export default function DashboardLayout({
                     {/* Notification Panel */}
                     <Popover>
                         <PopoverTrigger className="ms-auto" asChild>
-                            <Button variant="secondary" size="icon" className="shadow-none rounded-full w-12 h-12">
-                                <Bell size={20}/>
+                            <Button
+                                variant="secondary"
+                                size="icon"
+                                className="shadow-none rounded-full w-12 h-12"
+                            >
+                                <Bell size={20} />
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent>Notification Panel</PopoverContent>
@@ -113,34 +132,50 @@ export default function DashboardLayout({
 
                     {/* Profile Panel */}
                     <Popover>
-
                         <PopoverTrigger className="ms-4" asChild>
                             <div>
-                                <Button variant="secondary" size="icon" className="shadow-none rounded-full w-40 h-12 hidden md:block">
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    className="shadow-none rounded-full w-40 h-12 hidden md:block"
+                                >
                                     <div className="my-auto px-6 flex flex-col pe-6 text-left">
-                                        <span className="text-sm">{user.name}</span>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400">{user.role}</span>
+                                        <span className="text-sm">
+                                            {user.name}
+                                        </span>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                            {user.role}
+                                        </span>
                                     </div>
                                 </Button>
-                                <Button variant="secondary" className="rounded-full p-4 md:hidden w-12 h-12">
-                                    <UserRound size={20}/>
+                                <Button
+                                    variant="secondary"
+                                    className="rounded-full p-4 md:hidden w-12 h-12"
+                                >
+                                    <UserRound size={20} />
                                 </Button>
                             </div>
                         </PopoverTrigger>
 
                         <PopoverContent className="flex flex-col">
-                            <Link href={route('profile.edit')}>
-                                <Button variant="ghost" className="justify-start w-full">
-                                    <UserCog className="me-6" size={18}/>
+                            <Link href={route("profile.edit")}>
+                                <Button
+                                    variant="ghost"
+                                    className="justify-start w-full"
+                                >
+                                    <UserCog className="me-6" size={18} />
                                     Profile Settings
                                 </Button>
                             </Link>
 
                             <ModeToggle />
 
-                            <Link href={route('logout')} method="post">
-                                <Button variant="ghost" className="justify-start w-full">
-                                    <LogOut className="me-6" size={18}/>
+                            <Link href={route("logout")} method="post">
+                                <Button
+                                    variant="ghost"
+                                    className="justify-start w-full"
+                                >
+                                    <LogOut className="me-6" size={18} />
                                     Log out
                                 </Button>
                             </Link>
@@ -156,6 +191,5 @@ export default function DashboardLayout({
                 </ScrollArea>
             </main>
         </SidebarProvider>
-    )
+    );
 }
-
