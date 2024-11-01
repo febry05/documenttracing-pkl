@@ -12,57 +12,7 @@ use App\Http\Controllers\Controller;
 class UserPositionController extends Controller
 {
     public function index()
-    {
-        $mockUserPositions = [
-            [
-                'id' => 1,
-                'name' => 'Supervisor',
-                'description' => 'Concerns greatest margaret him absolute entrance nay. Door neat week do find past he.',
-                'division' => 'Operational',
-            ],
-            [
-                'id' => 2,
-                'name' => 'ICT Staff',
-                'description' => 'Be no surprise he honoured indulged.',
-                'division' => 'Operational',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Equipment & ICT Support',
-                'description' => 'Unpacked endeavor six steepest had husbands her. Painted no or affixed it so civilly.',
-                'division' => 'Operational',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Intern',
-                'description' => 'Exposed neither pressed so cottage as proceed at offices. Nay they gone sir game four.',
-                'division' => 'Operational',
-            ]
-        ];
-        
-        $mockUserDivisions = [
-            [
-                'id' => 1,
-                'name' => 'Commercial',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Operational',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Accounting & Asset Management',
-            ],
-            [
-                'id' => 4,
-                'name' => 'HC & GA Procurementdsafsdfsdfd',
-                ]
-            ];
-            
-            // dd($userPositions, $mockUserDivisions);
-        
-        
-            
+    {    
         $userPositions = UserPosition::with('division')->get()->map(function ($position) {
             return [
                 'id' => $position->id,
@@ -74,6 +24,13 @@ class UserPositionController extends Controller
 
         return Inertia::render('Master/UserPositions/Index', [
             'userPositions' => $userPositions,
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Master/UserPositions/Create', [
+            'userDivisions' => UserDivision::select('id', 'name')->get(),
         ]);
     }
 

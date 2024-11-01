@@ -10,11 +10,21 @@ import {
     SidebarMenuItem,
     SidebarMenuSub,
     SidebarMenuSubItem,
-  } from "@/Components/ui/sidebar-alt"
-import { CalendarIcon, ChevronsUpDown, Clipboard, Home, KeyRound, UserRound } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/Components/ui/collapsible";
+} from "@/Components/ui/sidebar-alt";
+import {
+    CalendarIcon,
+    ChevronsUpDown,
+    Clipboard,
+    Home,
+    KeyRound,
+    UserRound,
+} from "lucide-react";
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/Components/ui/collapsible";
 import { Link } from "@inertiajs/react";
-
 
 export function AppSidebar(url: any) {
     const items = [
@@ -42,24 +52,24 @@ export function AppSidebar(url: any) {
             title: "Master Data",
             href: "/settings",
             icon: KeyRound,
-            submenu : [
+            submenu: [
                 {
                     title: "User Role",
-                    href: route('user-roles.index'),
+                    href: route("roles.index"),
                 },
                 {
                     title: "User Position",
-                    href: route('user-positions.index'),
+                    href: route("user-positions.index"),
                 },
                 {
                     title: "User Division",
-                    href: route('user-divisions.index'),
+                    href: route("user-divisions.index"),
                 },
                 {
                     title: "Project Business Type",
-                    href: route('project-business-types.index'),
+                    href: route("project-business-types.index"),
                 },
-            ]
+            ],
         },
     ];
 
@@ -69,9 +79,15 @@ export function AppSidebar(url: any) {
                 <SidebarMenu>
                     <SidebarMenuItem className="py-3">
                         <SidebarMenuButton asChild>
-                            <Link href={route('dashboard')}>
-                                <img src="/img/icon.png" alt="APS Logo" className="w-8 m"/>
-                                <span className="text-lg text-gray-700 dark:text-gray-400 font-bold ms-2">Document Tracer</span>
+                            <Link href={route("dashboard")}>
+                                <img
+                                    src="/img/icon.png"
+                                    alt="APS Logo"
+                                    className="w-8 m"
+                                />
+                                <span className="text-lg text-gray-700 dark:text-gray-400 font-bold ms-2">
+                                    Document Tracer
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -82,52 +98,81 @@ export function AppSidebar(url: any) {
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                        {items.map((item) =>
-                            {
-                                if(item.submenu !== undefined) {
-                                    let listSubMenu = item.submenu.map(sub =>
-                                        <SidebarMenuSub key={sub.title} className="text-muted-foreground">
-                                            <SidebarMenuSubItem>
-                                                <SidebarMenuButton asChild>
-                                                <Link href={sub.href}>
-                                                    <span className="ms-7">{sub.title}</span>
-                                                </Link>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuSubItem>
-                                        </SidebarMenuSub>
+                            {items.map((item) => {
+                                if (item.submenu !== undefined) {
+                                    let listSubMenu = item.submenu.map(
+                                        (sub) => (
+                                            <SidebarMenuSub
+                                                key={sub.title}
+                                                className="text-muted-foreground"
+                                            >
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuButton asChild>
+                                                        <Link href={sub.href}>
+                                                            <span className="ms-7">
+                                                                {sub.title}
+                                                            </span>
+                                                        </Link>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        )
                                     );
                                     return (
-                                        <Collapsible key={item.title} className="group/collapsible">
+                                        <Collapsible
+                                            key={item.title}
+                                            className="group/collapsible"
+                                        >
                                             <SidebarMenuItem>
-                                            <CollapsibleTrigger asChild>
-                                                <SidebarMenuButton asChild {...(item.href.includes(url.url) ? { isActive: true } : {})}>
-                                                    <div>
-                                                        <item.icon size={32}/>
-                                                        <span className="ms-7">{item.title}</span>
-                                                        <ChevronsUpDown className="ms-auto"/>
-                                                    </div>
-                                                </SidebarMenuButton>
-                                            </CollapsibleTrigger>
-                                            <CollapsibleContent>
-                                                {listSubMenu}
-                                            </CollapsibleContent>
+                                                <CollapsibleTrigger asChild>
+                                                    <SidebarMenuButton
+                                                        asChild
+                                                        {...(item.href.includes(
+                                                            url.url
+                                                        )
+                                                            ? { isActive: true }
+                                                            : {})}
+                                                    >
+                                                        <div>
+                                                            <item.icon
+                                                                size={32}
+                                                            />
+                                                            <span className="ms-7">
+                                                                {item.title}
+                                                            </span>
+                                                            <ChevronsUpDown className="ms-auto" />
+                                                        </div>
+                                                    </SidebarMenuButton>
+                                                </CollapsibleTrigger>
+                                                <CollapsibleContent>
+                                                    {listSubMenu}
+                                                </CollapsibleContent>
                                             </SidebarMenuItem>
                                         </Collapsible>
-                                    )
+                                    );
                                 } else {
                                     return (
-                                        <SidebarMenuItem key={item.title} className="py-1">
-                                            <SidebarMenuButton asChild {...(item.href.includes(url.url) ? { isActive: true } : {})}>
+                                        <SidebarMenuItem
+                                            key={item.title}
+                                            className="py-1"
+                                        >
+                                            <SidebarMenuButton
+                                                asChild
+                                                {...(item.href.includes(url.url)
+                                                    ? { isActive: true }
+                                                    : {})}
+                                            >
                                                 <Link href={item.href}>
-                                                    <item.icon size={32}/>
-                                                    <span className="ms-7">{item.title}</span>
+                                                    <item.icon size={32} />
+                                                    <span className="ms-7">
+                                                        {item.title}
+                                                    </span>
                                                 </Link>
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
                                     );
                                 }
-                            }
-                        )}
+                            })}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -135,5 +180,5 @@ export function AppSidebar(url: any) {
 
             <SidebarFooter />
         </Sidebar>
-    )
+    );
 }
