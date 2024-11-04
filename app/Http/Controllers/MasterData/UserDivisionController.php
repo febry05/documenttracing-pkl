@@ -39,14 +39,14 @@ class UserDivisionController extends Controller
             return Inertia::render('Master/UserDivisions/Index');
     }
     public function update($id, Request $request){
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
         $userDivision = UserDivision::find($id);
-        $userDivision->name = $request->input('name');
-        $userDivision->description = $request->input('description');
+        $userDivision->name = $validatedData['name'];
+        $userDivision->description = $validatedData['description'];
         $userDivision->save();
 
         return Inertia::render('Master/UserDivisions/Index');
@@ -56,6 +56,6 @@ class UserDivisionController extends Controller
         $userDivision = UserDivision::find($id);
         $userDivision->delete();
 
-        return redirect()->route('userdivisions.index')->with('success', 'User division deleted successfully.');
+        return Inertia::render('Master/UserDivisions/Index');
     }
 }

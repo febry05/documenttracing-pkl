@@ -13,6 +13,15 @@ class UserPositionController extends Controller
 {
     public function index()
     {    
+        $userDivisions = UserDivision::all()->map(function ($divisions){
+            return [
+                'id' => $divisions->id,
+                'name' => $divisions->name,
+                'description' => $divisions->description,
+                // 'division' => $userDivisions[$divisions->user_division_id]->name ?? 'N/A',
+            ];
+        });
+
         $userPositions = UserPosition::with('division')->get()->map(function ($position) {
             return [
                 'id' => $position->id,
@@ -24,6 +33,7 @@ class UserPositionController extends Controller
 
         return Inertia::render('Master/UserPositions/Index', [
             'userPositions' => $userPositions,
+            'userDivisions' => $userDivisions,
         ]);
     }
 
@@ -47,32 +57,36 @@ class UserPositionController extends Controller
             $userPosition = new UserPosition();
             $userPosition->name = $request->input('name');
             $userPosition->description = $request->input('description');
+            $userPosition->user_division_id = $request->input('user_division_id');
             $userPosition->save();
 
             return redirect()->route('user-positions.index')->with('success', 'User position created successfully.');
         }
     }
 
-    public function update(Request $request ,$id){
+    public function update($id,Request $request){
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'user_divisions_id' => 'required|integer',
+            'user_division_id' => 'required|integer',
         ]);
 
         $userPosition = UserPosition::find($id);
         $userPosition->name = $request->input('name');
         $userPosition->description = $request->input('description');
-        $userPosition->user_divisions_id = $request->input('user_divisions_id');
+        $userPosition->user_division_id = $request->input('user_division_id');
+        // dd($userPosition);
         $userPosition->save();
 
-        return redirect()->route('userpositions.index')->with('success', 'User position updated successfully.');
+        return Inertia::render('Master/UserPositions/Index',);
+        // return redirect()->route('userpositions.index')->with('success', 'User position updated successfully.');
     }
 
     public function destroy($id){
         $userPosition = UserPosition::find($id);
         $userPosition->delete();
 
-        return redirect()->route('userpositions.index')->with('success', 'User position deleted successfully.');
+        return Inertia::render('Master/UserPositions/Index',);
+        // return redirect()->route('userpositions.index')->with('success', 'User position deleted successfully.');
     }
 }

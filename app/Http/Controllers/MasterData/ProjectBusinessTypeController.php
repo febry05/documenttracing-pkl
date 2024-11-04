@@ -46,7 +46,7 @@ class ProjectBusinessTypeController extends Controller
             ]);
 
             DB::commit();
-            return Inertia::render('Master/ProjectBusinessTypes');
+            return Inertia::render('Master/ProjectBusinessTypes/Index');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());
@@ -54,16 +54,17 @@ class ProjectBusinessTypeController extends Controller
     }
 
     public function update($id, Request $request){
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-
+        
         $businessType = ProjectBusinessType::find($id);
-        $businessType->name = $request->input('name');
-        $businessType->description = $request->input('description');
-        $businessType->save();
+        $businessType->name = $validatedData['name'];
+        $businessType->description = $validatedData['description'];
+        // dd($validatedData);
+        // $businessType->save();
 
-        return redirect()->route('user-divisions.index')->with('success', 'User division updated successfully.');
+        return Inertia::render('Master/ProjectBusinessTypes/Index');
     }
 }
