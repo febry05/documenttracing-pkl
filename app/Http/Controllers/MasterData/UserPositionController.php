@@ -12,7 +12,7 @@ use App\Http\Controllers\Controller;
 class UserPositionController extends Controller
 {
     public function index()
-    {    
+    {
         $userPositions = UserPosition::with('division')->get()->map(function ($position) {
             return [
                 'id' => $position->id,

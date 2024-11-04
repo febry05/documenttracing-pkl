@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Inertia\Inertia;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // $response = $next($request);
+        // if ($request->session()->has('success')) {
+        //     $response->with('flash', [
+        //         'success' => $request->session()->get('success'),
+        //     ]);
+        // }
+
+        // dd($request->session());
+        // dd(Inertia::getShared('message'));
         if (Auth::check()) {
             $user = Auth::user();
             return [
@@ -39,6 +49,9 @@ class HandleInertiaRequests extends Middleware
                 'auth' => [
                     'name' => $user->profile->name,
                     'role' => ModelsRole::findByName($user->getRoleNames()[0])->name,
+                ],
+                'flash' => [
+                    'success' => fn () => $request->session()->get('success')
                 ],
             ];
         } else {

@@ -3,18 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt";
 import { AppSidebar } from "@/Components/app-sidebar";
 import { ScrollArea } from "@/Components/ui/scroll-area";
-<<<<<<< HEAD
-import { Bell, UserRound, UserCog, LogOut } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
-import { z } from "zod"
-=======
 import {
     Bell,
     UserRound,
-    Search,
     UserCog,
     LogOut,
-    SunMoon,
+    CircleCheck,
+    TriangleAlert,
 } from "lucide-react";
 import {
     Popover,
@@ -22,9 +17,8 @@ import {
     PopoverTrigger,
 } from "@/Components/ui/popover";
 import { z } from "zod";
->>>>>>> 0f95fa4b482aac437f2c87ddfdcb97a8387b54bc
 import { useForm } from "react-hook-form";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { ModeToggle } from "@/Components/mode-toggle";
 import { Button } from "@/Components/ui/button";
 import { Toaster } from "@/Components/ui/sonner";
@@ -34,6 +28,16 @@ type User = {
     name: string;
     role: string;
 };
+
+type Auth = {
+    name: string;
+    role: string;
+}
+
+// type Flash = {
+//     title: string;
+//     description: string;
+// }
 
 const FormSchema = z.object({
     search: z.string().min(2, {
@@ -47,10 +51,14 @@ export default function DashboardLayout({
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth } = usePage().props;
+    const { auth, flash } = usePage<{ auth: Auth; }>().props;
+
+
+    const fullName = auth.name.split(' ');
+    const middleName = fullName[Math.floor(fullName.length / 2 | 0)];
 
     const user: User = {
-        name: auth.name,
+        name: middleName,
         role: auth.role,
     };
 
@@ -64,6 +72,36 @@ export default function DashboardLayout({
     function onSubmit(data: z.infer<typeof FormSchema>) {}
 
     const { url } = usePage();
+
+    router.on('finish', (event) => {
+        toast(
+            <span className="text-primary">
+            {flash.status === 'success'
+                ? (
+                    <span>
+                        <CircleCheck size={16} className="me-1"/>
+                        Success!
+                    </span>
+                )
+                : (
+                    <span>
+                        <TriangleAlert size={16} className="me-1"/>
+                        Error!
+                    </span>
+                )}
+            </span>
+            , {
+                description: flash.message,
+                action: {
+                    label: "Close",
+                    onClick: () => console.log(),
+                }
+            }
+        )
+    });
+    // });
+
+    console.log(flash);
 
     return (
         <SidebarProvider>
@@ -137,10 +175,10 @@ export default function DashboardLayout({
                                 <Button
                                     variant="secondary"
                                     size="icon"
-                                    className="shadow-none rounded-full w-40 h-12 hidden md:block"
+                                    className="shadow-none rounded-full w-fit h-12 hidden md:block"
                                 >
                                     <div className="my-auto px-6 flex flex-col pe-6 text-left">
-                                        <span className="text-sm">
+                                        <span className="text-xs">
                                             {user.name}
                                         </span>
                                         <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -183,11 +221,11 @@ export default function DashboardLayout({
                     </Popover>
                 </nav>
                 <ScrollArea className="px-6 pt-6 flex-1">
-                        <div className="pb-4 font-semibold text-xl leading-tight">
-                            {header}
-                        </div>
-                        <div className="mb-6">{children}</div>
-                        <Toaster />
+                    <div className="pb-4 font-semibold text-xl leading-tight">
+                        {header}
+                    </div>
+                    <div className="mb-6">{children}</div>
+                    <Toaster />
                 </ScrollArea>
             </main>
         </SidebarProvider>

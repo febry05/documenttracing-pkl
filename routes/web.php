@@ -29,12 +29,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
+
     Route::resource('/users', UserController::class);
     //Master
     Route::resource('/master/roles', RoleController::class);
-    Route::resource('/master/permissions', PermissionController::class);   
+    Route::resource('/master/permissions', PermissionController::class);
     Route::resource('/master/user-positions', UserPositionController::class);
     Route::resource('/master/user-divisions', UserDivisionController::class);
     Route::resource('/master/project-business-types', ProjectBusinessTypeController::class);

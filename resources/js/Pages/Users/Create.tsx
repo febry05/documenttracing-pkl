@@ -1,5 +1,4 @@
-import { Inertia } from '@inertiajs/inertia';
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { number, z } from "zod";
@@ -75,7 +74,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route("users.store"), values);
+            await router.post(route("users.store"), values);
         } catch (error) {
             console.error("Submission error:", error);
         }

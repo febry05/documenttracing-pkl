@@ -14,42 +14,36 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function index ()
+    public function index()
     {
-        $mockPositions = [
-            ['value' => 'Intern', 'label' => 'Intern'],
-            ['value' => 'ICT Staff', 'label' => 'ICT Staff'],
-        ];
+        $userRoles = UserPosition::select('name', 'description')->get()->map(function ($role) {
+            return [
+                'value' => $role->name,
+                'label' => $role->name,
+            ];
+        });
 
-        $mockRoles = [
-            ['value' => 'Administrator', 'label' => 'Administrator'],
-            ['value' => 'Project Manager', 'label' => 'Project Manager'],
-            ['value' => 'Guest', 'label' => 'Guest'],
-        ];
+        $userPositions = UserPosition::select('name', 'description')->get()->map(function ($position) {
+            return [
+                'value' => $position->name,
+                'label' => $position->name,
+            ];
+        });
 
-        $userProfile = UserProfile::with('user.roles','position')->get()->map(function ($user) {
+        $userProfile = UserProfile::with('user.roles','position')->select('id', 'name', 'user_id', 'user_position_id')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->user->email,
                 'position' => $user->position->name ?? 'N/A',
-                'roles' => $user->user->getRoleNames() ?? 'N/A',
+                'role' => $user->user->getRoleNames() ?? 'N/A',
             ];
         });
 
-         $mockRoles = [
-            ['value' => 'Administrator', 'label' => 'Administrator'],
-            ['value' => 'Project Manager', 'label' => 'Project Manager'],
-            ['value' => 'Guest', 'label' => 'Guest'],
-        ];
-        // $roles = Role::all();
-        
-        // dd($userProfile);
-
         return Inertia::render('Users/Index', [
             'users' => $userProfile,
-            'positions' => $mockPositions,
-            'roles' => $mockRoles,
+            'positions' => $userPositions,
+            'roles' => $userRoles,
         ]);
     }
 
@@ -83,7 +77,7 @@ class UserController extends Controller
                 'roles_id' => $validatedData['roles_id'],
             ]);
 
-            UserProfile::create([
+            $userProfile = UserProfile::create([
                 'user_id' => $user->id,
                 'name' => $validatedData['name'],
                 'nik' => $validatedData['nik'] ?? null,
@@ -92,12 +86,31 @@ class UserController extends Controller
                 'user_division_id' => $validatedData['user_division_id'],
                 'user_position_id' => $validatedData['user_position_id'],
             ]);
-
-            DB::commit();
-            return redirect()->route('users.index');
-        } catch (\Exception $e) {
+            // dd($userProfile);
+            // DB::commit();
             DB::rollBack();
+
+            // $request->session()->flash('success', 'User "' . $userProfile->name . '" has been created.');
+            // return Inertia::location(route('users.index'));
+            // return redirect()->route('users.index')->with('success', 'User "' . $userProfile->name . '" has been created.');
+            // Inertia::share('success', 'User "' . $userProfile->name . '" has been created.');
+            Inertia::share([
+                'message' => [
+                    'status' => 'Success!',
+                    'description' => 'User "' . $userProfile->name . '" has been created.',
+                ],
+            ]);
+            return to_route('users.index', 200);
+        } catch (\Exception $e) {
             dd($e);
+            DB::rollBack();
+            // $request->session()->flash('failed', 'Problem occurred when creating User "' . $request->name . '".');
+            // return Inertia::location(route('users.index'));
+            // return redirect()->route('users.index')->with('success', 'Problem occurred when created User "' . $requets->name . '".');
+            // return to_route('users.index', [
+            //     'title' => 'Error!',
+            //     'description' => 'Problem occurred when creating User "' . $request->name . '".',
+            // ]);
         }
     }
 
@@ -110,8 +123,4 @@ class UserController extends Controller
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
         ]);
     }
-
-
-
-    // Delete this if all the functions are finishe
 }
