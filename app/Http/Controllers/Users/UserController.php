@@ -75,6 +75,7 @@ class UserController extends Controller
                 'email' => $validatedData['email'],
                 'password' => bcrypt($validatedData['password']),
                 'roles_id' => $validatedData['roles_id'],
+
             ]);
 
             $userProfile = UserProfile::create([
@@ -88,6 +89,13 @@ class UserController extends Controller
             ]);
             // dd($userProfile);
             // DB::commit();
+
+            $role = Role::findOrFail($validatedData['roles_id']);
+            $user->assignRole($role->name);
+
+            // $user->update(['roles_id' => $role->id]);
+
+            // dd($user);
             DB::rollBack();
 
             // $request->session()->flash('success', 'User "' . $userProfile->name . '" has been created.');
@@ -114,13 +122,29 @@ class UserController extends Controller
         }
     }
 
-    public function edit(UserProfile $userProfile)
+    public function edit($id)
     {
+        // Retrieve the user with related position, division, and roles
+        // $user = User::with('roles', 'profile.position', 'profile.division')->findOrFail($id);
+        $user = UserProfile::with('user.roles', 'position', 'division')->findOrFail($id);
+        // dd($user);
         return Inertia::render('Users/Edit', [
-            'user' => $userProfile,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name ,
+                'email' => $user->user->email,
+                'nik' => $user->nik ,
+                'phone' => $user->phone ,
+                'employee_no' => $user->employee_no,
+                'role' => $user->user->first()->id ,
+                'division' => $user->division->id,
+                'position' => $user->position->id,
+            ],
             'userRoles' => Role::select('id', 'name')->get(),
             'userDivisions' => UserDivision::select('id', 'name')->get(),
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
+
+
         ]);
     }
 }

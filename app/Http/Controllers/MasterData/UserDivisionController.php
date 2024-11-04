@@ -11,12 +11,12 @@ class UserDivisionController extends Controller
 {
     public function index()
     {
-        $userDivisions = UserDivision::all()->map(function ($position){
+        $userDivisions = UserDivision::all()->map(function ($divisions){
             return [
-                'id' => $position->id,
-                'name' => $position->name,
-                'description' => $position->description,
-                'division' => $userDivisions[$position->user_division_id]->name ?? 'N/A',
+                'id' => $divisions->id,
+                'name' => $divisions->name,
+                'description' => $divisions->description,
+                // 'division' => $userDivisions[$divisions->user_division_id]->name ?? 'N/A',
             ];
         });
 
@@ -36,26 +36,26 @@ class UserDivisionController extends Controller
             $userDivision->description = $request->input('description');
             $userDivision->save();
 
-            return redirect()->route('user-divisions.index')->with('success', 'User division created successfully.');
+            return Inertia::render('Master/UserDivisions/Index');
     }
     public function update($id, Request $request){
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
         $userDivision = UserDivision::find($id);
-        $userDivision->name = $request->input('name');
-        $userDivision->description = $request->input('description');
+        $userDivision->name = $validatedData['name'];
+        $userDivision->description = $validatedData['description'];
         $userDivision->save();
 
-        return redirect()->route('userdivisions.index')->with('success', 'User division updated successfully.');
+        return Inertia::render('Master/UserDivisions/Index');
     }
 
     public function destroy($id){
         $userDivision = UserDivision::find($id);
         $userDivision->delete();
 
-        return redirect()->route('userdivisions.index')->with('success', 'User division deleted successfully.');
+        return Inertia::render('Master/UserDivisions/Index');
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProjectBusinessType extends Model
 {
-    use HasFactory;
+use HasFactory;
 
     protected $fillable = [
         'name',
