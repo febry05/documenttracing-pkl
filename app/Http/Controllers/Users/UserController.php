@@ -81,6 +81,7 @@ class UserController extends Controller
                 'email' => $validatedData['email'],
                 'password' => bcrypt($validatedData['password']),
                 'roles_id' => $validatedData['roles_id'],
+                
             ]);
 
             UserProfile::create([
@@ -93,8 +94,15 @@ class UserController extends Controller
                 'user_position_id' => $validatedData['user_position_id'],
             ]);
 
+            $role = Role::findOrFail($validatedData['roles_id']);
+            $user->assignRole($role->name);
+
+            // $user->update(['roles_id' => $role->id]);
+
+            // dd($user);
+
             DB::commit();
-            return redirect()->route('users.index');
+             return redirect()->route('users.index')->with('success', 'User created successfully.'); 
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
@@ -104,23 +112,26 @@ class UserController extends Controller
     public function edit($id)
     {
         // Retrieve the user with related position, division, and roles
-        $user = User::with('roles', 'profile.position', 'profile.division')->findOrFail($id);
-
+        // $user = User::with('roles', 'profile.position', 'profile.division')->findOrFail($id);
+        $user = UserProfile::with('user.roles', 'position', 'division')->findOrFail($id);
+        // dd($user);
         return Inertia::render('Users/Edit', [
             'user' => [
                 'id' => $user->id,
-                'name' => $user->profile->name ,
-                'email' => $user->email,
-                'nik' => $user->profile->nik ,
-                'phone' => $user->profile->phone ,
-                'employee_no' => $user->profile->employee_no ,
-                'role' => $user->getRoleNames()->first() ,
-                'position' => $user->profile->position->name ,
-                'division' => $user->profile->division->name ,
+                'name' => $user->name ,
+                'email' => $user->user->email,
+                'nik' => $user->nik ,
+                'phone' => $user->phone ,
+                'employee_no' => $user->employee_no,
+                'role' => $user->user->first()->id ,
+                'division' => $user->division->id,
+                'position' => $user->position->id,
             ],
             'userRoles' => Role::select('id', 'name')->get(),
             'userDivisions' => UserDivision::select('id', 'name')->get(),
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
+
+            
         ]);
     }
 

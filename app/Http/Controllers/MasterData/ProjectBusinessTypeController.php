@@ -52,4 +52,18 @@ class ProjectBusinessTypeController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    public function update($id, Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $businessType = ProjectBusinessType::find($id);
+        $businessType->name = $request->input('name');
+        $businessType->description = $request->input('description');
+        $businessType->save();
+
+        return redirect()->route('user-divisions.index')->with('success', 'User division updated successfully.');
+    }
 }
