@@ -14,12 +14,12 @@ import { Save } from "lucide-react";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { handleNumericInput } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
     password: z.string().min(6).max(255),
-    user_role_id: z.number(),
+    roles_id: z.number(),
     name: z.string().min(3).max(255),
     nik: z.string().min(16).max(16).optional(),
     phone: z.string().min(10).max(15).optional(),
@@ -40,7 +40,7 @@ interface PageProps {
         id: number,
         email: string,
         password: string,
-        user_role_id: number,
+        roles_id: number,
         name: string,
         nik: string,
         phone: string,
@@ -60,7 +60,7 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
         defaultValues: {
             email: user.email || '',
             password: user.password || '',
-            user_role_id: Number(user.user_role_id),
+            roles_id: Number(user.roles_id),
             name: user.name || '',
             nik: user.nik || '',
             phone: user.phone || '',
@@ -78,13 +78,21 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
         }
     }
 
-    const [currentUserDivisionId, setCurrentUserDivisionId] = useState<number | undefined>(undefined);
-    const [availableUserPositions, setAvailableUserPositions] = useState<UserMasterData[]>([]);
+    const [availableUserPositions, setAvailableUserPositions] = useState(userPositions);
+    const [selectedDivision, setSelectedDivision] = useState(user.user_division_id || null);
 
-    const handleDivisionChange = (divisionId: number | undefined) => {
-        setCurrentUserDivisionId(divisionId);
-        const filteredPositions = userPositions.filter((position) => position.user_division_id === divisionId);
-        setAvailableUserPositions(filteredPositions);
+    // Filter positions based on division on mount and when division changes
+    useEffect(() => {
+        if (selectedDivision) {
+            setAvailableUserPositions(userPositions.filter((pos) => pos.user_division_id === selectedDivision));
+        } else {
+            setAvailableUserPositions([]);
+        }
+    }, [selectedDivision, userPositions]);
+
+    // Handle division change to filter positions and update selected division
+    const handleDivisionChange = (divisionId: number) => {
+        setSelectedDivision(divisionId);
     };
 
     return (
@@ -146,14 +154,14 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                     {/* Role Field */}
                                     <FormField
                                         control={form.control}
-                                        name="user_role_id"
+                                        name="roles_id"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
                                                     Role
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
+                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={user.roles_id ? user.roles_id.toString() : ''}>
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select the user's role" />
@@ -269,21 +277,18 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                                 <Select
                                                     onValueChange={(value) => {
                                                         handleDivisionChange(Number(value));
-                                                        form.setValue("user_division_id", Number(value));
                                                     }}
-                                                    defaultValue={form.getValues("user_division_id")?.toString() || ''}
+                                                    defaultValue={user.user_division_id?.toString() || ''}
                                                 >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select the user's division" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select the user's division" />
+                                                    </SelectTrigger>
                                                     <SelectContent>
-                                                        {userDivisions.map(division => {
-                                                            return (
-                                                                <SelectItem key={division.id} value={division.id.toString()}>{division.name}</SelectItem>
-                                                            )
-                                                        })}
+                                                        {userDivisions.map((division) => (
+                                                            <SelectItem key={division.id} value={division.id.toString()}>
+                                                                {division.name}
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -302,18 +307,18 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                 <Select
-                                                    onValueChange={(value) => field.onChange(Number(value))}
-                                                    defaultValue={field.value ? field.value.toString() : ''}
-                                                    disabled={availableUserPositions.length === 0} // Disable if no userPositions available
+                                                    onValueChange={(value) => console.log('Selected position:', value)}
+                                                    defaultValue={user.user_position_id?.toString() || ''}
+                                                    disabled={!availableUserPositions.length} // Disable if no positions available
                                                 >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder={availableUserPositions.length === 0 ? "Please select the user's division first" : "Select the user's position"} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={availableUserPositions.length ? "Select the user's position" : "Select division first"} />
+                                                    </SelectTrigger>
                                                     <SelectContent>
                                                         {availableUserPositions.map((position) => (
-                                                            <SelectItem key={position.id} value={position.id.toString()}>{position.name}</SelectItem>
+                                                            <SelectItem key={position.id} value={position.id.toString()}>
+                                                                {position.name}
+                                                            </SelectItem>
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
