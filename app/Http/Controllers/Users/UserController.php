@@ -58,7 +58,7 @@ class UserController extends Controller
 
     public function store(Request $request){
         DB::beginTransaction();
-        try {
+         try {
             $validatedData = $request->validate([
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
@@ -75,7 +75,6 @@ class UserController extends Controller
                 'email' => $validatedData['email'],
                 'password' => bcrypt($validatedData['password']),
                 'roles_id' => $validatedData['roles_id'],
-
             ]);
 
             $userProfile = UserProfile::create([
@@ -87,38 +86,26 @@ class UserController extends Controller
                 'user_division_id' => $validatedData['user_division_id'],
                 'user_position_id' => $validatedData['user_position_id'],
             ]);
-            // dd($userProfile);
-            // DB::commit();
 
             $role = Role::findOrFail($validatedData['roles_id']);
             $user->assignRole($role->name);
 
-            // $user->update(['roles_id' => $role->id]);
-
-            // dd($user);
             DB::rollBack();
 
-            // $request->session()->flash('success', 'User "' . $userProfile->name . '" has been created.');
-            // return Inertia::location(route('users.index'));
-            // return redirect()->route('users.index')->with('success', 'User "' . $userProfile->name . '" has been created.');
-            // Inertia::share('success', 'User "' . $userProfile->name . '" has been created.');
-            Inertia::share([
-                'message' => [
-                    'status' => 'Success!',
-                    'description' => 'User "' . $userProfile->name . '" has been created.',
-                ],
+            session()->flash('flash', [
+                'status' => 'success',
+                'message' => 'User "' . $userProfile->name . '" has been created.',
             ]);
-            return to_route('users.index', 200);
+            dd(session());
+        return redirect()->route('users.index');
         } catch (\Exception $e) {
             dd($e);
             DB::rollBack();
-            // $request->session()->flash('failed', 'Problem occurred when creating User "' . $request->name . '".');
-            // return Inertia::location(route('users.index'));
-            // return redirect()->route('users.index')->with('success', 'Problem occurred when created User "' . $requets->name . '".');
-            // return to_route('users.index', [
-            //     'title' => 'Error!',
-            //     'description' => 'Problem occurred when creating User "' . $request->name . '".',
-            // ]);
+            session()->flash('flash', [
+                'status' => 'error',
+                'message' => 'Problem occurred when creating user "' . $request->name . '".',
+            ]);
+            return redirect()->route('users.index');
         }
     }
 
