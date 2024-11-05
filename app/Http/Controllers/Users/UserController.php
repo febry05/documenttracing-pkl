@@ -127,7 +127,6 @@ class UserController extends Controller
         // Retrieve the user with related position, division, and roles
         // $user = User::with('roles', 'profile.position', 'profile.division')->findOrFail($id);
         $user = UserProfile::with('user.roles', 'position', 'division')->findOrFail($id);
-        // dd($user);
         return Inertia::render('Users/Edit', [
             'user' => [
                 'id' => $user->id,
@@ -136,9 +135,9 @@ class UserController extends Controller
                 'nik' => $user->nik ,
                 'phone' => $user->phone ,
                 'employee_no' => $user->employee_no,
-                'role' => $user->user->first()->id ,
-                'division' => $user->division->id,
-                'position' => $user->position->id,
+                'roles_id' => $user->user->first()->id ,
+                'user_division_id' => $user->division->id,
+                'user_position_id' => $user->position->id,
             ],
             'userRoles' => Role::select('id', 'name')->get(),
             'userDivisions' => UserDivision::select('id', 'name')->get(),

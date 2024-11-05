@@ -135,8 +135,7 @@ export default function DashboardLayout({
                     </div> */}
 
                     {/* Theme Mode Toggle */}
-                    <div className="ms-auto">
-                        {/* <ModeToggle /> */}
+                    {/* <div className="ms-auto">
                         <Button
                             variant="outline"
                             onClick={() =>
@@ -151,7 +150,7 @@ export default function DashboardLayout({
                             >
                             Show Toast
                         </Button>
-                    </div>
+                    </div> */}
 
 
                     {/* Notification Panel */}
