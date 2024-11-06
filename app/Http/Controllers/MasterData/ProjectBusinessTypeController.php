@@ -72,6 +72,7 @@ class ProjectBusinessTypeController extends Controller
             return back()->with('error', $e->getMessage());
         }
         
+
         // dd($validatedData);
         // $businessType->save();
 

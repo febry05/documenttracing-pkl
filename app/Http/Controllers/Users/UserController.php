@@ -5,15 +5,27 @@ namespace App\Http\Controllers\Users;
 use Inertia\Inertia;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Users\UserProfile;
-use App\Models\MasterData\UserPosition;
-use App\Models\MasterData\UserDivision;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Models\MasterData\UserDivision;
+use App\Models\MasterData\UserPosition;
+use Illuminate\Routing\Controllers\Middleware;
 
 class UserController extends Controller
 {
+    // public static function middleware(): array
+    // {
+    //     return [
+    //         // examples with aliases, pipe-separated names, guards, etc:
+    //         'role_or_permission:administrator|edit articles',
+    //         new Middleware('role:author', only: ['index']),
+    //         new Middleware(\Spatie\Permission\Middleware\RoleMiddleware::using('manager'), except:['show']),
+    //         new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('delete records,api'), only:['destroy']),
+    //     ];
+    // }
+
     public function index()
     {
         $userRoles = UserPosition::select('name', 'description')->get()->map(function ($role) {
@@ -90,13 +102,13 @@ class UserController extends Controller
             $role = Role::findOrFail($validatedData['roles_id']);
             $user->assignRole($role->name);
 
-            DB::rollBack();
+            DB::commit();
 
-            session()->flash('flash', [
-                'status' => 'success',
-                'message' => 'User "' . $userProfile->name . '" has been created.',
-            ]);
-            dd(session());
+            // session()->flash('flash', [
+            //     'status' => 'success',
+            //     'message' => 'User "' . $userProfile->name . '" has been created.',
+            // ]);
+            // dd(session());
         return redirect()->route('users.index');
         } catch (\Exception $e) {
             dd($e);

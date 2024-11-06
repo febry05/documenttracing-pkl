@@ -46,7 +46,8 @@ class UserDivisionController extends Controller
             return back()->withErrors(['error' => 'An error occurred while saving the user division.']);
         }
 
-            return Inertia::render('Master/UserDivisions/Index');
+        return Inertia::render('Master/UserDivisions/Index');
+        
     }
     public function update($id, Request $request){
         DB::beginTransaction();

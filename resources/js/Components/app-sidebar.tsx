@@ -55,7 +55,7 @@ export function AppSidebar(url: any) {
             submenu: [
                 {
                     title: "User Role",
-                    href: route("roles.index"),
+                    href: route("user-roles.index"),
                 },
                 {
                     title: "User Position",

@@ -18,21 +18,27 @@ class SycnRolesAndPermissionSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
          $permissions = [
-            'create_project',
-            'view_project',
-            'update_project',
-            'delete_project',
-            'create_document_project',
-            'view_document_project',
-            'update_document_project',
-            'delete_document_project',
-            'create_project_version',
-            'view_project_version',
-            'update_document_project_version',
-            'delete_document_project_version',
-            'add_update_document_project_version',
-            'manage_user',
-            'manage_master_data',
+            'Create Project',
+            'View Project',
+            'Update Project',
+            'Delete Project',
+
+            'Create Document Project',
+            'View Document Project',
+            'Update Document Project',
+            'Delete Document Project',
+
+            'Create Project Version',
+            'View Project Version',
+            'Update Document Project Version',
+            'Delete Document Project Version',
+
+            'View Update Document Project Version',
+            'Add Update Document Project Version',
+            'Delete Update Document Project Version',
+            
+            'Manage User',
+            'Manage Master Data',
         ];
 
         // app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
@@ -51,17 +57,20 @@ class SycnRolesAndPermissionSeeder extends Seeder
 
         $projectManagerRole = Role::where('name', 'Project Manager')->first();
         $projectManagerRole->givePermissionTo([
-            'view_project',
-            'update_project',
-            'create_document_project',
-            'view_document_project',
-            'update_document_project',
-            'delete_document_project',
-            'create_project_version',
-            'view_project_version',
-            'update_document_project_version',
-            'delete_document_project_version',
-            'add_update_document_project_version',
+            'View Project',
+            'Update Project',
+
+            'Create Project Version',
+            'View Project Version',
+            'Update Document Project Version',
+            // 'Delete Document Project Version',
+            
+            'Create Document Project',
+            'View Document Project',
+            'Update Document Project',
+            // 'Delete Document Project',
+
+            'Add Update Document Project Version',
         ]);
         $projectManager = User::where('email', 'projectmanager@example.com')->first();
         // $projectManager->assignRole($projectManagerRole);
@@ -71,8 +80,9 @@ class SycnRolesAndPermissionSeeder extends Seeder
 
         $guestRole = Role::where('name', 'Guest')->first();
         $guestRole->givePermissionTo([
-            'view_project',
-            'view_document_project',
+            'View Project',
+            'View Project Version',
+            'View Document Project',
         ]);
         $guest = User::where('email', 'guest@example.com')->first();
         $guest->assignRole($guestRole);
