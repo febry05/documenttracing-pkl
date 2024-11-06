@@ -98,7 +98,7 @@ export default function DashboardLayout({
     });
     // });
 
-    console.log(flash);
+    // console.log(flash);
 
     return (
         <SidebarProvider>

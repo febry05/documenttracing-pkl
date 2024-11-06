@@ -12,6 +12,7 @@ import { Textarea } from "@/Components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { UserDivision } from "../../UserDivisions/columns";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -37,7 +38,10 @@ export default function UserPositionsCreateDialog({ userDivisions }: PageProps) 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await Inertia.post(route('user-positions.store'), values, {
-                onSuccess: () => setIsOpen(false),
+                onFinish: () => {
+                    setIsOpen(false);
+                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);

@@ -10,6 +10,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -29,7 +30,10 @@ export default function ProjectBusinessTypesCreateDialog() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await Inertia.post(route('project-business-types.store'), values, {
-                onSuccess: () => setIsOpen(false),
+                onFinish: () => {
+                    setIsOpen(false);
+                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);

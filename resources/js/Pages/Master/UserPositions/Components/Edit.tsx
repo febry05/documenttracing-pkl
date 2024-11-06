@@ -11,6 +11,7 @@ import { Save, Trash2 } from "lucide-react";
 import { UserPositionDeleteDialog } from "./Delete";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { UserDivision } from "../../UserDivisions/columns";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -24,7 +25,7 @@ interface PageProps {
     closeDialog: () => void;
 }
 
-export default function UserRolesEditDialog({ data, userDivisions, closeDialog }: PageProps) {
+export default function UserPositionsEditDialog({ data, userDivisions, closeDialog }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,7 +38,10 @@ export default function UserRolesEditDialog({ data, userDivisions, closeDialog }
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await Inertia.put(route('user-positions.update', data.id), values, {
-                onSuccess: () => closeDialog(),
+                onFinish: () => {
+                    closeDialog();
+                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);

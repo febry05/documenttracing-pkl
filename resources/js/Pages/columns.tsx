@@ -1,8 +1,7 @@
 "use client"
 
-import { Button } from "@/Components/ui/button"
+import { Badge } from "@/Components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
-import { Pencil } from "lucide-react"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -64,9 +63,29 @@ export const columns: ColumnDef<Project>[] = [
             // Default equality comparison if no compare operator is found
             return rowValue === filterNum;
         },
+        cell: ({ getValue }) => (
+            <div className="w-full flex">
+                <div className="mx-auto">
+                    {getValue()}
+                </div>
+            </div>
+        ),
     },
     {
         accessorKey: "priority",
         header: "Priority",
-    },
+        cell: ({ row }) => {
+            const priorityValue = row.getValue("priority");
+
+            return (
+                <div className="w-full flex">
+                    <div className="mx-auto">
+                        <Badge variant={ priorityValue === 'High' ? 'destructive' : 'secondary' }>
+                            {priorityValue}
+                        </Badge>
+                    </div>
+                </div>
+            );
+        },
+    }
 ]

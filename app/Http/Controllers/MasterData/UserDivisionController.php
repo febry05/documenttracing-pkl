@@ -13,7 +13,7 @@ class UserDivisionController extends Controller
 {
     public function index()
     {
-        $userDivisions = UserDivision::all()->map(function ($divisions){
+        $userDivisions = UserDivision::select('id', 'name', 'description')->get()->map(function ($divisions){
             return [
                 'id' => $divisions->id,
                 'name' => $divisions->name,
@@ -24,6 +24,7 @@ class UserDivisionController extends Controller
 
         return Inertia::render('Master/UserDivisions/Index', [
             'userDivisions' => $userDivisions
+
         ]);
     }
 
@@ -35,10 +36,7 @@ class UserDivisionController extends Controller
                 'description' => 'nullable|string',
              ]);
 
-            $userDivision = new UserDivision();
-            $userDivision->name = $request->input('name');
-            $userDivision->description = $request->input('description');
-            $userDivision->save();
+        UserDivision::create($request->only('name', 'description'));
 
             DB::commit();
          } catch (Exception $e) {
@@ -47,8 +45,9 @@ class UserDivisionController extends Controller
         }
 
         return Inertia::render('Master/UserDivisions/Index');
-        
+
     }
+
     public function update($id, Request $request){
         DB::beginTransaction();
         try {
@@ -68,13 +67,12 @@ class UserDivisionController extends Controller
             return back()->withErrors(['error' => 'An error occurred while updating the user division.']);
         }
 
-        return Inertia::render('Master/UserDivisions/Index');
+        return redirect()->route('user-divisions.index')->with('message', 'User Division updated successfully');
     }
 
     public function destroy($id){
-        $userDivision = UserDivision::find($id);
-        $userDivision->delete();
+        UserDivision::findOrFail($id)->delete();
 
-        return Inertia::render('Master/UserDivisions/Index');
+        return redirect()->route('user-divisions.index')->with('message', 'User Division deleted successfully');
     }
 }

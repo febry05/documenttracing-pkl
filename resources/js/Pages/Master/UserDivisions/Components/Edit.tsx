@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/Components/ui/textarea";
 import { Save, Trash2 } from "lucide-react";
 import { UserDivisionDeleteDialog } from "./Delete";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -32,7 +33,10 @@ export default function UserDivisionsEditDialog({ data, closeDialog }: PageProps
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await Inertia.put(route('user-divisions.update', data.id), values, {
-                onSuccess: () => closeDialog(),
+                onFinish: () => {
+                    closeDialog();
+                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);
@@ -53,8 +57,8 @@ export default function UserDivisionsEditDialog({ data, closeDialog }: PageProps
                                         Name
                                         <span className="text-destructive ms-1">*</span>
                                     </FormLabel>
-                                        <FormControl>
                                             <Input type="text" placeholder="Enter the user division's name" {...field} minLength={3} maxLength={255} />
+                                        <FormControl>
                                         </FormControl>
                                     <FormMessage />
                                 </FormItem>
