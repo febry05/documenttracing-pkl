@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -46,47 +47,9 @@ export default function UserRolesCreateDialog() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             Inertia.post(route("user-roles.store"), values, {
-                onSuccess: () => {
+                onFinish: () => {
                     setIsOpen(false);
-                    toast(
-                        <span className="text-primary">
-                            <CircleCheck size={16} className="me-1" />
-                            Success!
-                        </span>,
-                        {
-                            description: (
-                                <span>
-                                    User Role "<strong>{values.name}</strong>"
-                                    has been added.
-                                </span>
-                            ),
-                            action: {
-                                label: "Close",
-                                onClick: () =>
-                                    console.log("User Role has been added."),
-                            },
-                        }
-                    );
-                },
-                onError: () => {
-                    toast(
-                        <span className="text-red">
-                            <TriangleAlert size={16} className="me-1" />
-                            Error!
-                        </span>,
-                        {
-                            description: (
-                                <span>
-                                    Problem occurred when adding User Role.
-                                </span>
-                            ),
-                            action: {
-                                label: "Close",
-                                onClick: () =>
-                                    console.log("Error adding User Role"),
-                            },
-                        }
-                    );
+                    router.visit(route('user-roles.index'), { only: ['userRoles'] });
                 },
             });
         } catch (error) {
