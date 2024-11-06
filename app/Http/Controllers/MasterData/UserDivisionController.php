@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\MasterData;
 
-use App\Models\MasterData\UserDivision;
+use Exception;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\MasterData\UserDivision;
 
 class UserDivisionController extends Controller
 {
@@ -27,24 +29,43 @@ class UserDivisionController extends Controller
     }
 
     public function store(Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+             ]);
 
         UserDivision::create($request->only('name', 'description'));
 
-        return redirect()->route('user-divisions.index')->with('message', 'User Division created successfully');
+            DB::commit();
+         } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'An error occurred while saving the user division.']);
+        }
+
+        return Inertia::render('Master/UserDivisions/Index');
+
     }
 
     public function update($id, Request $request){
-        $validatedData = $request->validate([
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-        ]);
+            ]);
 
-        $userDivision = UserDivision::findOrFail($id);
-        $userDivision->update($validatedData);
+            $userDivision = UserDivision::find($id);
+            $userDivision->name = $validatedData['name'];
+            $userDivision->description = $validatedData['description'];
+            $userDivision->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'An error occurred while updating the user division.']);
+        }
 
         return redirect()->route('user-divisions.index')->with('message', 'User Division updated successfully');
     }

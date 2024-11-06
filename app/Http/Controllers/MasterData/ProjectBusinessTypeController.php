@@ -54,17 +54,27 @@ class ProjectBusinessTypeController extends Controller
     }
 
     public function update($id, Request $request){
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+            
+            $businessType = ProjectBusinessType::find($id);
+            $businessType->name = $validatedData['name'];
+            $businessType->description = $validatedData['description'];
+
+            DB::commit();        
+            return Inertia::render('Master/ProjectBusinessTypes/Index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
         
-        $businessType = ProjectBusinessType::find($id);
-        $businessType->name = $validatedData['name'];
-        $businessType->description = $validatedData['description'];
+
         // dd($validatedData);
         // $businessType->save();
 
-        return Inertia::render('Master/ProjectBusinessTypes/Index');
     }
 }

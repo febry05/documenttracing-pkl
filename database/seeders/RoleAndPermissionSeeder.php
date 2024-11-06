@@ -16,27 +16,27 @@ class RoleAndPermissionSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $permissions = [
-            'create_project',
-            'view_project',
-            'update_project',
-            'delete_project',
-            'create_document_project',
-            'view_document_project',
-            'update_document_project',
-            'delete_document_project',
-            'create_project_version',
-            'view_project_version',
-            'update_document_project_version',
-            'delete_document_project_version',
-            'add_update_document_project_version',
-            'manage_user',
-            'manage_master_data',
-        ];
+        // $permissions = [
+        //     'create_project',
+        //     'view_project',
+        //     'update_project',
+        //     'delete_project',
+        //     'create_document_project',
+        //     'view_document_project',
+        //     'update_document_project',
+        //     'delete_document_project',
+        //     'create_project_version',
+        //     'view_project_version',
+        //     'update_document_project_version',
+        //     'delete_document_project_version',
+        //     'add_update_document_project_version',
+        //     'manage_user',
+        //     'manage_master_data',
+        // ];
 
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate(['name' => $permissionName]);
-        }
+        // foreach ($permissions as $permissionName) {
+        //     Permission::firstOrCreate(['name' => $permissionName]);
+        // }
 
         Role::firstOrCreate([
             'name' => 'Administrator',
@@ -52,6 +52,6 @@ class RoleAndPermissionSeeder extends Seeder
             'description' => 'Only see project and Document Project',
         ]);
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        // app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

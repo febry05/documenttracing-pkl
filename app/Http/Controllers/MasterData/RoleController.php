@@ -5,35 +5,23 @@ namespace App\Http\Controllers\MasterData;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
     public function index()
-    {
-        $mockUserRoles = [
-            [
-                'id' => 1,
-                'name' => 'Administrator',
-                'description' => 'Web administrator adalah profesional teknis yang mengelola website.',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Project Manager',
-                'description' => 'Can Handle Project where he’s have. And only can see other Project if here doesn’t added in the project',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Guest',
-                'description' => 'Only see project and Document Project',
-            ]
-        ];
-
+    {$roles = Role::all()->map(function ($role){
+            return [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+            ];
+        });
 
         return Inertia::render('Master/UserRoles/Index', [
-            'userRoles' => $mockUserRoles,
+            'userRoles' => $roles
         ]);
         // $roles = Role::all();
         // return view('roles.index', compact('roles'));
@@ -49,22 +37,24 @@ class RoleController extends Controller
     {
     DB::beginTransaction();
         try {
-            $validatedData = $request->validate([
-                'name' => 'required',
-                'description' => 'required',
-                // 'permissions' => 'required',
-            ]);
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
 
-            Role::create([
-                'name' => $validatedData['name'],
-                'description' => $validatedData['description'],
-            ]);
-            DB::commit();
-            return redirect()->route('roles.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            dd($e);
-        }
+        $role = new Role();
+        $role->name = $validatedData['name'];
+        $role->guard_name = 'web';
+        $role->description = $validatedData['description'];
+        $role->save();
+
+        
+ 
+        DB::commit(); 
+    } catch (\Exception $e) {
+        DB::rollBack(); 
+        return redirect()->back()->withErrors(['error' => 'There was an error creating the role: ' . $e->getMessage()]);
+    }
     }
 
     public function edit(Role $role)

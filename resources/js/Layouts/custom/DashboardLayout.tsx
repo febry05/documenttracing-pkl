@@ -32,7 +32,7 @@ type User = {
 type Auth = {
     name: string;
     role: string;
-}
+};
 
 // type Flash = {
 //     title: string;
@@ -51,11 +51,10 @@ export default function DashboardLayout({
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth, flash } = usePage<{ auth: Auth; }>().props;
+    const { auth, flash } = usePage<{ auth: Auth }>().props;
 
-
-    const fullName = auth.name.split(' ');
-    const middleName = fullName[Math.floor(fullName.length / 2 | 0)];
+    const fullName = auth.name.split(" ");
+    const middleName = fullName[Math.floor((fullName.length / 2) | 0)];
 
     const user: User = {
         name: middleName,
@@ -73,31 +72,29 @@ export default function DashboardLayout({
 
     const { url } = usePage();
 
-    router.on('finish', (event) => {
+    router.on("finish", (event) => {
         toast(
             <span className="text-primary">
-            {flash.status === 'success'
-                ? (
+                {flash.status === "success" ? (
                     <span>
-                        <CircleCheck size={16} className="me-1"/>
+                        <CircleCheck size={16} className="me-1" />
                         Success!
                     </span>
-                )
-                : (
+                ) : (
                     <span>
-                        <TriangleAlert size={16} className="me-1"/>
+                        <TriangleAlert size={16} className="me-1" />
                         Error!
                     </span>
                 )}
-            </span>
-            , {
+            </span>,
+            {
                 description: flash.message,
                 action: {
                     label: "Close",
                     onClick: () => console.log(),
-                }
+                },
             }
-        )
+        );
     });
     // });
 
@@ -140,18 +137,18 @@ export default function DashboardLayout({
                             variant="outline"
                             onClick={() =>
                                 toast("Event has been created", {
-                                    description: "Sunday, December 03, 2023 at 9:00 AM",
+                                    description:
+                                        "Sunday, December 03, 2023 at 9:00 AM",
                                     action: {
                                         label: "Undo",
                                         onClick: () => console.log("Undo"),
                                     },
                                 })
                             }
-                            >
+                        >
                             Show Toast
                         </Button>
                     </div> */}
-
 
                     {/* Notification Panel */}
                     <Popover>
