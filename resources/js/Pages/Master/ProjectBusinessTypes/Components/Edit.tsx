@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/Components/ui/textarea";
 import { Save, Trash2 } from "lucide-react";
 import { ProjectBusinessTypesDeleteDialog } from "./Delete";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -32,7 +33,10 @@ export default function ProjectBusinessTypesEditDialog({ data, closeDialog }: Pa
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await Inertia.put(route('user-roles.update', data.id), values, {
-                onSuccess: () => closeDialog(),
+                onFinish: () => {
+                    closeDialog();
+                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);

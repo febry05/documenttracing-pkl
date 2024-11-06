@@ -10,6 +10,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -28,8 +29,12 @@ export default function UserDivisionsCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('user-divisions.store'), values, {
-                onSuccess: () => setIsOpen(false),
+            Inertia.post(route('user-divisions.store'), values, {
+                preserveScroll: true, // Keeps scroll position but reloads data
+                onFinish: () => {
+                    setIsOpen(false);
+                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
+                }, // Closes the dialog on success
             });
         } catch (error) {
             console.error('Submission error:', error);

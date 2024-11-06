@@ -35,6 +35,15 @@ class DashboardController extends Controller
                 'days_left' => '1',
                 'priority' => 'Medium',
             ],
+            [
+                'id' => 3,
+                'document' => 'Project Bref',
+                'project' => 'APS Document Tracer',
+                'pic' => 'Muhammad Azhim Nugroho',
+                'due_date' => '20 November 2024',
+                'days_left' => '23',
+                'priority' => 'Low',
+            ],
         ];
 
         return Inertia::render('Dashboard', [

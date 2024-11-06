@@ -5,6 +5,7 @@ import { Button } from "@/Components/ui/button";
 import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 interface PageProps {
     data: any,
@@ -17,7 +18,10 @@ export function UserDivisionDeleteDialog({data}: PageProps) {
     async function onSubmit() {
         try {
             await Inertia.delete(route('user-divisions.destroy', data.id), {
-                onSuccess: () => setIsOpen(false),
+                onFinish: () => {
+                    setIsOpen(false);
+                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);

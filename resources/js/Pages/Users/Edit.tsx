@@ -54,7 +54,7 @@ interface PageProps {
 }
 
 export default function UsersEdit({ user, userRoles, userDivisions, userPositions }: PageProps) {
-    console.log(user);
+    // console.log(user);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -307,7 +307,7 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                 <Select
-                                                    onValueChange={(value) => console.log('Selected position:', value)}
+                                                    // onValueChange={(value) => console.log('Selected position:', value)}
                                                     defaultValue={user.user_position_id?.toString() || ''}
                                                     disabled={!availableUserPositions.length} // Disable if no positions available
                                                 >
