@@ -104,11 +104,6 @@ class UserController extends Controller
 
             DB::commit();
 
-            // session()->flash('flash', [
-            //     'status' => 'success',
-            //     'message' => 'User "' . $userProfile->name . '" has been created.',
-            // ]);
-            // dd(session());
         return redirect()->route('users.index');
         } catch (\Exception $e) {
             dd($e);
@@ -123,8 +118,6 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        // Retrieve the user with related position, division, and roles
-        // $user = User::with('roles', 'profile.position', 'profile.division')->findOrFail($id);
         $user = UserProfile::with('user.roles', 'position', 'division')->findOrFail($id);
         return Inertia::render('Users/Edit', [
             'user' => [
@@ -144,5 +137,50 @@ class UserController extends Controller
 
 
         ]);
+    }
+
+    public function update($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
+                'email' => 'required|email',
+                'password' => 'nullable|min:6',
+                'name' => 'required|string|max:255',
+                'nik' => 'nullable|string',
+                'phone' => 'nullable|string',
+                'employee_no' => 'string',
+                'roles_id' => 'required|integer',
+                'user_division_id' => 'required|integer',
+                'user_position_id' => 'required|integer',
+            ]);
+
+            $user = User::findOrFail($id);
+            $user->email = $validatedData['email'];
+            if (!empty($validatedData['password'])) {
+                $user->password = bcrypt($validatedData['password']);
+            }
+            $user->save();
+
+            $userProfile = UserProfile::where('user_id', $user->id)->first();
+            $userProfile->name = $validatedData['name'];
+            $userProfile->nik = $validatedData['nik'] ?? null;
+            $userProfile->phone = $validatedData['phone'] ?? null;
+            $userProfile->employee_no = $validatedData['employee_no'];
+            $userProfile->user_division_id = $validatedData['user_division_id'];
+            $userProfile->user_position_id = $validatedData['user_position_id'];
+            $userProfile->save();
+
+            // dd($validatedData);
+
+            $role = Role::findOrFail($validatedData['roles_id']);
+            $user->syncRoles($role->name);
+
+            DB::commit();
+            return to_route('users.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'An error occurred while updating the user.']);
+        }    
     }
 }
