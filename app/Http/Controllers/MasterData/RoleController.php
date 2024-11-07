@@ -12,7 +12,8 @@ use Spatie\Permission\Models\Permission;
 class RoleController extends Controller
 {
     public function index()
-    {$roles = Role::all()->map(function ($role){
+    {
+        $roles = Role::all()->map(function ($role){
             return [
                 'id' => $role->id,
                 'name' => $role->name,
@@ -36,13 +37,14 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        dd($request);
+        // dd($request);
 
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
+                'permissions' => 'required|array',
             ]);
 
             $role = new Role();
@@ -50,6 +52,9 @@ class RoleController extends Controller
             $role->guard_name = 'web';
             $role->description = $validatedData['description'];
             $role->save();
+            
+            $role->syncPermissions($validatedData['permissions']);
+            
 
             DB::commit();
             // Inertia::share('sonner', [
