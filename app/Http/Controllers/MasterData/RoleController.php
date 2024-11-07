@@ -88,15 +88,24 @@ class RoleController extends Controller
         }
     }
 
-    public function destroy(Role $role)
+    public function destroy($id)
     {
+        $role = Role::findOrFail($id);
         $role->delete();
         return redirect()->route('user-roles.index');
     }
 
-    // public function edit(Role $role)
-    // {
-    //     $permissions = Permission::all();
-    //     return view('roles.edit', compact('role', 'permissions'));
-    // }
+    public function edit($id)
+    {
+        $role = Role::findOrFail($id);
+        return Inertia::render('Master/UserRoles/Edit', [
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+            ],
+            'permissions' => Permission::select('id', 'name')->orderBy('id', 'asc')->get(),
+            'rolePermissions' => $role->permissions->pluck('name')->toArray(),
+        ]);
+    }
 }
