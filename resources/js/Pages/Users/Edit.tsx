@@ -15,6 +15,8 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { handleNumericInput } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useEffect, useState } from 'react';
+import { IconButton } from '@/Components/custom/IconButton';
+import { UserRoleDeleteDialog } from './Components/Delete';
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -329,12 +331,9 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                 </div>
                             </div>
                             {/* Employee Info [END] */}
-
-                            <div className="flex">
-                                <Button className="ms-auto" type="submit">
-                                    <Save size={18} className="me-2"/>
-                                    Save
-                                </Button>
+                            <div className="flex flex-row-reverse gap-4">
+                                <IconButton type="submit" icon={Save} text="Save"/>
+                                <UserRoleDeleteDialog data={user}/>
                             </div>
                         </div>
                     </form>

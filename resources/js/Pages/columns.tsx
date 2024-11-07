@@ -76,11 +76,19 @@ export const columns: ColumnDef<Project>[] = [
         header: "Priority",
         cell: ({ row }) => {
             const priorityValue = row.getValue("priority");
+            let variant;
+            if (priorityValue === 'High') {
+                variant = 'destructive';
+            } else if (priorityValue === 'Medium') {
+                variant = '';
+            } else {
+                variant = 'secondary';
+            }
 
             return (
                 <div className="w-full flex">
                     <div className="mx-auto">
-                        <Badge variant={ priorityValue === 'High' ? 'destructive' : 'secondary' }>
+                        <Badge variant={variant} className={priorityValue === 'Medium' && 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background'}>
                             {priorityValue}
                         </Badge>
                     </div>

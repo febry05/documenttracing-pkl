@@ -6,14 +6,15 @@ interface PageProps {
     className?: string;
     icon: LucideIcon,
     text: string | JSX.Element,
+    type?: string
 }
 
-export function IconButton({variant, className, icon, text}: PageProps) {
+export function IconButton({variant, className, icon, text, type}: PageProps) {
     const Icon = icon || AlignJustifyIcon;
 
     return (
-        <Button className={className} variant={variant}>
-            <Icon className="me-auto" size={18} />
+        <Button className={className} variant={variant} type={type}>
+            <Icon className="me-2" size={18} />
             {text}
         </Button>
     )

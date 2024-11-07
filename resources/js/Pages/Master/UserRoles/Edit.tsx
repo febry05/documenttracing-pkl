@@ -19,6 +19,9 @@ import {
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Checkbox } from "@/Components/ui/checkbox";
+import { UserRoleDeleteDialog } from "./Components/Delete";
+import { IconButton } from "@/Components/custom/IconButton";
+import { Save } from "lucide-react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -26,28 +29,37 @@ const formSchema = z.object({
     permissions: z.string().array(),
 });
 
+type Role = {
+    id?: number;
+    name: string;
+    description: string;
+}
+
 type Permission = {
     id: number;
     name: string;
 }
 
 interface PageProps {
+    role: Role,
     permissions: Permission[],
+    rolePermissions: string[],
 }
 
-export default function UserRolesCreate({ permissions }: PageProps) {
+export default function UserRolesEdit({ role, permissions, rolePermissions }: PageProps) {
+    console.log(rolePermissions);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            description: "",
-            permissions: [],
+            name: role.name || '',
+            description: role.description || '',
+            permissions: rolePermissions || [],
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("user-roles.store"), values);
+            await router.put(route("user-roles.update", role.id), values);
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -56,10 +68,10 @@ export default function UserRolesCreate({ permissions }: PageProps) {
     return (
         <DashboardLayout
             header={
-                <HeaderNavigation title="Create User Role" back={true}/>
+                <HeaderNavigation title="Edit User Role" back={true}/>
             }
         >
-            <Head title="Create User Role" />
+            <Head title="Edit User Role" />
 
             <Card className="p-8">
             <Form {...form}>
@@ -91,7 +103,6 @@ export default function UserRolesCreate({ permissions }: PageProps) {
                                                     {...field}
                                                     minLength={3}
                                                     maxLength={255}
-                                                    value={field.value || ""}
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -151,11 +162,10 @@ export default function UserRolesCreate({ permissions }: PageProps) {
                                                     <Checkbox
                                                         checked={field.value?.includes(permission.name)}
                                                         onCheckedChange={(checked) => {
-                                                        return checked
-                                                            ? field.onChange([...field.value, permission.name]) // Ensure permission.id is a string
-                                                            : field.onChange(
-                                                                field.value.filter((value) => value !== permission.name)
-                                                            );
+                                                            const updatedPermissions = checked
+                                                                ? [...field.value, permission.name]
+                                                                : field.value.filter((value) => value !== permission.name);
+                                                            field.onChange(updatedPermissions);
                                                         }}
                                                     />
                                                 </FormControl>
@@ -171,7 +181,10 @@ export default function UserRolesCreate({ permissions }: PageProps) {
                                 <FormMessage />
                             </FormItem>
 
-                            <Button type="submit">Save</Button>
+                            <div className="flex flex-row-reverse gap-4">
+                                <IconButton type="submit" icon={Save} text="Save"/>
+                                <UserRoleDeleteDialog data={role}/>
+                            </div>
 
                         </div>
                     </form>
