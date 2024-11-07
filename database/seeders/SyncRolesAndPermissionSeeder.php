@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class SycnRolesAndPermissionSeeder extends Seeder
+class SyncRolesAndPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.

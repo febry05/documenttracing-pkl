@@ -23,6 +23,7 @@ import { ModeToggle } from "@/Components/mode-toggle";
 import { Button } from "@/Components/ui/button";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 type User = {
     name: string;
@@ -34,10 +35,10 @@ type Auth = {
     role: string;
 };
 
-// type Flash = {
-//     title: string;
-//     description: string;
-// }
+type Flash = {
+    status: "success" | "error";
+    message: string;
+};
 
 const FormSchema = z.object({
     search: z.string().min(2, {
@@ -51,7 +52,7 @@ export default function DashboardLayout({
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth, flash } = usePage<{ auth: Auth }>().props;
+    const { auth, flash } = usePage<{ auth: Auth; flash: Flash }>().props;
 
     const fullName = auth.name.split(" ");
     const middleName = fullName[Math.floor((fullName.length / 2) | 0)];
@@ -72,30 +73,26 @@ export default function DashboardLayout({
 
     const { url } = usePage();
 
-    router.on("finish", (event) => {
-        toast(
-            <span className="text-primary">
-                {flash.status === "success" ? (
-                    <span>
-                        <CircleCheck size={16} className="me-1" />
-                        Success!
-                    </span>
-                ) : (
-                    <span>
-                        <TriangleAlert size={16} className="me-1" />
-                        Error!
-                    </span>
-                )}
-            </span>,
-            {
-                description: flash.message,
-                action: {
-                    label: "Close",
-                    onClick: () => console.log(),
-                },
-            }
-        );
-    });
+    useEffect(() => {
+        if (flash.status && flash.message) {
+            toast(
+                <span className="text-primary">
+                    {flash.status === "success" ? (
+                        <span>Success!</span>
+                    ) : (
+                        <span>Error!</span>
+                    )}
+                </span>,
+                {
+                    description: flash.message,
+                    action: {
+                        label: "Close",
+                        onClick: () => console.log("Toast closed"),
+                    },
+                }
+            );
+        }
+    }, [flash]);
     // });
 
     // console.log(flash);

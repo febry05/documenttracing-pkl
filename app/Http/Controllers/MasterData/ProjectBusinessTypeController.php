@@ -46,10 +46,17 @@ class ProjectBusinessTypeController extends Controller
             ]);
 
             DB::commit();
-            return Inertia::render('Master/ProjectBusinessTypes/Index');
+            return Inertia::render('Master/ProjectBusinessTypes/Index')->with([
+                'flash' => [
+                    'status' => 'success',
+                    'message' => 'Project Business Type created successfully'
+                ],
+            ]);
+            // return redirect()->route('project-business-types.index')
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', $e->getMessage());
+            return back()->with('status', 'error')
+                ->with('message', 'Error creating Project Business Type: ' . $e->getMessage());
         }
     }
 
