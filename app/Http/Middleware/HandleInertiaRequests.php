@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         //     ]);
         // }
 
-        // dd($request->session());
+        // dd($request->session()->all(), $request->session()->get('success'));
         // dd(Inertia::getShared('message'));
         if (Auth::check()) {
             $user = Auth::user();
@@ -51,7 +51,8 @@ class HandleInertiaRequests extends Middleware
                     'role' => ModelsRole::findByName($user->getRoleNames()[0])->name,
                 ],
                 'flash' => [
-                    'success' => fn () => $request->session()->get('success')
+                    'success' => $request->session()->get('success') ?? session('success'),
+                    'error' => $request->session()->get('error') ?? session('success'),
                 ],
             ];
         } else {

@@ -49,7 +49,26 @@ export default function UserRolesCreateDialog() {
             Inertia.post(route("user-roles.store"), values, {
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user-roles.index'), { only: ['userRoles'] });
+                    // router.visit(route('user-roles.index'), { only: ['userRoles'] });
+                    // toast(
+                    //     <span className="text-primary">
+                    //         <CircleCheck size={16} className="me-1" />
+                    //         Success!
+                    //     </span>,
+                    //     {
+                    //         description: (
+                    //             <span>
+                    //                 User Role "<strong>{values.name}</strong>"
+                    //                 has been added.
+                    //             </span>
+                    //         ),
+                    //         action: {
+                    //             label: "Close",
+                    //             onClick: () =>
+                    //                 console.log("User Role has been added."),
+                    //         },
+                    //     }
+                    // );
                 },
             });
         } catch (error) {

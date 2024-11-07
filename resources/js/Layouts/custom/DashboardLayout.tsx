@@ -34,10 +34,10 @@ type Auth = {
     role: string;
 };
 
-// type Flash = {
-//     title: string;
-//     description: string;
-// }
+type Sonner = {
+    status: string;
+    message: string;
+}
 
 const FormSchema = z.object({
     search: z.string().min(2, {
@@ -75,7 +75,7 @@ export default function DashboardLayout({
     router.on("finish", (event) => {
         toast(
             <span className="text-primary">
-                {flash.status === "success" ? (
+                {flash.success ? (
                     <span>
                         <CircleCheck size={16} className="me-1" />
                         Success!
@@ -88,17 +88,17 @@ export default function DashboardLayout({
                 )}
             </span>,
             {
-                description: flash.message,
+                description: flash.success ?? flash.error,
                 action: {
                     label: "Close",
-                    onClick: () => console.log(),
+                    onClick: () => {},
                 },
             }
         );
     });
     // });
 
-    // console.log(flash);
+    console.log(flash);
 
     return (
         <SidebarProvider>
