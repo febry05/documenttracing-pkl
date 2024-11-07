@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Users\ProfileController;
 use App\Http\Controllers\MasterData\RoleController;
+use App\Http\Controllers\Projects\ProjectController;
 use App\Http\Controllers\MasterData\UserDivisionController;
 use App\Http\Controllers\MasterData\UserPositionController;
 use App\Http\Controllers\MasterData\ProjectBusinessTypeController;
@@ -21,7 +22,6 @@ Route::get('/', function () {
     ]);
 });
 
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -33,6 +33,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:Administrator'])->group(function () {
     //User
     Route::resource('/users', UserController::class);
+
+    // Projects
+    Route::resource('/projects', ProjectController::class);
+
     //Master
     Route::resource('/master/user-roles', RoleController::class);
     Route::resource('/master/user-permissions', PermissionController::class);

@@ -171,7 +171,7 @@ export function DataTable<TData, TValue>({
                         </TableRow>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Click to {detailPage ? "edit" : "view details"}</p>
+                        <p>Click to view details</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

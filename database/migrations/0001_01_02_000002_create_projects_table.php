@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->default(0);
             $table->foreignId('project_business_type');
         });
-    } 
+    }
 
     /**
      * Reverse the migrations.
