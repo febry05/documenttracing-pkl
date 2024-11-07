@@ -27,15 +27,18 @@ class RoleController extends Controller
         // return view('roles.index', compact('roles'));
     }
 
-    // public function create()
-    // {
-    //     $permissions = Permission::all();
-    //     return view('roles.create', compact('permissions'));
-    // }
+    public function create()
+    {
+        return Inertia::render('Master/UserRoles/Create', [
+            'permissions' => Permission::select('id', 'name')->orderBy('id', 'asc')->get()
+        ]);
+    }
 
     public function store(Request $request)
     {
-    DB::beginTransaction();
+        dd($request);
+
+        DB::beginTransaction();
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
@@ -48,11 +51,18 @@ class RoleController extends Controller
             $role->description = $validatedData['description'];
             $role->save();
 
-            
-    
-            DB::commit(); 
+            DB::commit();
+            // Inertia::share('sonner', [
+            //     'status' => 'success',
+            //     'message' => 'User role "' . $role->name . '" has been created.',
+            // ]);
+
+            $request->session()->flash('success', 'User role "' . $role->name . '" has been created.');
+            // dd(session()->all());
+            return to_route('user-roles.index');
+            // return redirect()->route('user-roles.index')->with('success', 'User role "' . $role->name . '" has been created.');
         } catch (\Exception $e) {
-            DB::rollBack(); 
+            DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'There was an error creating the role: ' . $e->getMessage()]);
         }
     }

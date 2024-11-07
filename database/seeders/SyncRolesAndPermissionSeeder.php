@@ -36,24 +36,24 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'View Update Document Project Version',
             'Add Update Document Project Version',
             'Delete Update Document Project Version',
-            
+
             'Manage User',
             'Manage Master Data',
         ];
 
         // app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        
+
         foreach ($permissions as $permissionName) {
             Permission::firstOrCreate(['name' => $permissionName]);
         }
 
         $adminRole = Role::where('name', 'Administrator')->first();
         $adminRole->syncPermissions($permissions);
-        $admin = User::where('email', 'admin@example.com')->first(); 
+        $admin = User::where('email', 'admin@example.com')->first();
         // $admin->assignRole($adminRole);
         if ($admin && $adminRole) {
             $admin->assignRole($adminRole);
-        } 
+        }
 
         $projectManagerRole = Role::where('name', 'Project Manager')->first();
         $projectManagerRole->givePermissionTo([
@@ -64,7 +64,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'View Project Version',
             'Update Document Project Version',
             // 'Delete Document Project Version',
-            
+
             'Create Document Project',
             'View Document Project',
             'Update Document Project',
@@ -76,7 +76,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
         // $projectManager->assignRole($projectManagerRole);
         if ($projectManager && $projectManagerRole) {
             $projectManager->assignRole($projectManagerRole);
-        } 
+        }
 
         $guestRole = Role::where('name', 'Guest')->first();
         $guestRole->givePermissionTo([
@@ -88,8 +88,8 @@ class SyncRolesAndPermissionSeeder extends Seeder
         $guest->assignRole($guestRole);
         if ($guest && $guestRole) {
             $guest->assignRole($guestRole);
-        } 
-        
+        }
+
 
     }
 }

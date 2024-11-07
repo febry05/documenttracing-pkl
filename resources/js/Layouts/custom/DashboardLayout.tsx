@@ -35,10 +35,10 @@ type Auth = {
     role: string;
 };
 
-type Flash = {
-    status: "success" | "error";
+type Sonner = {
+    status: string;
     message: string;
-};
+}
 
 const FormSchema = z.object({
     search: z.string().min(2, {
@@ -73,29 +73,33 @@ export default function DashboardLayout({
 
     const { url } = usePage();
 
-    useEffect(() => {
-        if (flash.status && flash.message) {
-            toast(
-                <span className="text-primary">
-                    {flash.status === "success" ? (
-                        <span>Success!</span>
-                    ) : (
-                        <span>Error!</span>
-                    )}
-                </span>,
-                {
-                    description: flash.message,
-                    action: {
-                        label: "Close",
-                        onClick: () => console.log("Toast closed"),
-                    },
-                }
-            );
-        }
-    }, [flash]);
+    router.on("finish", (event) => {
+        toast(
+            <span className="text-primary">
+                {flash.success ? (
+                    <span>
+                        <CircleCheck size={16} className="me-1" />
+                        Success!
+                    </span>
+                ) : (
+                    <span>
+                        <TriangleAlert size={16} className="me-1" />
+                        Error!
+                    </span>
+                )}
+            </span>,
+            {
+                description: flash.success ?? flash.error,
+                action: {
+                    label: "Close",
+                    onClick: () => {},
+                },
+            }
+        );
+    });
     // });
 
-    // console.log(flash);
+    console.log(flash);
 
     return (
         <SidebarProvider>

@@ -5,15 +5,16 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import UserRolesCreateDialog from "./Components/Create";
 import UserRolesEditDialog from "./Components/Edit";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
+import { Button } from "@/Components/ui/button";
+import { Plus } from "lucide-react";
 
 interface PageProps {
     userRoles: UserRole[],
 }
 
 export default function UserRolesIndex({ userRoles }: PageProps) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return (
         <DashboardLayout
@@ -21,7 +22,14 @@ export default function UserRolesIndex({ userRoles }: PageProps) {
                 <HeaderNavigation
                     title="User Roles List"
                     back={true}
-                    button={<UserRolesCreateDialog />}
+                    button={
+                        <Link href={route('user-roles.create')}>
+                            <Button>
+                                <Plus className="me-2" size={18} />
+                                Create User Role
+                            </Button>
+                        </Link>
+                    }
                 />
             }
         >
@@ -32,10 +40,6 @@ export default function UserRolesIndex({ userRoles }: PageProps) {
                     columns={columns}
                     data={userRoles}
                     detailPage="user-roles.edit"
-                    detailDialog="Edit User Role"
-                    renderDialogContent={(data) => (
-                        <UserRolesEditDialog data={data} closeDialog={() => setIsDialogOpen(false)} />
-                    )}
                 />
             </Card>
         </DashboardLayout>
