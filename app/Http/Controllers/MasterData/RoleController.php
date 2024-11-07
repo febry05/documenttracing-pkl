@@ -37,8 +37,6 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
-
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
@@ -55,20 +53,16 @@ class RoleController extends Controller
             
             $role->syncPermissions($validatedData['permissions']);
             
-
             DB::commit();
-            // Inertia::share('sonner', [
-            //     'status' => 'success',
-            //     'message' => 'User role "' . $role->name . '" has been created.',
-            // ]);
+            // DB::rollBack();
 
-            $request->session()->flash('success', 'User role "' . $role->name . '" has been created.');
+            session()->flash('success', 'User role "' . $role->name . '" has been created.');
             // dd(session()->all());
             return to_route('user-roles.index');
-            // return redirect()->route('user-roles.index')->with('success', 'User role "' . $role->name . '" has been created.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'There was an error creating the role: ' . $e->getMessage()]);
+            session()->flash('error', 'There was an error creating the role: ' . $e->getMessage());
+            return redirect()->back();
         }
     }
 
