@@ -7,25 +7,58 @@ use Illuminate\Http\Request;
 use App\Models\Projects\Project;
 use App\Http\Controllers\Controller;
 use App\Models\MasterData\ProjectBusinessType;
+use App\Models\Users\UserProfile;
+use Carbon\Carbon;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        $mockProjects = [
-            [
-                'id' => 1,
-                'code' => 'SRV.JKLT.2020.01',
-                'name' => 'Pengadaan Jasa Pengelolaan Passengger Service Charges On Ticket System (POTS) di Bandar Udara yang dikelola AP1',
-                'type' => 'Service',
-                'customer' => 'PT Fast Food Indonesia, Tbk',
-                'contract_number' => 'PJKP-20004 344',
-                'contract_start' => '14 Feb \'20',
-                'contract_end' => '15 Feb \'25',
-                'duration' => '5 Years 0 Months 1 Days',
-                'days_left' => '135',
-            ]
-        ];
+
+        $projects = Project::with('userProfiles', 'businessType')
+            ->select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')
+            ->get()
+            ->map(function ($project) {
+                $contractStart = Carbon::parse($project->contract_start);
+                $contractEnd = Carbon::parse($project->contract_end);
+
+                if ($contractEnd->isPast()) {
+                    $daysLeft = 'Contract Ended';
+                } else {
+                    $now = Carbon::now();
+                    $diffInYears = $now->diffInYears($contractEnd);
+                    $diffInMonths = $now->copy()->addYears($diffInYears)->diffInMonths($contractEnd);
+                    $diffInDays = $now->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($contractEnd);
+
+                    $roundedYears = intval($diffInYears);
+                    $roundedMonths = intval($diffInMonths);
+                    $roundedDays = intval($diffInDays);
+
+                    $daysLeft = collect([
+                        $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
+                        $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
+                        $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
+                    ])
+                    ->filter()
+                    ->implode(' ');
+
+                    if (empty($daysLeft)) {
+                        $daysLeft = 'Today';
+                    }
+                }
+
+                return [
+                    'id' => $project->id,
+                    'code' => $project->code,
+                    'name' => $project->name,
+                    'type' => $project->businessType?->name ?? 'N/A',
+                    'customer' => $project->customer,
+                    'contract_number' => $project->contract_number,
+                    'contract_start' => $project->contract_start,
+                    'contract_end' => $project->contract_end,
+                    'days_left' => $daysLeft,
+                ];
+            });
 
         $projectBusinessTypes = ProjectBusinessType::select('id', 'name')->get()->map(function ($type) {
             return [
@@ -35,7 +68,7 @@ class ProjectController extends Controller
         });
 
         return Inertia::render('Projects/Index', [
-            'projects' => $mockProjects,
+            'projects' => $projects,
             'projectBusinessTypes' => $projectBusinessTypes,
         ]);
     }

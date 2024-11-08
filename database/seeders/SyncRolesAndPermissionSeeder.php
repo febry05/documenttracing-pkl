@@ -17,7 +17,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-         $permissions = [
+        $permissions = [
             'Create Project',
             'View Project',
             'Update Project',

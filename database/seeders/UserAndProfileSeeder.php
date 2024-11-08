@@ -20,21 +20,21 @@ class UserAndProfileSeeder extends Seeder
         User::factory()->create([
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'roles_id' => Role::where('name', 'Administrator')->first()->id
+            'roles_id' => Role::select('id')->where('name', 'Administrator')->first()->id
         ]);
         
         //2
         User::create([
             'email' => 'projectmanager@example.com',
             'password' => bcrypt('password'),
-            'roles_id' => Role::where('name', 'Project Manager')->first()->id,
+            'roles_id' => Role::select('id')->where('name', 'Project Manager')->first()->id,
         ]);
 
         //3
         User::create([
             'email' => 'guest@example.com',
             'password' => bcrypt('password'),
-            'roles_id' => Role::where('name', 'Guest')->first()->id
+            'roles_id' => Role::select('id')->where('name', 'Guest')->first()->id
         ]);
         
         // User::factory(10)->create();
@@ -45,8 +45,8 @@ class UserAndProfileSeeder extends Seeder
             'employee_no' => '1234567',
             'NIK' => '1111222233334444',
             'phone' => '081234567890',
-            'user_division_id' => UserDivision::where('name', 'ICT')->first()->id,
-            'user_position_id' => UserPosition::where('name', 'Cyber Security')->first()->id,
+            'user_division_id' => UserDivision::select('id')->where('name', 'ICT')->first()->id,
+            'user_position_id' => UserPosition::select('id')->where('name', 'Cyber Security')->first()->id,
             
         ]);
 
@@ -57,8 +57,8 @@ class UserAndProfileSeeder extends Seeder
             'employee_no' => '1234561',
             'NIK' => '1111222233334445',
             'phone' => '081234567893',
-            'user_division_id' => UserDivision::where('name', 'HRD')->first()->id,
-            'user_position_id' => UserPosition::where('name', 'Payment Roll')->first()->id,
+            'user_division_id' => UserDivision::select('id')->where('name', 'HRD')->first()->id,
+            'user_position_id' => UserPosition::select('id')->where('name', 'Payment Roll')->first()->id,
         ]);
         
         //3
@@ -68,8 +68,8 @@ class UserAndProfileSeeder extends Seeder
             'employee_no' => '1234562',
             'NIK' => '1111222233334446',
             'phone' => '081234567892',
-            'user_division_id' => UserDivision::where('name', 'GA')->first()->id,
-            'user_position_id' => UserPosition::where('name', 'Head of General Affair')->first()->id,
+            'user_division_id' => UserDivision::select('id')->where('name', 'GA')->first()->id,
+            'user_position_id' => UserPosition::select('id')->where('name', 'Head of General Affair')->first()->id,
         ]);
     }
 }

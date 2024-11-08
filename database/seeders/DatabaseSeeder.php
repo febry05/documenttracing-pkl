@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Role;
 use Database\Seeders\ProjectSeeder;
 use App\Models\MasterData\UserDivision;
 use App\Models\MasterData\UserPosition;
+use Database\Seeders\ProjectBusinessSeeder;
 use Database\Seeders\SyncRolesAndPermissionSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,9 +28,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call(UserAndProfileSeeder::class);
 
-        $this->call(ProjectSeeder::class);
+        $this->call(ProjectBusinessSeeder::class);
 
         $this->call(SyncRolesAndPermissionSeeder::class);
+
+        $this->call(ProjectSeeder::class);
         
         // $adminRole = Role::where('name', 'Administrator')->first()->id; 
 

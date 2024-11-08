@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('document_link');
             $table->timestamps();
-            $table->foreignId('projects_documents_versions_id')->constrained();
+            $table->foreignId('projects_documents_version_id')->constrained();
         });
     }
 
