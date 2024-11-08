@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Projects;
 
 use Inertia\Inertia;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
 use App\Http\Controllers\Controller;
@@ -44,6 +45,21 @@ class ProjectController extends Controller
     {
         return Inertia::render('Projects/Show', [
             'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_id', 'project_business_type')->where('id', $id)->first(),
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Projects/Create', [
+            'projectBusinessTypes' => ProjectBusinessType::select('id', 'name')->get(),
+            'projectManagers' => User::with('profile')->whereHas('roles', function ($query) {
+                $query->where('name', 'Project Manager');
+            })->get()->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->profile->name,
+                ];
+            }),
         ]);
     }
 
