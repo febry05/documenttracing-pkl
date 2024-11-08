@@ -41,6 +41,9 @@ const formSchema = z.object({
     contract_end: z.date(),
     user_id : z.number(),
     project_business_type_id: z.number(),
+}).refine(data => data.contract_end >= data.contract_start, {
+    message: "Contract end date must be later than or equal to contract start date",
+    path: ["contract_end"],
 });
 
 type ProjectManager = {
@@ -368,7 +371,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                                         selected={field.value}
                                                         onSelect={field.onChange}
                                                         disabled={(date) =>
-                                                        date > new Date() || date < new Date("1900-01-01")
+                                                            date < new Date("1900-01-01")
                                                         }
                                                         initialFocus
                                                     />
@@ -379,7 +382,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                         )}
                                     />
 
-                                    {/* Division Field */}
+                                    {/* End Date Field */}
                                     <FormField
                                         control={form.control}
                                         name="contract_end"
@@ -416,7 +419,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                                         selected={field.value}
                                                         onSelect={field.onChange}
                                                         disabled={(date) =>
-                                                        date > new Date() || date < new Date("1900-01-01")
+                                                            date < new Date("1900-01-01") || date < form.getValues("contract_start")
                                                         }
                                                         initialFocus
                                                     />
