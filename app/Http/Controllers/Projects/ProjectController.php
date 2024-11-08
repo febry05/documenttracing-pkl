@@ -10,12 +10,12 @@ use App\Http\Controllers\Controller;
 use App\Models\MasterData\ProjectBusinessType;
 use App\Models\Users\UserProfile;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-
         $projects = Project::with('userProfiles', 'businessType')
             ->select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')
             ->get()
@@ -77,7 +77,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         return Inertia::render('Projects/Show', [
-            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_id', 'project_business_type')->where('id', $id)->first(),
+            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type')->where('id', $id)->first(),
         ]);
     }
 
@@ -94,6 +94,46 @@ class ProjectController extends Controller
                 ];
             }),
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255',
+                'customer' => 'required|string|max:255',
+                'contract_number' => 'required|string|max:255',
+                'contract_start' => 'required|date',
+                'contract_end' => 'required|date',
+                'user_profile_id' => 'required|integer',
+                'project_business_type_id' => 'required|integer',
+            ]);
+
+            // dd($validatedData);
+
+            $project = Project::create([
+                'name' => $validatedData['name'],
+                'code' => $validatedData['code'],
+                'customer' => $validatedData['customer'],
+                'contract_number' => $validatedData['contract_number'],
+                'contract_start' => $validatedData['contract_start'],
+                'contract_end' => $validatedData['contract_end'],
+                'user_profile_id' => $validatedData['user_profile_id'],
+                'project_business_type_id' => $validatedData['project_business_type_id'],
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('projects.index')->with('flash', [
+                'status' => 'success',
+                'message' => 'Project created successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to create project');
+        }
     }
 
     public function edit($id)

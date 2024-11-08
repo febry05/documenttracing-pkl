@@ -19,6 +19,8 @@ class Project extends Model
         'contract_number',
         'contract_start',
         'contract_end',
+        'user_profile_id',
+        'project_business_type_id',
 
     ];
 
