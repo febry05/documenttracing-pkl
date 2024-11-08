@@ -33,35 +33,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        // $response = $next($request);
-        // if ($request->session()->has('success')) {
-        //     $response->with('flash', [
-        //         'success' => $request->session()->get('success'),
-        //     ]);
-        // }
-
-        // dd($request->session()->all(), $request->session()->get('success'));
-        // dd(Inertia::getShared('message'));
-        if (Auth::check()) {
-            $user = Auth::user();
-            return [
-                ...parent::share($request),
-                'auth' => [
-                    'name' => $user->profile->name,
-                    'role' => ModelsRole::findByName($user->getRoleNames()[0])->name,
-                ],
-                'flash' => [
-                    'success' => $request->session()->get('success') ?? session('success'),
-                    'error' => $request->session()->get('error') ?? session('success'),
-                ],
-            ];
-        } else {
-            return [
-                ...parent::share($request),
-                'auth' => [
-                    'user' => $request->user(),
-                ],
-            ];
-        }
+        return array_merge(parent::share($request), [
+            'auth' => Auth::check() ? [
+                'name' => Auth::user()->profile->name,
+                'role' => ModelsRole::findByName(Auth::user()->getRoleNames()[0])->name,
+            ] : [
+                'user' => $request->user(),
+            ],
+            'flash' => [
+                'success' => session()->get('success'),
+                'error' => session()->get('error'),
+            ],
+        ]);
     }
 }

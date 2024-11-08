@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt";
 import { AppSidebar } from "@/Components/app-sidebar";
@@ -23,7 +23,6 @@ import { ModeToggle } from "@/Components/mode-toggle";
 import { Button } from "@/Components/ui/button";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
-import { useEffect } from "react";
 
 type User = {
     name: string;
@@ -35,10 +34,10 @@ type Auth = {
     role: string;
 };
 
-type Sonner = {
-    status: string;
-    message: string;
-}
+type Flash = {
+    success: string;
+    error: string;
+};
 
 const FormSchema = z.object({
     search: z.string().min(2, {
@@ -73,33 +72,38 @@ export default function DashboardLayout({
 
     const { url } = usePage();
 
-    router.on("finish", (event) => {
-        toast(
-            <span className="text-primary">
-                {flash.success ? (
-                    <span>
-                        <CircleCheck size={16} className="me-1" />
-                        Success!
-                    </span>
-                ) : (
-                    <span>
-                        <TriangleAlert size={16} className="me-1" />
-                        Error!
-                    </span>
-                )}
-            </span>,
-            {
-                description: flash.success ?? flash.error,
-                action: {
-                    label: "Close",
-                    onClick: () => {},
-                },
-            }
-        );
-    });
-    // });
-
-    console.log(flash);
+    useEffect(() => {
+        if (flash.success) {
+            console.log(flash.success);
+            toast(
+                <span className="text-primary flex">
+                    <CircleCheck size={16} className="me-1" />
+                    Success!
+                </span>,
+                {
+                    description: "kontol",
+                    action: {
+                        label: "Close",
+                        onClick: () => {},
+                    },
+                }
+            );
+        } else if (flash.error) {
+            toast(
+                <span className="text-primary flex">
+                    <TriangleAlert size={16} className="me-1" />
+                    Error!
+                </span>,
+                {
+                    description: flash.error,
+                    action: {
+                        label: "Close",
+                        onClick: () => {},
+                    },
+                }
+            );
+        }
+    }, [flash]);
 
     return (
         <SidebarProvider>
@@ -133,7 +137,7 @@ export default function DashboardLayout({
                     </div> */}
 
                     {/* Theme Mode Toggle */}
-                    {/* <div className="ms-auto">
+                    <div className="ms-auto">
                         <Button
                             variant="outline"
                             onClick={() =>
@@ -149,7 +153,7 @@ export default function DashboardLayout({
                         >
                             Show Toast
                         </Button>
-                    </div> */}
+                    </div>
 
                     {/* Notification Panel */}
                     <Popover>
