@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { DataTable, FilterOption } from "@/Components/ui/data-table"
+import { DataTable, FilterOption } from "@/Components/ui/data-table";
 import { Card } from "@/Components/ui/card";
 import { Plus } from "lucide-react";
 import { Project, columns } from "./columns";
@@ -8,11 +8,14 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Button } from "@/Components/ui/button";
 
 interface PageProps {
-    projects: Project[],
-    projectBusinessTypes: FilterOption[],
+    projects: Project[];
+    projectBusinessTypes: FilterOption[];
 }
 
-export default function UsersIndex({ projects, projectBusinessTypes }: PageProps) {
+export default function UsersIndex({
+    projects,
+    projectBusinessTypes,
+}: PageProps) {
     const filters = [
         {
             columnId: "type",
@@ -20,7 +23,7 @@ export default function UsersIndex({ projects, projectBusinessTypes }: PageProps
             options: [
                 { value: "all", label: "All Type" },
                 ...projectBusinessTypes,
-            ]
+            ],
         },
         // {
         //     columnId: "role",
@@ -38,7 +41,7 @@ export default function UsersIndex({ projects, projectBusinessTypes }: PageProps
                     title="Projects List"
                     back={true}
                     button={
-                        <Link href={route('projects.create')}>
+                        <Link href={route("projects.create")}>
                             <Button>
                                 <Plus className="me-2" size={18} />
                                 Create Project
@@ -51,7 +54,12 @@ export default function UsersIndex({ projects, projectBusinessTypes }: PageProps
             <Head title="Projects" />
 
             <Card className="flex-auto basis-1/2 p-4">
-                <DataTable columns={columns} data={projects} filters={filters} detailPage="projects.show" />
+                <DataTable
+                    columns={columns}
+                    data={projects}
+                    filters={filters}
+                    detailPage="projects.show"
+                />
             </Card>
         </DashboardLayout>
     );

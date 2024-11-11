@@ -77,7 +77,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         return Inertia::render('Projects/Show', [
-            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type')->where('id', $id)->first(),
+            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
         ]);
     }
 
@@ -111,7 +111,8 @@ class ProjectController extends Controller
                 'project_business_type_id' => 'required|integer',
             ]);
 
-            // dd($validatedData);
+            $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
+            $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
 
             $project = Project::create([
                 'name' => $validatedData['name'],
@@ -139,8 +140,49 @@ class ProjectController extends Controller
     public function edit($id)
     {
         return Inertia::render('Projects/Edit', [
-            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_id', 'project_business_type')->where('id', $id)->first(),
+            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
         ]);
+    }
+
+    public function update($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255',
+                'customer' => 'required|string|max:255',
+                'contract_number' => 'required|string|max:255',
+                'contract_start' => 'required|date',
+                'contract_end' => 'required|date',
+                'user_profile_id' => 'required|integer',
+                'project_business_type_id' => 'required|integer',
+            ]);
+
+            $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
+            $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
+
+            $project = Project::findOrFail($id);
+            $project->name = $validatedData['name'];
+            $project->code = $validatedData['code'];
+            $project->customer = $validatedData['customer'];
+            $project->contract_number = $validatedData['contract_number'];
+            $project->contract_start = $validatedData['contract_start'];
+            $project->contract_end = $validatedData['contract_end'];
+            $project->user_profile_id = $validatedData['user_profile_id'];
+            $project->project_business_type_id = $validatedData['project_business_type_id'];
+            $project->save();
+
+            DB::commit();
+
+            return redirect()->route('projects.index')->with('flash', [
+                'status' => 'success',
+                'message' => 'Project updated successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to update project');
+        }
     }
 
     protected $mockProjects = [
