@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Projects\Project;
 use App\Http\Controllers\Controller;
 use App\Models\MasterData\ProjectBusinessType;
+use App\Models\Users\UserProfile;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 use function Ramsey\Uuid\v1;
 
@@ -15,21 +18,50 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        // Mock data, delete when real data is available
-        $mockProjects = [
-            [
-                'id' => 1,
-                'code' => 'SRV.JKLT.2020.01',
-                'name' => 'Penyedia Jasa Manage Service Jaringan LAN di 13 Bandara Angkasa Pura 1 (Air Asia)',
-                'type' => 'Service',
-                'customer' => 'PT Fast Food Indonesia, Tbk',
-                'contract_number' => 'PJKP-20004 344',
-                'contract_start' => '14 Feb \'20',
-                'contract_end' => '15 Feb \'25',
-                'duration' => '5 Years 0 Months 1 Days',
-                'days_left' => '135',
-            ]
-        ];
+        $projects = Project::with('userProfiles', 'businessType')
+            ->select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')
+            ->get()
+            ->map(function ($project) {
+                $contractStart = Carbon::parse($project->contract_start);
+                $contractEnd = Carbon::parse($project->contract_end);
+
+                if ($contractEnd->isPast()) {
+                    $daysLeft = 'Contract Ended';
+                } else {
+                    $now = Carbon::now();
+                    $diffInYears = $now->diffInYears($contractEnd);
+                    $diffInMonths = $now->copy()->addYears($diffInYears)->diffInMonths($contractEnd);
+                    $diffInDays = $now->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($contractEnd);
+
+                    $roundedYears = intval($diffInYears);
+                    $roundedMonths = intval($diffInMonths);
+                    $roundedDays = intval($diffInDays);
+
+                    $daysLeft = collect([
+                        $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
+                        $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
+                        $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
+                    ])
+                    ->filter()
+                    ->implode(' ');
+
+                    if (empty($daysLeft)) {
+                        $daysLeft = 'Today';
+                    }
+                }
+
+                return [
+                    'id' => $project->id,
+                    'code' => $project->code,
+                    'name' => $project->name,
+                    'type' => $project->businessType?->name ?? 'N/A',
+                    'customer' => $project->customer,
+                    'contract_number' => $project->contract_number,
+                    'contract_start' => $project->contract_start,
+                    'contract_end' => $project->contract_end,
+                    'days_left' => $daysLeft,
+                ];
+            });
 
         $projectBusinessTypes = ProjectBusinessType::select('id', 'name')->get()->map(function ($type) {
             return [
@@ -39,7 +71,7 @@ class ProjectController extends Controller
         });
 
         return Inertia::render('Projects/Index', [
-            'projects' => $mockProjects,
+            'projects' => $projects,
             'projectBusinessTypes' => $projectBusinessTypes,
         ]);
     }
@@ -92,9 +124,7 @@ class ProjectController extends Controller
         ];
 
         return Inertia::render('Projects/Show', [
-            // 'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_id', 'project_business_type')->findOrFail($id),
-            'project' => $mockProject,
-            'documents' => $mockDocuments
+            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
         ]);
     }
 
@@ -113,14 +143,95 @@ class ProjectController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255',
+                'customer' => 'required|string|max:255',
+                'contract_number' => 'required|string|max:255',
+                'contract_start' => 'required|date',
+                'contract_end' => 'required|date',
+                'user_profile_id' => 'required|integer',
+                'project_business_type_id' => 'required|integer',
+            ]);
+
+            $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
+            $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
+
+            $project = Project::create([
+                'name' => $validatedData['name'],
+                'code' => $validatedData['code'],
+                'customer' => $validatedData['customer'],
+                'contract_number' => $validatedData['contract_number'],
+                'contract_start' => $validatedData['contract_start'],
+                'contract_end' => $validatedData['contract_end'],
+                'user_profile_id' => $validatedData['user_profile_id'],
+                'project_business_type_id' => $validatedData['project_business_type_id'],
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('projects.index')->with('flash', [
+                'status' => 'success',
+                'message' => 'Project created successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to create project');
+        }
+    }
+
     public function edit($id)
     {
         return Inertia::render('Projects/Edit', [
-            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_id', 'project_business_type')->where('id', $id)->first(),
+            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
         ]);
     }
 
-    // Mock data, delete when real data is available
+    public function update($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255',
+                'customer' => 'required|string|max:255',
+                'contract_number' => 'required|string|max:255',
+                'contract_start' => 'required|date',
+                'contract_end' => 'required|date',
+                'user_profile_id' => 'required|integer',
+                'project_business_type_id' => 'required|integer',
+            ]);
+
+            $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
+            $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
+
+            $project = Project::findOrFail($id);
+            $project->name = $validatedData['name'];
+            $project->code = $validatedData['code'];
+            $project->customer = $validatedData['customer'];
+            $project->contract_number = $validatedData['contract_number'];
+            $project->contract_start = $validatedData['contract_start'];
+            $project->contract_end = $validatedData['contract_end'];
+            $project->user_profile_id = $validatedData['user_profile_id'];
+            $project->project_business_type_id = $validatedData['project_business_type_id'];
+            $project->save();
+
+            DB::commit();
+
+            return redirect()->route('projects.index')->with('flash', [
+                'status' => 'success',
+                'message' => 'Project updated successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to update project');
+        }
+    }
+
     protected $mockProjects = [
         [
             'id' => 1,

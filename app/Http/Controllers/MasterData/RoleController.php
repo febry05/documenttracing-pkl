@@ -102,7 +102,7 @@ class RoleController extends Controller
             DB::commit();
             // DB::rollBack();
 
-            session()->flash('success', 'User role "' . $role->name . '" has been updatedd.');
+            session()->flash('success', 'User role "' . $role->name . '" has been updated.');
             // dd(session()->all());
             return to_route('user-roles.index');
         } catch (\Exception $e) {

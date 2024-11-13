@@ -81,7 +81,7 @@ export default function DashboardLayout({
                     Success!
                 </span>,
                 {
-                    description: "kontol",
+                    description: flash.success,
                     action: {
                         label: "Close",
                         onClick: () => {},
