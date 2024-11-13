@@ -221,7 +221,7 @@ export default function DashboardLayout({
                         </PopoverContent>
                     </Popover>
                 </nav>
-                <ScrollArea className="px-6 pt-6 flex-1">
+                <ScrollArea className="px-6 pt-4 flex-1">
                     <div className="pb-4 font-semibold text-xl leading-tight">
                         {header}
                     </div>

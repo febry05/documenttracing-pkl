@@ -20,12 +20,10 @@ export default function ProjectBusinessTypesIndex({ projectBusinessTypes }: Page
             header={
                 <HeaderNavigation
                     title="Project Business Types List"
-                    back={true}
                     button={<ProjectBusinessTypesCreateDialog />}
                 />
             }
         >
-
             <Head title="Project Business Types" />
 
             <Card className="flex-auto basis-1/2 p-8">

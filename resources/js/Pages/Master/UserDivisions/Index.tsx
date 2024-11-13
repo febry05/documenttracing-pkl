@@ -20,7 +20,6 @@ export default function UserDivisionsIndex({ userDivisions }: PageProps) {
             header={
                 <HeaderNavigation
                     title="User Divisions List"
-                    back={true}
                     button={<UserDivisionsCreateDialog />}
                 />
             }

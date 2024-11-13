@@ -124,7 +124,7 @@ export default function UsersEdit({
 
     return (
         <DashboardLayout
-            header={<HeaderNavigation title="Edit User" back={true} />}
+            header={<HeaderNavigation title="Edit User" />}
         >
             <Head title="Edit User" />
 

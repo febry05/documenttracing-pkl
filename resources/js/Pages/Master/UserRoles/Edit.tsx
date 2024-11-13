@@ -22,6 +22,7 @@ import { Checkbox } from "@/Components/ui/checkbox";
 import { UserRoleDeleteDialog } from "./Components/Delete";
 import { IconButton } from "@/Components/custom/IconButton";
 import { Save } from "lucide-react";
+import { Breadcrumb } from "@/Components/ui/breadcrumb";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -65,10 +66,16 @@ export default function UserRolesEdit({ role, permissions, rolePermissions }: Pa
         }
     }
 
+    const breadcrumb = [
+        { name: 'Master' },
+        { name: 'User Roles', url: route('user-roles.index') },
+        { name:  role.name},
+    ]
+
     return (
         <DashboardLayout
             header={
-                <HeaderNavigation title="Edit User Role" back={true}/>
+                <HeaderNavigation title="Edit User Role" breadcrumb={breadcrumb}/>
             }
         >
             <Head title="Edit User Role" />

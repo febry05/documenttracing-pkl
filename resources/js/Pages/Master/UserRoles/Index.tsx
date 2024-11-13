@@ -3,8 +3,6 @@ import { Card } from "@/Components/ui/card";
 import { UserRole, columns } from "./columns";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import UserRolesCreateDialog from "./Components/Create";
-import UserRolesEditDialog from "./Components/Edit";
 import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
 import { Button } from "@/Components/ui/button";
@@ -14,14 +12,18 @@ interface PageProps {
     userRoles: UserRole[],
 }
 
-export default function UserRolesIndex({ userRoles }: PageProps) {
+const breadcrumb = [
+    { name: 'Master' },
+    { name: 'User Roles' }
+]
 
+export default function UserRolesIndex({ userRoles }: PageProps) {
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="User Roles List"
-                    back={true}
+                    breadcrumb={breadcrumb}
                     button={
                         <Link href={route('user-roles.create')}>
                             <Button>
@@ -34,6 +36,8 @@ export default function UserRolesIndex({ userRoles }: PageProps) {
             }
         >
             <Head title="User Roles" />
+
+            {/* <BreadcrumbBuilder tree={tree}/> */}
 
             <Card className="flex-auto basis-1/2 p-8">
                 <DataTable<UserRole, any>

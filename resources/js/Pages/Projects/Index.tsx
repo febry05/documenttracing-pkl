@@ -25,13 +25,6 @@ export default function UsersIndex({
                 ...projectBusinessTypes,
             ],
         },
-        // {
-        //     columnId: "role",
-        //     options: [
-        //         { value: "all", label: "All Roles" },
-        //         ...roles
-        //     ]
-        // }
     ];
 
     return (
@@ -39,7 +32,7 @@ export default function UsersIndex({
             header={
                 <HeaderNavigation
                     title="Projects List"
-                    back={true}
+                    // back={route('dashboard')}
                     button={
                         <Link href={route("projects.create")}>
                             <Button>

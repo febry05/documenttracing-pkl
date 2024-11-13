@@ -36,7 +36,6 @@ export default function UsersIndex({ users, positions, roles }: PageProps) {
             header={
                 <HeaderNavigation
                     title="Users List"
-                    back={true}
                     button={
                         <Link href={route('users.create')}>
                             <Button>

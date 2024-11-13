@@ -92,7 +92,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
     return (
         <DashboardLayout
             header={
-                <HeaderNavigation title="Create User" back={true}/>
+                <HeaderNavigation title="Create User"/>
             }
         >
             <Head title="Create User" />

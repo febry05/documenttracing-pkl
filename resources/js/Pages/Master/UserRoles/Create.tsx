@@ -56,7 +56,7 @@ export default function UserRolesCreate({ permissions }: PageProps) {
     return (
         <DashboardLayout
             header={
-                <HeaderNavigation title="Create User Role" back={true}/>
+                <HeaderNavigation title="Create User Role"/>
             }
         >
             <Head title="Create User Role" />

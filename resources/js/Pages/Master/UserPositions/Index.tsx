@@ -22,7 +22,6 @@ export default function UserPositionsIndex({ userPositions, userDivisions }: Pag
             header={
                 <HeaderNavigation
                     title="User Positions List"
-                    back={true}
                     button={<UserPositionsCreateDialog userDivisions={userDivisions} />}
                 />
             }

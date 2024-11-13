@@ -34,13 +34,11 @@ interface PageProps {
 }
 
 export default function UsersIndex({ project, documents }: PageProps) {
-    console.log(documents);
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Details"
-                    back={true}
                     button={
                         <Link href={route('projects.edit', project.id)}>
                             <Button>
