@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 interface PageProps {
     project: {
+        id: number;
         code: string;
         name: string;
         type: string;
@@ -41,7 +42,7 @@ export default function UsersIndex({ project, documents }: PageProps) {
                     title="Project Details"
                     back={true}
                     button={
-                        <Link href={route('projects.create')}>
+                        <Link href={route('projects.edit', project.id)}>
                             <Button>
                                 <PenLine className="me-2" size={18} />
                                 Edit Project
@@ -77,9 +78,6 @@ export default function UsersIndex({ project, documents }: PageProps) {
                 </div>
             </Card>
             <Card className="flex flex-col">
-                {/* <div className="px-8 py-4 border-b">
-                    <div className="col-span-5 leading-9 text-l font-semibold">Project Documents</div>
-                </div> */}
                 <div className="p-8">
                 <Accordion type="multiple" className="flex flex-col gap-4">
                     {documents.map(document => (

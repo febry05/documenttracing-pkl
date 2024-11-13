@@ -1,153 +1,176 @@
-import { Inertia } from '@inertiajs/inertia';
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { number, z } from "zod";
+import { z } from "zod";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
-import { Save } from "lucide-react";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/Components/ui/form";
+import { CalendarIcon, Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
-import { handleNumericInput } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { useEffect, useState } from 'react';
-import { IconButton } from '@/Components/custom/IconButton';
-import { UserRoleDeleteDialog } from './Components/Delete';
+import { ProjectBusinessType } from "../Master/ProjectBusinessTypes/columns";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/Components/ui/popover";
+import { format } from "date-fns";
+import { Calendar } from "@/Components/ui/calendar";
+import { IconButton } from "@/Components/custom/IconButton";
+import { ProjectRoleDeleteDialog } from "./Components/Delete";
 
-const formSchema = z.object({
-    email: z.string().min(5).max(255).email(),
-    password: z.string().min(6).max(255),
-    roles_id: z.number(),
-    name: z.string().min(3).max(255),
-    nik: z.string().min(16).max(16).optional(),
-    phone: z.string().min(10).max(15).optional(),
-    employee_no: z.string().min(7).max(7),
-    user_division_id: z.number(),
-    user_position_id: z.number(),
-})
+const formSchema = z
+    .object({
+        name: z.string().min(5).max(255),
+        code: z.string().min(3).max(20),
+        customer: z.string().min(3).max(255),
+        contract_number: z.string().min(3).max(30),
+        contract_start: z.date(),
+        contract_end: z.date(),
+        user_profile_id: z.number(),
+        project_business_type_id: z.number(),
+    })
+    .refine((data) => data.contract_end >= data.contract_start, {
+        message:
+            "Contract end date must be later than or equal to contract start date",
+        path: ["contract_end"],
+    });
 
-type UserMasterData = {
+type ProjectManager = {
     id: number;
     name: string;
-    description?: string;
-    user_division_id?: number;
-}
+};
+
+type Project = {
+    id: number;
+    name: string;
+    code: string;
+    customer: string;
+    contract_number: string;
+    contract_start: Date;
+    contract_end: Date;
+    user_profile_id: number;
+    project_business_type_id: number;
+};
 
 interface PageProps {
-    user: {
-        id: number,
-        email: string,
-        password: string,
-        roles_id: number,
-        name: string,
-        nik: string,
-        phone: string,
-        employee_no: string,
-        user_division_id: number,
-        user_position_id: number
-    };
-    userRoles: UserMasterData[];
-    userDivisions: UserMasterData[];
-    userPositions: UserMasterData[];
+    project: Project;
+    projectBusinessTypes: ProjectBusinessType[];
+    projectManagers: ProjectManager[];
 }
 
-export default function UsersEdit({ user, userRoles, userDivisions, userPositions }: PageProps) {
-    // console.log(user);
+export default function UsersCreate({
+    project,
+    projectBusinessTypes,
+    projectManagers,
+}: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: user.email || '',
-            password: user.password || '',
-            roles_id: Number(user.roles_id),
-            name: user.name || '',
-            nik: user.nik || '',
-            phone: user.phone || '',
-            employee_no: user.employee_no,
-            user_division_id: Number(user.user_division_id),
-            user_position_id: Number(user.user_position_id),
+            name: project.name || "",
+            code: project.code || "",
+            customer: project.customer || "",
+            contract_number: project.contract_number || "",
+            contract_start: new Date(project.contract_start),
+            contract_end: new Date(project.contract_end),
+            user_profile_id: Number(project.user_profile_id),
+            project_business_type_id: Number(project.project_business_type_id),
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route('users.store', user.id), values);
+            await router.put(route("projects.update", project.id), values);
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error("Submission error:", error);
         }
     }
 
-    const [availableUserPositions, setAvailableUserPositions] = useState(userPositions);
-    const [selectedDivision, setSelectedDivision] = useState(user.user_division_id || null);
-
-    // Filter positions based on division on mount and when division changes
-    useEffect(() => {
-        if (selectedDivision) {
-            setAvailableUserPositions(userPositions.filter((pos) => pos.user_division_id === selectedDivision));
-        } else {
-            setAvailableUserPositions([]);
-        }
-    }, [selectedDivision, userPositions]);
-
-    // Handle division change to filter positions and update selected division
-    const handleDivisionChange = (divisionId: number) => {
-        setSelectedDivision(divisionId);
-    };
-
     return (
         <DashboardLayout
-            header={
-                <HeaderNavigation title="Edit User" back={true}/>
-            }
+            header={<HeaderNavigation title="Edit Project" back={true} />}
         >
-            <Head title="Edit User" />
+            <Head title="Edit Project" />
 
             <Card className="p-8">
                 <Form {...form}>
-                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
+                    <form
+                        action=""
+                        method="POST"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                    >
                         <div className="flex flex-col gap-8">
-
-                            {/* Credentials info [START] */}
+                            {/* Project info [START] */}
                             <div className="flex flex-col gap-2">
                                 <span className="font-bold text-sm">
-                                    User Credentials Information
+                                    Project Information
                                 </span>
                                 <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
-
-                                    {/* Email Field */}
+                                    {/* Name Field */}
                                     <FormField
                                         control={form.control}
-                                        name="email"
+                                        name="name"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Email
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    Name
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input type="email" placeholder="Enter the user's email" {...field} minLength={5} maxLength={255} />
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter the project's name"
+                                                        {...field}
+                                                        minLength={5}
+                                                        maxLength={255}
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
 
-                                    {/* Password Field */}
+                                    {/* Project Code Field */}
                                     <FormField
                                         control={form.control}
-                                        name="password"
+                                        name="code"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Password
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    Project Code
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input type="password" placeholder="Enter the user's password" {...field} minLength={6} maxLength={255} />
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter the project's code"
+                                                        {...field}
+                                                        minLength={3}
+                                                        maxLength={20}
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -156,172 +179,167 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                     {/* Role Field */}
                                     <FormField
                                         control={form.control}
-                                        name="roles_id"
+                                        name="contract_number"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Role
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    Contract Number
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={user.roles_id ? user.roles_id.toString() : ''}>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter the project's contract number"
+                                                        {...field}
+                                                        minLength={3}
+                                                        maxLength={30}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </div>
+                            {/* Project info [END] */}
+
+                            {/* Project Details [START] */}
+                            <div className="flex flex-col gap-2">
+                                <span className="font-bold text-sm">
+                                    Customer & Person in Charge Information
+                                </span>
+                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
+                                    {/* Business Type Field */}
+                                    <FormField
+                                        control={form.control}
+                                        name="project_business_type_id"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Business Type
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
+                                                </FormLabel>
+                                                <Select
+                                                    onValueChange={(value) =>
+                                                        field.onChange(
+                                                            Number(value)
+                                                        )
+                                                    }
+                                                    defaultValue={
+                                                        field.value
+                                                            ? field.value.toString()
+                                                            : ""
+                                                    }
+                                                >
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="Select the user's role" />
+                                                            <SelectValue placeholder="Select the project's business type" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {userRoles.map(role => {
-                                                            return (
-                                                                <SelectItem key={role.id} value={role.id.toString()}>{role.name}</SelectItem>
-                                                            )
-                                                        })}
+                                                        {projectBusinessTypes.map(
+                                                            (
+                                                                projectBusinessType
+                                                            ) => {
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            projectBusinessType.id
+                                                                        }
+                                                                        value={projectBusinessType.id.toString()}
+                                                                    >
+                                                                        {
+                                                                            projectBusinessType.name
+                                                                        }
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                </div>
-                            </div>
-                            {/* Credentials info [END] */}
 
-                            {/* Personal Info [START] */}
-                            <div className="flex flex-col gap-2">
-                                <span className="font-bold text-sm">
-                                    User Personal Information
-                                </span>
-                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
-
-                                    {/* Name Field */}
+                                    {/* Customer Field */}
                                     <FormField
                                         control={form.control}
-                                        name="name"
+                                        name="customer"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Full Name
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    Customer
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Enter the user's full name" {...field} minLength={3} maxLength={255}/>
-                                                    </FormControl>
+                                                <FormControl>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter the project's customer"
+                                                        {...field}
+                                                        minLength={3}
+                                                        maxLength={255}
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                    {/* NIK Field */}
-                                    <FormField
-                                        control={form.control}
-                                        name="nik"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>NIK</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's NIK" {...field} minLength={16} maxLength={16} onKeyDown={handleNumericInput} />
-                                                    </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    {/* Phone Number Field */}
-                                    <FormField
-                                        control={form.control}
-                                        name="phone"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Phone Number</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="text" placeholder="0812xxx" {...field} minLength={10} maxLength={15} onKeyDown={handleNumericInput} />
-                                                    </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                            {/* Personal Info [END] */}
 
-                            {/* Employee Info [START] */}
-                            <div className="flex flex-col gap-2">
-                                <span className="font-bold text-sm">
-                                    User Employee Information
-                                </span>
-                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
-
-                                    {/* Employee Number FIeld */}
+                                    {/* Person In Charge Field */}
                                     <FormField
                                         control={form.control}
-                                        name="employee_no"
+                                        name="user_profile_id"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Employee Number
-                                                    <span className="text-destructive ms-1">*</span>
-                                                </FormLabel>
-                                                    <FormControl>
-                                                        <Input type="text" placeholder="Enter the user's employee number" {...field} minLength={7} maxLength={7} onKeyDown={handleNumericInput} />
-                                                    </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    {/* Division Field */}
-                                    <FormField
-                                        control={form.control}
-                                        name="user_division_id"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    Division
-                                                    <span className="text-destructive ms-1">*</span>
+                                                    Person in Charge
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
                                                 <Select
-                                                    onValueChange={(value) => {
-                                                        handleDivisionChange(Number(value));
-                                                    }}
-                                                    defaultValue={user.user_division_id?.toString() || ''}
+                                                    onValueChange={(value) =>
+                                                        field.onChange(
+                                                            Number(value)
+                                                        )
+                                                    }
+                                                    defaultValue={
+                                                        field.value
+                                                            ? field.value.toString()
+                                                            : ""
+                                                    }
                                                 >
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select the user's division" />
-                                                    </SelectTrigger>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select the project's person in charge" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
                                                     <SelectContent>
-                                                        {userDivisions.map((division) => (
-                                                            <SelectItem key={division.id} value={division.id.toString()}>
-                                                                {division.name}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    {/* Position Field */}
-                                    <FormField
-                                        control={form.control}
-                                        name="user_position_id"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    Position
-                                                    <span className="text-destructive ms-1">*</span>
-                                                </FormLabel>
-                                                <Select
-                                                    // onValueChange={(value) => console.log('Selected position:', value)}
-                                                    defaultValue={user.user_position_id?.toString() || ''}
-                                                    disabled={!availableUserPositions.length} // Disable if no positions available
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder={availableUserPositions.length ? "Select the user's position" : "Select division first"} />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {availableUserPositions.map((position) => (
-                                                            <SelectItem key={position.id} value={position.id.toString()}>
-                                                                {position.name}
-                                                            </SelectItem>
-                                                        ))}
+                                                        {projectManagers.map(
+                                                            (
+                                                                projectManager
+                                                            ) => {
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            projectManager.id
+                                                                        }
+                                                                        value={projectManager.id.toString()}
+                                                                    >
+                                                                        {
+                                                                            projectManager.name
+                                                                        }
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -330,10 +348,177 @@ export default function UsersEdit({ user, userRoles, userDivisions, userPosition
                                     />
                                 </div>
                             </div>
-                            {/* Employee Info [END] */}
+                            {/* Project Details [END] */}
+
+                            {/* Dates Info [START] */}
+                            <div className="flex flex-col gap-2">
+                                <span className="font-bold text-sm">Dates</span>
+                                <div className="grid xs:grid-rows-3 lg:grid-cols-3 gap-4">
+                                    {/* Start Date Field */}
+                                    <FormField
+                                        control={form.control}
+                                        name="contract_start"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>
+                                                    Contract Start Date
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
+                                                </FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                                variant={
+                                                                    "outline"
+                                                                }
+                                                                className={cn(
+                                                                    "pl-3 text-left font-normal",
+                                                                    !field.value &&
+                                                                        "text-muted-foreground"
+                                                                )}
+                                                            >
+                                                                {field.value ? (
+                                                                    format(
+                                                                        field.value,
+                                                                        "yyyy-MM-dd"
+                                                                    )
+                                                                ) : (
+                                                                    <span>
+                                                                        Pick
+                                                                        project's
+                                                                        contract
+                                                                        start
+                                                                        date
+                                                                    </span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent
+                                                        className="w-auto p-0"
+                                                        align="start"
+                                                    >
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={
+                                                                field.value
+                                                            }
+                                                            onSelect={(date) =>
+                                                                field.onChange(
+                                                                    date
+                                                                        ? new Date(
+                                                                              date.toDateString()
+                                                                          )
+                                                                        : undefined
+                                                                )
+                                                            }
+                                                            disabled={(date) =>
+                                                                date <
+                                                                new Date(
+                                                                    "1900-01-01"
+                                                                )
+                                                            }
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    {/* End Date Field */}
+                                    <FormField
+                                        control={form.control}
+                                        name="contract_end"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>
+                                                    Contract End Date
+                                                    <span className="text-destructive ms-1">
+                                                        *
+                                                    </span>
+                                                </FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                                variant={
+                                                                    "outline"
+                                                                }
+                                                                className={cn(
+                                                                    "pl-3 text-left font-normal",
+                                                                    !field.value &&
+                                                                        "text-muted-foreground"
+                                                                )}
+                                                            >
+                                                                {field.value ? (
+                                                                    format(
+                                                                        field.value,
+                                                                        "yyyy-MM-dd"
+                                                                    )
+                                                                ) : (
+                                                                    <span>
+                                                                        Pick
+                                                                        project's
+                                                                        contract
+                                                                        end date
+                                                                    </span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent
+                                                        className="w-auto p-0"
+                                                        align="start"
+                                                    >
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={
+                                                                field.value
+                                                            }
+                                                            onSelect={(date) =>
+                                                                field.onChange(
+                                                                    date
+                                                                        ? new Date(
+                                                                              date.toDateString()
+                                                                          )
+                                                                        : undefined
+                                                                )
+                                                            }
+                                                            disabled={(date) =>
+                                                                date <
+                                                                    new Date(
+                                                                        "1900-01-01"
+                                                                    ) ||
+                                                                date <
+                                                                    form.getValues(
+                                                                        "contract_start"
+                                                                    )
+                                                            }
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                {/* Dates Info [END] */}
+                            </div>
+
                             <div className="flex flex-row-reverse gap-4">
-                                <IconButton type="submit" icon={Save} text="Save"/>
-                                <UserRoleDeleteDialog data={user}/>
+                                <IconButton
+                                    type="submit"
+                                    icon={Save}
+                                    text="Save"
+                                />
+                                <ProjectRoleDeleteDialog data={project} />
                             </div>
                         </div>
                     </form>

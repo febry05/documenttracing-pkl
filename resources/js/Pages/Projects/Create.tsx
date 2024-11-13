@@ -1,10 +1,6 @@
 import { Head, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
-<<<<<<< HEAD
 import { zodResolver } from '@hookform/resolvers/zod';
-=======
-import { zodResolver } from "@hookform/resolvers/zod";
->>>>>>> 8fc2a3094f77e2e2f0015de1b86d9bd2fc7ac1f7
 import { z } from "zod";
 
 import {

@@ -80,6 +80,7 @@ class ProjectController extends Controller
     {
         // Mock data, delete when real data is available
         $mockProject = [
+            'id' => 1,
             'code' => 'SRV.JKLT.2020.01',
             'name' => 'Penyedia Jasa Manage Service Jaringan LAN di 13 Bandara Angkasa Pura 1 (Air Asia)',
             'type' => 'Service',
@@ -124,7 +125,9 @@ class ProjectController extends Controller
         ];
 
         return Inertia::render('Projects/Show', [
-            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
+            // 'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
+            'project' => $mockProject,
+            'documents' => $mockDocuments,
         ]);
     }
 
@@ -188,6 +191,15 @@ class ProjectController extends Controller
     {
         return Inertia::render('Projects/Edit', [
             'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
+            'projectBusinessTypes' => ProjectBusinessType::select('id', 'name')->get(),
+            'projectManagers' => User::with('profile')->whereHas('roles', function ($query) {
+                $query->where('name', 'Project Manager');
+            })->get()->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->profile->name,
+                ];
+            }),
         ]);
     }
 

@@ -11,7 +11,7 @@ interface PageProps {
     data: any,
 }
 
-export function UserRoleDeleteDialog({data}: PageProps) {
+export function ProjectRoleDeleteDialog({data}: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
@@ -20,7 +20,7 @@ export function UserRoleDeleteDialog({data}: PageProps) {
             await Inertia.delete(route('user.destroy', data.id), {
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user.index'), { only: ['users', 'positions', 'roles'] });
+                    router.visit(route('project.index'), { only: ['projects', 'projectBusinessTypes'] });
                 },
             });
         } catch (error) {
@@ -41,7 +41,7 @@ export function UserRoleDeleteDialog({data}: PageProps) {
             title="Delete User Role"
             description={
                 <span>
-                    Are you sure want to delete user "
+                    Are you sure want to delete project "
                     <strong>{data.name}</strong>
                     "?
                 </span>
