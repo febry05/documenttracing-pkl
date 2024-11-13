@@ -30,7 +30,7 @@ export default function UserPositionsIndex({ userPositions, userDivisions }: Pag
 
             <Head title="User Positions" />
 
-            <Card className="flex-auto basis-1/2 p-4">
+            <Card className="flex-auto basis-1/2 p-8">
                 <DataTable<UserPosition, any>
                     columns={columns}
                     data={userPositions}

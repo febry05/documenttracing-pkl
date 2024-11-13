@@ -28,7 +28,7 @@ export default function ProjectBusinessTypesIndex({ projectBusinessTypes }: Page
 
             <Head title="Project Business Types" />
 
-            <Card className="flex-auto basis-1/2 p-4">
+            <Card className="flex-auto basis-1/2 p-8">
                 <DataTable<ProjectBusinessType, any>
                     columns={columns}
                     data={projectBusinessTypes}

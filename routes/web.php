@@ -11,7 +11,9 @@ use App\Http\Controllers\MasterData\RoleController;
 use App\Http\Controllers\Projects\ProjectController;
 use App\Http\Controllers\MasterData\UserDivisionController;
 use App\Http\Controllers\MasterData\UserPositionController;
+use App\Http\Controllers\Projects\ProjectDocumentController;
 use App\Http\Controllers\MasterData\ProjectBusinessTypeController;
+use App\Http\Controllers\Projects\ProjectDocumentVersionController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -36,6 +38,8 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
 
     // Projects
     Route::resource('/projects', ProjectController::class);
+    // Route::resource('/projects/document/', ProjectDocumentController::class);
+    // Route::resource('/projects/document/version/', ProjectDocumentVersionController::class);
 
     //Master
     Route::resource('/master/user-roles', RoleController::class);

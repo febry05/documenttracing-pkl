@@ -50,7 +50,7 @@ export default function UsersIndex({ projects, projectBusinessTypes }: PageProps
         >
             <Head title="Projects" />
 
-            <Card className="flex-auto basis-1/2 p-4">
+            <Card className="flex-auto basis-1/2 p-8">
                 <DataTable columns={columns} data={projects} filters={filters} detailPage="projects.show" />
             </Card>
         </DashboardLayout>

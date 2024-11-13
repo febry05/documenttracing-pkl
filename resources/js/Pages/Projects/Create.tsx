@@ -1,7 +1,7 @@
 import { Head, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { number, z } from "zod";
+import { z } from "zod";
 
 import {
     Select,
@@ -24,9 +24,8 @@ import {
 import { CalendarIcon, Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
-import { cn, handleNumericInput } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { useState } from 'react';
 import { ProjectBusinessType } from "../Master/ProjectBusinessTypes/columns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
 import { format } from "date-fns";
@@ -357,7 +356,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                                         )}
                                                         >
                                                         {field.value ? (
-                                                            format(field.value, "PPP")
+                                                            format(field.value, "yyyy-MM-dd")
                                                         ) : (
                                                             <span>Pick project's contract start date</span>
                                                         )}
@@ -369,7 +368,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                                     <Calendar
                                                         mode="single"
                                                         selected={field.value}
-                                                        onSelect={field.onChange}
+                                                        onSelect={(date) => field.onChange(date ? new Date(date.toDateString()) : undefined)}
                                                         disabled={(date) =>
                                                             date < new Date("1900-01-01")
                                                         }
@@ -405,7 +404,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                                         )}
                                                         >
                                                         {field.value ? (
-                                                            format(field.value, "PPP")
+                                                            format(field.value, "yyyy-MM-dd")
                                                         ) : (
                                                             <span>Pick project's contract end date</span>
                                                         )}
@@ -417,7 +416,7 @@ export default function UsersCreate({ projectBusinessTypes, projectManagers }: P
                                                     <Calendar
                                                         mode="single"
                                                         selected={field.value}
-                                                        onSelect={field.onChange}
+                                                        onSelect={(date) => field.onChange(date ? new Date(date.toDateString()) : undefined)}
                                                         disabled={(date) =>
                                                             date < new Date("1900-01-01") || date < form.getValues("contract_start")
                                                         }

@@ -35,7 +35,7 @@ export default function UserRolesIndex({ userRoles }: PageProps) {
         >
             <Head title="User Roles" />
 
-            <Card className="flex-auto basis-1/2 p-4">
+            <Card className="flex-auto basis-1/2 p-8">
                 <DataTable<UserRole, any>
                     columns={columns}
                     data={userRoles}

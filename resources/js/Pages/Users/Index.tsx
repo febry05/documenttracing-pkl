@@ -50,7 +50,7 @@ export default function UsersIndex({ users, positions, roles }: PageProps) {
         >
             <Head title="Users" />
 
-            <Card className="flex-auto basis-1/2 p-4">
+            <Card className="flex-auto basis-1/2 p-8">
                 <DataTable columns={columns} data={users} filters={filters} detailPage="users.edit" />
             </Card>
         </DashboardLayout>

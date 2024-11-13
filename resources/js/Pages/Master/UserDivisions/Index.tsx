@@ -28,7 +28,7 @@ export default function UserDivisionsIndex({ userDivisions }: PageProps) {
 
             <Head title="User Divisions" />
 
-            <Card className="flex-auto basis-1/2 p-4">
+            <Card className="flex-auto basis-1/2 p-8">
             <DataTable<UserDivision, any>
                 columns={columns}
                 data={userDivisions}

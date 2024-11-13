@@ -59,7 +59,7 @@ export default function Dashboard({ stats, documents }: PageProps) {
                     <InfoCard title={stats.completed_documents.toString()} caption="Completed Documents"icon={FileCheck2}/>
                 </div>
                 <div className="flex flex-row gap-4 md:gap-4">
-                    <Card className="flex-auto basis-1/2 p-4">
+                    <Card className="flex-auto basis-1/2 p-8">
                         <DataTable columns={columns} data={documents} filters={filters} />
                     </Card>
 
