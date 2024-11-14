@@ -24,15 +24,15 @@ class Project extends Model
 
     ];
 
-    
+
     public function profile()
     {
         return $this->belongsTo(UserProfile::class, 'user_profile_id');
     }
-    
+
     public function document()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(ProjectDocument::class);
     }
 
     public function businessType()

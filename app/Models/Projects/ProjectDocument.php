@@ -2,10 +2,11 @@
 
 namespace App\Models\Projects;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Projects\ProjectDocumentVersionUpdate;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Document extends Model
+class ProjectDocument extends Model
 {
     use HasFactory;
 
@@ -28,8 +29,8 @@ class Document extends Model
 
     public function document_updates()
     {
-        return $this->hasMany(Update::class);
+        return $this->hasMany(ProjectDocumentVersionUpdate::class);
     }
 
-    
+
 }

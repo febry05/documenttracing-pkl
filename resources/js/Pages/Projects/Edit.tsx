@@ -106,7 +106,7 @@ export default function ProjectEdit({
 
     return (
         <DashboardLayout
-            header={<HeaderNavigation title="Edit Project" back={true} />}
+            header={<HeaderNavigation title="Edit Project" />}
         >
             <Head title="Edit Project" />
 

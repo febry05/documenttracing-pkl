@@ -4,16 +4,17 @@ namespace App\Models\Projects;
 
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Projects\ProjectDocument;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Update extends Model
+class ProjectDocumentVersionUpdate extends Model
 {
     use HasFactory;
 
 
     protected $fillable = [
         'name',
-        
+
         'description',
         'priority',
         'due_at',
@@ -27,7 +28,7 @@ class Update extends Model
 
     public function document()
     {
-        return $this->belongsTo(Document::class);
+        return $this->belongsTo(ProjectDocument::class);
     }
 
     public function project()
@@ -40,5 +41,5 @@ class Update extends Model
         return $this->belongsTo(User::class);
     }
 
-    
+
 }

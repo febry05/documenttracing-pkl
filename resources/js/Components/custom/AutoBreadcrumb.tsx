@@ -32,7 +32,7 @@ const AutoBreadcrumb: React.FC = () => {
             } else {
                 breadcrumbs.push(
                     <BreadcrumbItem key={to}>
-                        {value === 'master' || (pathnames[index - 1] === 'users')
+                        {value === 'master' || (pathnames[index - 1] === 'users' || (pathnames[index - 1] === 'documents'))
                         ? (
                             <span className="text-gray-400 dark:text-gray-400">{value.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}</span>
                         ) : (
