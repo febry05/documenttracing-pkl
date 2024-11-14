@@ -24,8 +24,6 @@ class RoleController extends Controller
         return Inertia::render('Master/UserRoles/Index', [
             'userRoles' => $roles
         ]);
-        // $roles = Role::all();
-        // return view('roles.index', compact('roles'));
     }
 
     public function create()
