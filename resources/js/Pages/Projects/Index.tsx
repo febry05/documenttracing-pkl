@@ -12,7 +12,7 @@ interface PageProps {
     projectBusinessTypes: FilterOption[];
 }
 
-export default function UsersIndex({
+export default function ProjectsIndex({
     projects,
     projectBusinessTypes,
 }: PageProps) {

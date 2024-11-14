@@ -33,20 +33,30 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::middleware(['auth', 'role:Administrator'])->group(function () {
-    //User
+    //Users
     Route::resource('/users', UserController::class);
 
     // Projects
     Route::resource('/projects', ProjectController::class);
-    // Route::resource('/projects/document/', ProjectDocumentController::class);
-    // Route::resource('/projects/document/version/', ProjectDocumentVersionController::class);
+    Route::prefix('/projects')->name('projects.')->group(function () {
+        Route::resource('/{project}/documents', ProjectDocumentController::class);
+        Route::name('documents.')->group(function () {
+            Route::resource('/{project}/documents/{document}/versions', ProjectDocumentVersionController::class);
+        });
+    });
 
-    //Master
-    Route::resource('/master/user-roles', RoleController::class);
-    Route::resource('/master/user-permissions', PermissionController::class);
-    Route::resource('/master/user-positions', UserPositionController::class);
-    Route::resource('/master/user-divisions', UserDivisionController::class);
-    Route::resource('/master/project-business-types', ProjectBusinessTypeController::class);
+    //Master Data
+    Route::prefix('/master')->group(function () {
+        Route::resource('/user-roles', RoleController::class);
+        Route::resource('/user-permissions', PermissionController::class);
+        Route::resource('/user-positions', UserPositionController::class);
+        Route::resource('/user-divisions', UserDivisionController::class);
+        Route::resource('/project-business-types', ProjectBusinessTypeController::class);
+    });
 });
+
+//    ===============================================================
+//    Please run `php artisan route:list` to see all available routes
+//    ===============================================================
 
 require __DIR__.'/auth.php';

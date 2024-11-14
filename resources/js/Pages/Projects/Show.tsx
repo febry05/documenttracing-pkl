@@ -33,7 +33,7 @@ interface PageProps {
     }[],
 }
 
-export default function UsersIndex({ project, documents }: PageProps) {
+export default function ProjectShow({ project, documents }: PageProps) {
     return (
         <DashboardLayout
             header={
@@ -82,7 +82,7 @@ export default function UsersIndex({ project, documents }: PageProps) {
                         <AccordionItem key={document.id} value={`item-${document.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
                             <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-300 hover:dark:bg-gray-700">
                                 <div className="flex items-center">
-                                    <Link href="#" className="hover:underline">
+                                    <Link href={route('projects.documents.show', [project.id, document.id])} className="hover:underline">
                                         <div className="text-sm">{document.name}</div>
                                     </Link>
                                 </div>
@@ -92,7 +92,7 @@ export default function UsersIndex({ project, documents }: PageProps) {
                                     {document.project_document_versions && document.project_document_versions.map(project_document_version => (
                                         <div key={project_document_version.id} className="flex items-center gap-4">
                                             <div className="text-sm">{project_document_version.date}</div>
-                                            <Link href="#" className="ms-auto">
+                                            <Link href={route('projects.documents.versions.show', [project.id, document.id, project_document_version.id])} className="ms-auto">
                                                 <Ellipsis className="text-gray-500" size={20} />
                                             </Link>
                                         </div>

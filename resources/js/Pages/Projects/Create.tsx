@@ -62,7 +62,7 @@ interface PageProps {
     projectManagers: ProjectManager[];
 }
 
-export default function UsersCreate({
+export default function ProjectCreate({
     projectBusinessTypes,
     projectManagers,
 }: PageProps) {
@@ -90,7 +90,7 @@ export default function UsersCreate({
 
     return (
         <DashboardLayout
-            header={<HeaderNavigation title="Create Project" back={true} />}
+            header={<HeaderNavigation title="Create Project" />}
         >
             <Head title="Create Project" />
 

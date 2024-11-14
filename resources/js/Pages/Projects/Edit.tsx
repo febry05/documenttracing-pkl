@@ -77,7 +77,7 @@ interface PageProps {
     projectManagers: ProjectManager[];
 }
 
-export default function UsersCreate({
+export default function ProjectEdit({
     project,
     projectBusinessTypes,
     projectManagers,
