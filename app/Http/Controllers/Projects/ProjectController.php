@@ -16,39 +16,20 @@ use function Ramsey\Uuid\v1;
 
 class ProjectController extends Controller
 {
-    public function index()
+    protected $projects;
+    protected $projectBusinessTypes;    
+    protected $projectManager;    
+
+    public function __construct()
     {
-        $projects = Project::with('userProfiles', 'businessType')
+        $this->projects = Project::with('profile', 'businessType')
             ->select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')
             ->get()
             ->map(function ($project) {
                 $contractStart = Carbon::parse($project->contract_start);
                 $contractEnd = Carbon::parse($project->contract_end);
 
-                if ($contractEnd->isPast()) {
-                    $daysLeft = 'Contract Ended';
-                } else {
-                    $now = Carbon::now();
-                    $diffInYears = $now->diffInYears($contractEnd);
-                    $diffInMonths = $now->copy()->addYears($diffInYears)->diffInMonths($contractEnd);
-                    $diffInDays = $now->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($contractEnd);
-
-                    $roundedYears = intval($diffInYears);
-                    $roundedMonths = intval($diffInMonths);
-                    $roundedDays = intval($diffInDays);
-
-                    $daysLeft = collect([
-                        $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
-                        $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
-                        $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
-                    ])
-                    ->filter()
-                    ->implode(' ');
-
-                    if (empty($daysLeft)) {
-                        $daysLeft = 'Today';
-                    }
-                }
+                $daysLeft = $contractEnd->isPast() ? 'Contract Ended' : $this->calculateDays($contractEnd);
 
                 return [
                     'id' => $project->id,
@@ -60,39 +41,83 @@ class ProjectController extends Controller
                     'contract_start' => $project->contract_start,
                     'contract_end' => $project->contract_end,
                     'days_left' => $daysLeft,
+                    'duration' => $this->calculateDuration($project->contract_start, $project->contractEnd),
+                    'person_in_charge' => $project->profile->name,
+                    'user_profile_id' => $project->user_profile_id,
+                    'project_business_type_id' => $project->project_business_type_id,   
                 ];
             });
-
-        $projectBusinessTypes = ProjectBusinessType::select('id', 'name')->get()->map(function ($type) {
+        
+        $this->projectBusinessTypes = ProjectBusinessType::select('id', 'name')->get()->map(function ($type) {
             return [
+                'id' => $type->id,
+                'name' => $type->name,
                 'value' => $type->name,
                 'label' => $type->name,
             ];
         });
 
+        $this->projectManager = User::with('profile')->whereHas('roles', function ($query) {
+            $query->where('name', 'Project Manager');
+        })->get()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->profile->name,
+            ];
+        });
+
+
+    }
+
+    protected function calculateDays($contractEnd)
+    {
+        $now = Carbon::now();
+        $diffInYears = $now->diffInYears($contractEnd);
+        $diffInMonths = $now->copy()->addYears($diffInYears)->diffInMonths($contractEnd);
+        $diffInDays = $now->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($contractEnd);
+
+        $roundedYears = intval($diffInYears);
+        $roundedMonths = intval($diffInMonths);
+        $roundedDays = intval($diffInDays);
+
+        return collect([
+            $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
+            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
+            $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
+        ])->filter()->implode(' ') ?: 'Today';
+    }
+
+    protected function calculateDuration($contractStart, $contractEnd)
+    {
+        $contractStart = Carbon::parse($contractStart);
+        $contractEnd = Carbon::parse($contractEnd);
+
+        $diffInYears = $contractStart->diffInYears($contractEnd);
+        $diffInMonths = $contractStart->copy()->addYears($diffInYears)->diffInMonths($contractEnd);
+        $diffInDays = $contractStart->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($contractEnd);
+
+        $roundedYears = intval($diffInYears);
+        $roundedMonths = intval($diffInMonths);
+        $roundedDays = intval($diffInDays);
+
+        return collect([
+            $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
+            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
+            $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
+        ])->filter()->implode(' ') ?: '0 Days';
+    }
+
+    public function index()
+    {
+    
         return Inertia::render('Projects/Index', [
-            'projects' => $projects,
-            'projectBusinessTypes' => $projectBusinessTypes,
+            'projects' => $this->projects,
+            'projectBusinessTypes' => $this->projectBusinessTypes,
         ]);
     }
 
     public function show($id)
     {
-        // Mock data, delete when real data is available
-        $mockProject = [
-            'id' => 1,
-            'code' => 'SRV.JKLT.2020.01',
-            'name' => 'Penyedia Jasa Manage Service Jaringan LAN di 13 Bandara Angkasa Pura 1 (Air Asia)',
-            'type' => 'Service',
-            'customer' => 'PT Fast Food Indonesia, Tbk',
-            'person_in_charge' => 'R M Angga N H',
-            'contract_number' => 'PJKP-20004 344',
-            'contract_start' => '14 Feb \'20',
-            'contract_end' => '15 Feb \'25',
-            'duration' => '5 Years 0 Months 1 Days',
-            'days_left' => 135,
-        ];
-
         $mockDocuments = [
             [
                 'id' => 1,
@@ -125,8 +150,7 @@ class ProjectController extends Controller
         ];
 
         return Inertia::render('Projects/Show', [
-            // 'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
-            'project' => $mockProject,
+            'project' => $this->projects->firstWhere('id', $id),
             'documents' => $mockDocuments,
         ]);
     }
@@ -134,15 +158,8 @@ class ProjectController extends Controller
     public function create()
     {
         return Inertia::render('Projects/Create', [
-            'projectBusinessTypes' => ProjectBusinessType::select('id', 'name')->get(),
-            'projectManagers' => User::with('profile')->whereHas('roles', function ($query) {
-                $query->where('name', 'Project Manager');
-            })->get()->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->profile->name,
-                ];
-            }),
+            'projectBusinessTypes' => $this->projectBusinessTypes,
+            'projectManagers' => $this->projectManager,
         ]);
     }
 
@@ -190,16 +207,9 @@ class ProjectController extends Controller
     public function edit($id)
     {
         return Inertia::render('Projects/Edit', [
-            'project' => Project::select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->where('id', $id)->first(),
-            'projectBusinessTypes' => ProjectBusinessType::select('id', 'name')->get(),
-            'projectManagers' => User::with('profile')->whereHas('roles', function ($query) {
-                $query->where('name', 'Project Manager');
-            })->get()->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->profile->name,
-                ];
-            }),
+            'project' => $this->projects->firstWhere('id', $id),
+            'projectBusinessTypes' => $this->projectBusinessTypes,
+            'projectManagers' => $this->projectManager,
         ]);
     }
 
@@ -257,4 +267,6 @@ class ProjectController extends Controller
             'contract_end' => '2025-02-15',
         ]
     ];
+
+   
 }

@@ -4,6 +4,7 @@ namespace App\Models\Users;
 
 use App\Models\Users\User;
 
+use App\Models\Projects\Project;
 use App\Models\MasterData\UserDivision;
 use App\Models\MasterData\UserPosition;
 use Illuminate\Database\Eloquent\Model;
@@ -28,11 +29,6 @@ class UserProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function role()
-    // {
-    //     return $this->
-    // }
-
     public function position()
     {
         return $this->belongsTo(UserPosition::class, 'user_position_id');
@@ -41,5 +37,10 @@ class UserProfile extends Model
     public function division()
     {
         return $this->belongsTo(UserDivision::class, 'user_division_id');
+    }
+
+    public function project()
+    {
+        return $this->hasMany(Project::class);
     }
 }
