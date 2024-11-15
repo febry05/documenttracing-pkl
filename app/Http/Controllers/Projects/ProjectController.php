@@ -17,8 +17,8 @@ use function Ramsey\Uuid\v1;
 class ProjectController extends Controller
 {
     protected $projects;
-    protected $projectBusinessTypes;    
-    protected $projectManager;    
+    protected $projectBusinessTypes;
+    protected $projectManager;
 
     public function __construct()
     {
@@ -44,10 +44,10 @@ class ProjectController extends Controller
                     'duration' => $this->calculateDuration($project->contract_start, $project->contractEnd),
                     'person_in_charge' => $project->profile->name,
                     'user_profile_id' => $project->user_profile_id,
-                    'project_business_type_id' => $project->project_business_type_id,   
+                    'project_business_type_id' => $project->project_business_type_id,
                 ];
             });
-        
+
         $this->projectBusinessTypes = ProjectBusinessType::select('id', 'name')->get()->map(function ($type) {
             return [
                 'id' => $type->id,
@@ -109,7 +109,7 @@ class ProjectController extends Controller
 
     public function index()
     {
-    
+
         return Inertia::render('Projects/Index', [
             'projects' => $this->projects,
             'projectBusinessTypes' => $this->projectBusinessTypes,
@@ -152,6 +152,7 @@ class ProjectController extends Controller
         return Inertia::render('Projects/Show', [
             'project' => $this->projects->firstWhere('id', $id),
             'documents' => $mockDocuments,
+            'priorities' => $this->priorities,
         ]);
     }
 
@@ -268,5 +269,18 @@ class ProjectController extends Controller
         ]
     ];
 
-   
+    protected $priorities = [
+        [
+            'key' => 1,
+            'value' => 'Low',
+        ],
+        [
+            'key' => 2,
+            'value' => 'Medium',
+        ],
+        [
+            'key' => 3,
+            'value' => 'High',
+        ],
+    ];
 }

@@ -1,13 +1,18 @@
 import { Head, Link } from "@inertiajs/react";
-import { DataTable, FilterOption } from "@/Components/ui/data-table"
 import { Card } from "@/Components/ui/card";
-import { Ellipsis, PenLine, Plus, SquarePen } from "lucide-react";
-import { Project, columns } from "./columns";
+import { Ellipsis, PenLine, Plus } from "lucide-react";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { Button } from "@/Components/ui/button";
 import InfoPair from "@/Components/custom/InfoPair";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
+import { IconButton } from "@/Components/custom/IconButton";
+import TitleSeparator from "@/Components/custom/TitleSeparator";
+import ProjectDocumentCreateDialog from "./Documents/Create";
+
+type Priority = {
+    key: number,
+    value: string,
+};
 
 interface PageProps {
     project: {
@@ -31,9 +36,10 @@ interface PageProps {
             date: string,
         }[],
     }[],
+    priorities: Priority[],
 }
 
-export default function ProjectShow({ project, documents }: PageProps) {
+export default function ProjectShow({ project, documents, priorities }: PageProps) {
     return (
         <DashboardLayout
             header={
@@ -41,10 +47,7 @@ export default function ProjectShow({ project, documents }: PageProps) {
                     title="Project Details"
                     button={
                         <Link href={route('projects.edit', project.id)}>
-                            <Button>
-                                <PenLine className="me-2" size={18} />
-                                Edit Project
-                            </Button>
+                            <IconButton icon={PenLine} text="Edit Project" variant="modify"/>
                         </Link>
                     }
                 />
@@ -52,7 +55,7 @@ export default function ProjectShow({ project, documents }: PageProps) {
         >
             <Head title="Project Details" />
 
-            <Card className="flex flex-col mb-6">
+            <Card className="flex flex-col mb-4">
                 <div className="px-8 py-4 border-b">
                     <div className="col-span-5 leading-9 text-l font-semibold">{project.name}</div>
                 </div>
@@ -75,12 +78,23 @@ export default function ProjectShow({ project, documents }: PageProps) {
                     </div>
                 </div>
             </Card>
+
+            <HeaderNavigation
+                title="Documents"
+                size="md"
+                breadcrumb={false}
+                button={
+                    <ProjectDocumentCreateDialog priorities={priorities} projectId={project.id}/>
+                }
+                className="mb-4"
+            />
+
             <Card className="flex flex-col">
                 <div className="p-8">
                 <Accordion type="multiple" className="flex flex-col gap-4">
                     {documents.map(document => (
                         <AccordionItem key={document.id} value={`item-${document.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
-                            <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-300 hover:dark:bg-gray-700">
+                            <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-200/90 hover:dark:bg-gray-800/90">
                                 <div className="flex items-center">
                                     <Link href={route('projects.documents.show', [project.id, document.id])} className="hover:underline">
                                         <div className="text-sm">{document.name}</div>

@@ -4,9 +4,8 @@ namespace App\Models\Projects;
 
 use App\Models\Users\User;
 use App\Models\Projects\Project;
-use App\Models\Projects\Updates;
-use App\Models\Projects\Documents;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Projects\ProjectDocumentVersionUpdate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProjectDocumentVersion extends Model
@@ -20,12 +19,12 @@ class ProjectDocumentVersion extends Model
 
     public function documents()
     {
-        return $this->belongsTo(Document::class);
+        return $this->belongsTo(ProjectDocument::class);
     }
 
     public function document_updates()
     {
-        return $this->hasMany(Update::class);
+        return $this->hasMany(ProjectDocumentVersionUpdate::class);
     }
 
     public function project()

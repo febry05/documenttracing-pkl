@@ -14,6 +14,20 @@ class ProjectDocumentController extends Controller
         return Inertia::render('Projects/Documents/Show', [
             'project' => $project,
             'projectDocument' => $projectDocument,
+            'projectDocumentVersions' => $projectDocument->document_version,
         ]);
     }
+
+    public function create(Project $project) {
+        return Inertia::render('Projects/Documents/Create', [
+            'project' => $project,
+            'priorities' => $this->priorities,
+        ]);
+    }
+
+    protected $priorities = [
+        1 => 'Low',
+        2 => 'Medium',
+        3 => 'High',
+    ];
 }

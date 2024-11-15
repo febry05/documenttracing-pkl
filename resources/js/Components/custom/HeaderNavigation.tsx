@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { AutoBreadcrumb, Tree } from "./AutoBreadcrumb";
+import { AutoBreadcrumb } from "./AutoBreadcrumb";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -9,17 +9,21 @@ export function HeaderNavigation({
     title,
     back,
     button,
-    breadcrumb,
+    breadcrumb = true,
+    size = "xl",
+    className,
 }: PropsWithChildren<{
     title: string;
     back?: string;
     button?: JSX.Element;
-    breadcrumb?: Tree[];
+    breadcrumb?: boolean;
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
+    className?: string;
 }>) {
     return (
-        <div className="flex gap-3 flex-col md:justify-between md:items-center md:flex-row">
+        <div className={"flex gap-3 flex-col md:justify-between md:items-center md:flex-row " + className}>
             <div className="grid grid-row-2 gap-1">
-                <span className="font-semibold text-xl leading-tight">
+                <span className={"font-semibold leading-tight text-" + (size) }>
                     {title}
                 </span>
 
@@ -32,7 +36,9 @@ export function HeaderNavigation({
                 </Link>
                 )}
 
-                <AutoBreadcrumb />
+                {breadcrumb && (
+                    <AutoBreadcrumb />
+                )}
 
                 {/* {breadcrumb && (
                     <BreadcrumbBuilder tree={breadcrumb}/>
