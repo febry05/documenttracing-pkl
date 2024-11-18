@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('projects_documents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('document_number');
             $table->tinyInteger('priority'); // 1: Low, 2: Medium, 3: High
-            $table->date('due_at');
+            $table->unsignedTinyInteger('monthly_deadline');
             $table->foreignId('project_id')->default(0);
             $table->timestamps();
         });
