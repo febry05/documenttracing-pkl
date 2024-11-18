@@ -17,7 +17,7 @@ function Update() {
                 </span>
                 Securing marianne led welcomed offended but offering six raptures. Conveying concluded newspaper rapturous oh at. Two indeed suffer saw beyond far former mrs remain.
             </div>
-            <div className="flex flex-col basis-1/4 items-end">
+            <div className="flex flex-col basis-1/4 items-end text-right">
                 <span className="font-semibold">
                     Friday, 6 September 2024
                 </span>
@@ -43,28 +43,18 @@ export default function ProjectDocumentVersionShow() {
         >
             <Head title="Projects" />
 
-            <Card className="flex-auto p-4 mb-4">
-                <div className="flex flex-col gap-4 px-8 py-4">
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="From Project" value="{projectDocumentVersion.from_project}" />
-                        <InfoPair label="Monthly Deadline" value="{projectDocumentVersion.monthly_deadline}" />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Person In Charge" value="{projectDocumentVersion.from_project}" />
-                        <InfoPair label="Last Update" value="{projectDocumentVersion.monthly_deadline}" />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Document Number" value="{projectDocumentVersion.from_project}" />
-                        <InfoPair label="Days Remaining" value="{projectDocumentVersion.monthly_deadline}" />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="From Project" value="{projectDocumentVersion.from_project}" />
-                        <InfoPair label="Priority" value="{projectDocumentVersion.monthly_deadline}" />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Status" value="{projectDocumentVersion.from_project}" />
-                        <InfoPair label="Latest File" value="{projectDocumentVersion.monthly_deadline}" />
-                    </div>
+            <Card className="flex-auto mb-4">
+                <div className="grid md:grid-cols-2 gap-8 p-8">
+                    <InfoPair label="From Project" value="{projectDocumentVersion.from_project}" />
+                    <InfoPair label="Monthly Deadline" value="{projectDocumentVersion.monthly_deadline}" />
+                    <InfoPair label="Person In Charge" value="{projectDocumentVersion.from_project}" />
+                    <InfoPair label="Last Update" value="{projectDocumentVersion.monthly_deadline}" />
+                    <InfoPair label="Document Number" value="{projectDocumentVersion.from_project}" />
+                    <InfoPair label="Days Remaining" value="{projectDocumentVersion.monthly_deadline}" />
+                    <InfoPair label="From Project" value="{projectDocumentVersion.from_project}" />
+                    <InfoPair label="Priority" value="{projectDocumentVersion.monthly_deadline}" />
+                    <InfoPair label="Status" value="{projectDocumentVersion.from_project}" />
+                    <InfoPair label="Latest File" value="{projectDocumentVersion.monthly_deadline}" />
                 </div>
             </Card>
 

@@ -60,10 +60,10 @@ export default function ProjectDocumentCreateDialog(
     return (
         <Dialog>
             <DialogTrigger asChild>
-                {/* <IconButton text="Create Project Document" icon={Plus}/> */}
-                <Button>
+                {/* <IconButton text="Create Document" icon={Plus} className="w-fit"/> */}
+                <Button className="w-fit" >
                     <Plus className="me-2" size={18} />
-                    Create User Position
+                    Create Document
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
