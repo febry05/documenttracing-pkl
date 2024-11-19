@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('version');
             $table->string('document_number', 30);
-            $table->date('release_date');
+            $table->date('release_date'); //Release date of the document for knowing this version for which document
             $table->foreignId('projects_document_id')->constrained();
             $table->timestamps();
         });
