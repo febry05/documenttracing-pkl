@@ -43,7 +43,7 @@ export default function ProjectBusinessTypesCreateDialog() {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>
+                <Button className="w-fit" >
                     <Plus className="me-2" size={18} />
                     Create Project Business Type
                 </Button>

@@ -51,7 +51,7 @@ export default function UserPositionsCreateDialog({ userDivisions }: PageProps) 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>
+                <Button className="w-fit">
                     <Plus className="me-2" size={18} />
                     Create User Position
                 </Button>

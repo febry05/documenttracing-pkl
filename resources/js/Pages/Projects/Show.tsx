@@ -59,23 +59,15 @@ export default function ProjectShow({ project, documents, priorities }: PageProp
                 <div className="px-8 py-4 border-b">
                     <div className="col-span-5 leading-9 text-l font-semibold">{project.name}</div>
                 </div>
-                <div className="flex flex-col gap-4 px-8 py-4">
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Project Code" value={project.code} />
-                        <InfoPair label="Start & End Date" value={project.contract_start + ' - ' + project.contract_end} />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Contract Number" value={project.contract_number} />
-                        <InfoPair label="Duration" value={project.duration} />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Type" value={project.type} />
-                        <InfoPair label="Days Left" value={project.days_left.toString()} />
-                    </div>
-                    <div className="grid grid-cols-2">
-                        <InfoPair label="Customer" value={project.customer} />
-                        <InfoPair label="Person in Charge" value={project.person_in_charge} />
-                    </div>
+                <div className="grid md:grid-cols-2 gap-8 p-8">
+                    <InfoPair label="Project Code" value={project.code} />
+                    <InfoPair label="Start & End Date" value={project.contract_start + ' - ' + project.contract_end} />
+                    <InfoPair label="Contract Number" value={project.contract_number} />
+                    <InfoPair label="Duration" value={project.duration} />
+                    <InfoPair label="Type" value={project.type} />
+                    <InfoPair label="Days Left" value={project.days_left.toString()} />
+                    <InfoPair label="Customer" value={project.customer} />
+                    <InfoPair label="Person in Charge" value={project.person_in_charge} />
                 </div>
             </Card>
 

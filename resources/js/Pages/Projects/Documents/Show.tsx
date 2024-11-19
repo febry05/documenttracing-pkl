@@ -24,24 +24,22 @@ export default function ProjectDocumentsShow() {
         >
             <Head title="Projects" />
 
-            <Card className="flex-auto p-4 mb-4">
-                <div className="flex flex-col gap-4 px-4">
-                    <InfoPair label="Name" value="{projectDocument.name}" width={4} />
-                    <InfoPair label="Priority" value="{projectDocument.priority}" width={4} />
-                    <InfoPair label="Due At" value="{projectDocument.due_at}" width={4} />
-                    <InfoPair label="Person in Charge" value="{projectDocument.person_in_charge}" width={4} />
-                    <InfoPair label="From Project" value="{projectDocument.from_project}" width={4} />
+            <Card className="flex-auto mb-4">
+                <div className="grid md:grid-cols-2 gap-8 p-8">
+                    <InfoPair label="Name" value="{projectDocument.name}" />
+                    <InfoPair label="Priority" value="{projectDocument.priority}" />
+                    <InfoPair label="Due At" value="{projectDocument.due_at}" />
+                    <InfoPair label="Person in Charge" value="{projectDocument.person_in_charge}" />
+                    <InfoPair label="From Project" value="{projectDocument.from_project}" />
                 </div>
             </Card>
 
-            <TitleSeparator
+            <HeaderNavigation
                 title="Versions"
+                size="md"
+                breadcrumb={false}
                 button={
-                    {
-                        text: "Create Version",
-                        icon: Plus,
-                        href: "route('projects.documents.create', project.id)",
-                    }
+                    <IconButton text="Create Version" icon={Plus} className="w-fit"/>
                 }
                 className="mb-4"
             />

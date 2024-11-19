@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { IconButton } from "@/Components/custom/IconButton";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -44,7 +45,7 @@ export default function UserDivisionsCreateDialog() {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>
+                <Button className="w-fit" >
                     <Plus className="me-2" size={18} />
                     Create User Division
                 </Button>
