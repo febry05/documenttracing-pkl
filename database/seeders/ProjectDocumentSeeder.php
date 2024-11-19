@@ -17,7 +17,8 @@ class ProjectDocumentSeeder extends Seeder
             'project_id' => 1,
             'name' => 'BAPP dan Lampirannya',
             'priority' => '3',
-            'due_at' => 'project-documents/project-document-1.pdf',
+            'monthly_deadline' => 'project-documents/project-document-1.pdf',
+            'project_id' => 1,
             
         ]);
     }

@@ -185,7 +185,7 @@ class ProjectController extends Controller
             $project = Project::create([
                 'name' => $validatedData['name'],
                 'code' => $validatedData['code'],
-                'customer' => $validatedData['customer'],
+                 'customer' => $validatedData['customer'],
                 'contract_number' => $validatedData['contract_number'],
                 'contract_start' => $validatedData['contract_start'],
                 'contract_end' => $validatedData['contract_end'],
