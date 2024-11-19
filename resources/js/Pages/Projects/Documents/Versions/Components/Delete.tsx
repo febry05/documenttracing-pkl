@@ -6,22 +6,24 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
-import { UserDivision } from "@/types/model";
+import { ProjectDocumentVersions } from "@/types/model";
 
 interface PageProps {
-    data: UserDivision,
+    projectId: number,
+    projectDocumentId: number,
+    projectDocumentVersion: ProjectDocumentVersions,
 }
 
-export function UserDivisionDeleteDialog({data}: PageProps) {
+export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentId, projectDocumentVersion }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-divisions.destroy', data.id), {
+            await Inertia.delete(route('user.destroy', projectDocumentVersion.id), {
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
+                    router.visit(route('user.project.document.show', [projectId, projectDocumentId]), { only: ['projectId', 'projectDocument'] });
                 },
             });
         } catch (error) {
@@ -30,7 +32,8 @@ export function UserDivisionDeleteDialog({data}: PageProps) {
     }
 
     return(
-        <FormDialog open={isOpen} onOpenChange={setIsOpen}
+        <FormDialog
+            open={isOpen} onOpenChange={setIsOpen}
             trigger={
                 {
                     text: "Delete",
@@ -38,11 +41,11 @@ export function UserDivisionDeleteDialog({data}: PageProps) {
                     variant: "destructive"
                 }
             }
-            title="Delete User Division"
+            title="Delete Project Document Version"
             description={
                 <span>
-                    Are you sure want to delete user division "
-                    <strong>{data.name}</strong>
+                    Are you sure want to delete project document version "
+                    <strong>{projectDocumentVersion.version}</strong>
                     "?
                 </span>
                 }

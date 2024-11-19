@@ -1,13 +1,13 @@
 import { DataTable } from "@/Components/ui/data-table"
 import { Card } from "@/Components/ui/card";
-import { UserPosition, columns } from "./columns";
+import { columns } from "./columns";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import UserPositionsCreateDialog from "./Components/Create";
-import UserPositionsEditDialog from "./Components/Edit";
-import { UserDivision } from "../UserDivisions/columns";
+import UserPositionEditDialog from "./Components/Edit";
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
+import { UserDivision, UserPosition } from "@/types/model";
 
 interface PageProps {
     userPositions: UserPosition[],
@@ -35,7 +35,7 @@ export default function UserPositionsIndex({ userPositions, userDivisions }: Pag
                     data={userPositions}
                     detailDialog="Edit User Position"
                     renderDialogContent={(data) => (
-                        <UserPositionsEditDialog data={data} userDivisions={userDivisions} closeDialog={() => setIsDialogOpen(false)} />
+                        <UserPositionEditDialog data={data} userDivisions={userDivisions} closeDialog={() => setIsDialogOpen(false)} />
                     )}
                 />
             </Card>

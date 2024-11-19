@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from "zod";
 
-import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
 import {
@@ -22,7 +21,7 @@ import { Checkbox } from "@/Components/ui/checkbox";
 import { UserRoleDeleteDialog } from "./Components/Delete";
 import { IconButton } from "@/Components/custom/IconButton";
 import { Save } from "lucide-react";
-import { Breadcrumb } from "@/Components/ui/breadcrumb";
+import { UserRole } from "@/types/model";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -30,24 +29,18 @@ const formSchema = z.object({
     permissions: z.string().array(),
 });
 
-type Role = {
-    id?: number;
-    name: string;
-    description: string;
-}
-
 type Permission = {
     id: number;
     name: string;
 }
 
 interface PageProps {
-    role: Role,
+    role: UserRole,
     permissions: Permission[],
     rolePermissions: string[],
 }
 
-export default function UserRolesEdit({ role, permissions, rolePermissions }: PageProps) {
+export default function UserRoleEdit({ role, permissions, rolePermissions }: PageProps) {
     console.log(rolePermissions);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -66,16 +59,10 @@ export default function UserRolesEdit({ role, permissions, rolePermissions }: Pa
         }
     }
 
-    const breadcrumb = [
-        { name: 'Master' },
-        { name: 'User Roles', url: route('user-roles.index') },
-        { name:  role.name},
-    ]
-
     return (
         <DashboardLayout
             header={
-                <HeaderNavigation title="Edit User Role" breadcrumb={breadcrumb}/>
+                <HeaderNavigation title="Edit User Role" />
             }
         >
             <Head title="Edit User Role" />

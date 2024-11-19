@@ -1,12 +1,7 @@
 "use client"
 
+import { UserDivision } from "@/types/model"
 import { ColumnDef } from "@tanstack/react-table"
-
-export type UserDivision = {
-    id: number
-    name: string
-    description?: string | undefined
-}
 
 export const columns: ColumnDef<UserDivision>[] = [
     {

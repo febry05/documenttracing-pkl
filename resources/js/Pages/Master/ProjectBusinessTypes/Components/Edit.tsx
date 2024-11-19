@@ -8,8 +8,9 @@ import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { Save, Trash2 } from "lucide-react";
-import { ProjectBusinessTypesDeleteDialog } from "./Delete";
+import { ProjectBusinessTypeDeleteDialog } from "./Delete";
 import { router } from "@inertiajs/react";
+import { ProjectBusinessType } from "@/types/model";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -17,11 +18,11 @@ const formSchema = z.object({
 })
 
 interface PageProps {
-    data: any,
+    data: ProjectBusinessType,
     closeDialog: () => void;
 }
 
-export default function ProjectBusinessTypesEditDialog({ data, closeDialog }: PageProps) {
+export default function ProjectBusinessTypeEditDialog({ data, closeDialog }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -32,10 +33,10 @@ export default function ProjectBusinessTypesEditDialog({ data, closeDialog }: Pa
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route('user-roles.update', data.id), values, {
+            await Inertia.put(route('project-business-types.update', data.id), values, {
                 onFinish: () => {
                     closeDialog();
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                    router.visit(route('project-business-types.index'), { only: ['projectBusinessTypes'] });
                 },
             });
         } catch (error) {
@@ -89,7 +90,7 @@ export default function ProjectBusinessTypesEditDialog({ data, closeDialog }: Pa
                                 <Save className="me-2" size={18} />
                                 Save
                             </Button>
-                            <ProjectBusinessTypesDeleteDialog data={data} />
+                            <ProjectBusinessTypeDeleteDialog data={data} />
                         </div>
                     </div>
                 </form>

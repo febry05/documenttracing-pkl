@@ -1,12 +1,7 @@
 "use client"
 
+import { ProjectBusinessType } from "@/types/model"
 import { ColumnDef } from "@tanstack/react-table"
-
-export type ProjectBusinessType = {
-  id: number
-  name: string
-  description?: string | undefined
-}
 
 export const columns: ColumnDef<ProjectBusinessType>[] = [
     {

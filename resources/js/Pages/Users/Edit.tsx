@@ -29,7 +29,7 @@ import { handleNumericInput } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useEffect, useState } from "react";
 import { IconButton } from "@/Components/custom/IconButton";
-import { UserRoleDeleteDialog } from "./Components/Delete";
+import { UserDeleteDialog } from "./Components/Delete";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -471,7 +471,7 @@ export default function UsersEdit({
                                     icon={Save}
                                     text="Save"
                                 />
-                                <UserRoleDeleteDialog data={user} />
+                                <UserDeleteDialog data={user} />
                             </div>
                         </div>
                     </form>

@@ -6,21 +6,22 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { ProjectBusinessType } from "@/types/model";
 
 interface PageProps {
-    data: any,
+    data: ProjectBusinessType,
 }
 
-export function ProjectBusinessTypesDeleteDialog({data}: PageProps) {
+export function ProjectBusinessTypeDeleteDialog({data}: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-roles.destroy', data.id), {
+            await Inertia.delete(route('project-business-types.destroy', data.id), {
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                    router.visit(route('project-business-types.index'), { only: ['projectBusinessTypes'] });
                 },
             });
         } catch (error) {

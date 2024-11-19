@@ -11,14 +11,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
-import { IconButton } from "@/Components/custom/IconButton";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
     description: z.string().max(255).optional(),
 })
 
-export default function UserDivisionsCreateDialog() {
+export default function UserDivisionCreateDialog() {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

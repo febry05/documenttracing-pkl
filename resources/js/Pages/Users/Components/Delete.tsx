@@ -6,12 +6,13 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { User } from "@/types/model";
 
 interface PageProps {
-    data: any,
+    data: User,
 }
 
-export function UserRoleDeleteDialog({data}: PageProps) {
+export function UserDeleteDialog({data}: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 

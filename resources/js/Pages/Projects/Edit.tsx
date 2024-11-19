@@ -10,7 +10,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/Components/ui/select";
-import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
 import {
@@ -21,22 +20,15 @@ import {
     FormLabel,
     FormMessage,
 } from "@/Components/ui/form";
-import { CalendarIcon, Save } from "lucide-react";
+import { Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
-import { cn } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { ProjectBusinessType } from "../Master/ProjectBusinessTypes/columns";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/Components/ui/popover";
-import { format } from "date-fns";
-import { Calendar } from "@/Components/ui/calendar";
+import { ProjectBusinessType } from "@/types/model";
 import { IconButton } from "@/Components/custom/IconButton";
-import { ProjectRoleDeleteDialog } from "./Components/Delete";
+import { ProjectDeleteDialog } from "./Components/Delete";
 import { DatePicker } from "@/Components/custom/DatePicker";
+import { Project } from "@/types/model";
 
 const formSchema = z
     .object({
@@ -58,18 +50,6 @@ const formSchema = z
 type ProjectManager = {
     id: number;
     name: string;
-};
-
-type Project = {
-    id: number;
-    name: string;
-    code: string;
-    customer: string;
-    contract_number: string;
-    contract_start: Date;
-    contract_end: Date;
-    user_profile_id: number;
-    project_business_type_id: number;
 };
 
 interface PageProps {
@@ -413,7 +393,7 @@ export default function ProjectEdit({
                                     icon={Save}
                                     text="Save"
                                 />
-                                <ProjectRoleDeleteDialog data={project} />
+                                <ProjectDeleteDialog project={project} />
                             </div>
                         </div>
                     </form>

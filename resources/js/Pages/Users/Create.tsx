@@ -1,7 +1,7 @@
 import { Head, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { number, z } from "zod";
+import { z } from "zod";
 
 import {
     Select,
@@ -27,6 +27,7 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { handleNumericInput } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useState } from 'react';
+import { UserRole, UserDivision, UserPosition } from "@/types/model";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -40,20 +41,13 @@ const formSchema = z.object({
     user_position_id: z.number(),
 });
 
-type UserMasterData = {
-    id: number;
-    name: string;
-    description?: string;
-    user_division_id?: number;
-}
-
 interface PageProps {
     auth: {
         user: any;
     };
-    userRoles: UserMasterData[];
-    userDivisions: UserMasterData[];
-    userPositions: UserMasterData[];
+    userRoles: UserRole[];
+    userDivisions: UserDivision[];
+    userPositions: UserPosition[];
 }
 
 export default function UsersCreate({ userRoles, userDivisions, userPositions }: PageProps) {
@@ -81,7 +75,7 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
     }
 
     const [currentUserDivisionId, setCurrentUserDivisionId] = useState<number | undefined>(undefined);
-    const [availableUserPositions, setAvailableUserPositions] = useState<UserMasterData[]>([]);
+    const [availableUserPositions, setAvailableUserPositions] = useState<UserPosition[]>([]);
 
     const handleDivisionChange = (divisionId: number | undefined) => {
         setCurrentUserDivisionId(divisionId);

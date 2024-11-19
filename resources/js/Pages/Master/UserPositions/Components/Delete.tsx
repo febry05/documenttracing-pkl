@@ -6,9 +6,10 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { UserPosition } from "@/types/model";
 
 interface PageProps {
-    data: any,
+    data: UserPosition,
 }
 
 export function UserPositionDeleteDialog({data}: PageProps) {

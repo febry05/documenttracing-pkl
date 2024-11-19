@@ -34,14 +34,15 @@ export type Project = {
     name: string;
     customer: string;
     contract_number: string;
-    contract_start: string;
-    contract_end: string;
-    duration: string;
-    days_left: number;
+    contract_start: Date;
+    contract_end: Date;
+
+    duration?: string;
+    days_left?: number;
 
     // Foreign keys
-    business_type_id?: number;
-    user_id?: number;
+    project_business_type_id?: number;
+    user_profile_id?: number;
 
     // Foreign keys data
     type?: string;
@@ -55,7 +56,8 @@ export type ProjectDocument = {
     id: number,
     name: string,
     priority: string,
-    monthly_deadline: string,
+    monthly_deadline: number,
+    deadline_interval: number,
 
     project_id: string,
 
@@ -86,7 +88,8 @@ export type UserRole = BaseMasterData;
 export type UserDivision = BaseMasterData;
 
 export type UserPosition = BaseMasterData & {
-    division: string;
+    user_division_id?: number;
+    division?: string;
 };
 
 export type ProjectBusinessType = BaseMasterData;

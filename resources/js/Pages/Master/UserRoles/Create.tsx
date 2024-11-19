@@ -35,7 +35,7 @@ interface PageProps {
     permissions: Permission[],
 }
 
-export default function UserRolesCreate({ permissions }: PageProps) {
+export default function UserRoleCreate({ permissions }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

@@ -7,11 +7,11 @@ import { z } from "zod";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
-import { Save, Trash2 } from "lucide-react";
+import { Save } from "lucide-react";
 import { UserPositionDeleteDialog } from "./Delete";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
-import { UserDivision } from "../../UserDivisions/columns";
 import { router } from "@inertiajs/react";
+import { UserDivision, UserPosition } from "@/types/model";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -20,18 +20,18 @@ const formSchema = z.object({
 })
 
 interface PageProps {
-    data: any,
+    data: UserPosition,
     userDivisions: UserDivision[],
     closeDialog: () => void;
 }
 
-export default function UserPositionsEditDialog({ data, userDivisions, closeDialog }: PageProps) {
+export default function UserPositionEditDialog({ data, userDivisions, closeDialog }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: data.name || '',
             description: data.description || '',
-            user_division_id: data.user_divisino_id || undefined,
+            user_division_id: data.user_division_id || undefined,
         },
     });
 

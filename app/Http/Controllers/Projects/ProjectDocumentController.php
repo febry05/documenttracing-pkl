@@ -22,7 +22,7 @@ class ProjectDocumentController extends Controller
 
     // public function __construct()
     // {
-    //     $this->project = Project 
+    //     $this->project = Project
     // }
 
     public function show(Project $project, ProjectDocument $projectDocument) {
@@ -39,8 +39,6 @@ class ProjectDocumentController extends Controller
             'priorities' => $this->priorities,
         ]);
     }
-
-    
 
     public function store(Request $request, Project $project)
     {
@@ -60,6 +58,6 @@ class ProjectDocumentController extends Controller
     }
 
     public function updateDeadline(Request $request, Project $project, ProjectDocument $projectDocument){
-        
+
     }
 }
