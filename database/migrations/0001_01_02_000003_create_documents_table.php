@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects_documents', function (Blueprint $table) {
+        Schema::create('project_documents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->tinyInteger('priority'); // 1: Low, 2: Medium, 3: High
-            $table->unsignedTinyInteger('monthly_deadline');
+            $table->date('monthly_deadline');
+            $table->unsignedTinyInteger('deadline_interval');
             $table->foreignId('project_id')->default(0);
             $table->timestamps();
         });

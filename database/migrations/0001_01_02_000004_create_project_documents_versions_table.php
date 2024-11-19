@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects_documents_versions', function (Blueprint $table) {
+        Schema::create('project_document_versions', function (Blueprint $table) {
             $table->id();
             $table->string('version');
             $table->string('document_number', 30);
             $table->date('release_date'); //Release date of the document for knowing this version for which document
-            $table->foreignId('projects_document_id')->constrained();
+            $table->foreignId('project_document_id')->constrained();
             $table->timestamps();
         });
     }

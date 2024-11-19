@@ -14,11 +14,11 @@ class ProjectDocumentSeeder extends Seeder
     public function run(): void
     {
         ProjectDocument::create([
-            'project_id' => 1,
-            'name' => 'BAPP dan Lampirannya',
+            'name' => 'BAPP dan Lampirannya Tes',
             'priority' => '3',
-            'due_at' => 'project-documents/project-document-1.pdf',
-            
+            'monthly_deadline' => '2026-01-01',
+            'deadline_interval' => '7',
+            'project_id' => 1,            
         ]);
     }
 }
