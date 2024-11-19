@@ -36,6 +36,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/Components/ui/calendar";
 import { IconButton } from "@/Components/custom/IconButton";
 import { ProjectRoleDeleteDialog } from "./Components/Delete";
+import { DatePicker } from "@/Components/custom/DatePicker";
 
 const formSchema = z
     .object({
@@ -359,72 +360,18 @@ export default function ProjectEdit({
                                         control={form.control}
                                         name="contract_start"
                                         render={({ field }) => (
-                                            <FormItem className="flex flex-col">
+                                            <FormItem className="w-full">
                                                 <FormLabel>
                                                     Contract Start Date
-                                                    <span className="text-destructive ms-1">
-                                                        *
-                                                    </span>
+                                                    <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <FormControl>
-                                                            <Button
-                                                                variant={
-                                                                    "outline"
-                                                                }
-                                                                className={cn(
-                                                                    "pl-3 text-left font-normal",
-                                                                    !field.value &&
-                                                                        "text-muted-foreground"
-                                                                )}
-                                                            >
-                                                                {field.value ? (
-                                                                    format(
-                                                                        field.value,
-                                                                        "yyyy-MM-dd"
-                                                                    )
-                                                                ) : (
-                                                                    <span>
-                                                                        Pick
-                                                                        project's
-                                                                        contract
-                                                                        start
-                                                                        date
-                                                                    </span>
-                                                                )}
-                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                            </Button>
-                                                        </FormControl>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent
-                                                        className="w-auto p-0"
-                                                        align="start"
-                                                    >
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={
-                                                                field.value
-                                                            }
-                                                            onSelect={(date) =>
-                                                                field.onChange(
-                                                                    date
-                                                                        ? new Date(
-                                                                              date.toDateString()
-                                                                          )
-                                                                        : undefined
-                                                                )
-                                                            }
-                                                            disabled={(date) =>
-                                                                date <
-                                                                new Date(
-                                                                    "1900-01-01"
-                                                                )
-                                                            }
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                <FormControl>
+                                                    <DatePicker
+                                                        date={field.value ? new Date(field.value) : undefined}
+                                                        setDate={(date) => field.onChange(date)}
+                                                        endYear={2090} // Set an appropriate end year
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -435,75 +382,23 @@ export default function ProjectEdit({
                                         control={form.control}
                                         name="contract_end"
                                         render={({ field }) => (
-                                            <FormItem className="flex flex-col">
+                                            <FormItem className="w-full">
                                                 <FormLabel>
                                                     Contract End Date
-                                                    <span className="text-destructive ms-1">
-                                                        *
-                                                    </span>
+                                                    <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <FormControl>
-                                                            <Button
-                                                                variant={
-                                                                    "outline"
-                                                                }
-                                                                className={cn(
-                                                                    "pl-3 text-left font-normal",
-                                                                    !field.value &&
-                                                                        "text-muted-foreground"
-                                                                )}
-                                                            >
-                                                                {field.value ? (
-                                                                    format(
-                                                                        field.value,
-                                                                        "yyyy-MM-dd"
-                                                                    )
-                                                                ) : (
-                                                                    <span>
-                                                                        Pick
-                                                                        project's
-                                                                        contract
-                                                                        end date
-                                                                    </span>
-                                                                )}
-                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                            </Button>
-                                                        </FormControl>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent
-                                                        className="w-auto p-0"
-                                                        align="start"
-                                                    >
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={
-                                                                field.value
+                                                <FormControl>
+                                                    <DatePicker
+                                                        date={field.value ? new Date(field.value) : undefined}
+                                                        setDate={(date) => {
+                                                            // Ensure contract_end cannot be earlier than contract_start
+                                                            if (date && (!form.getValues("contract_start") || date > new Date(form.getValues("contract_start")))) {
+                                                                field.onChange(date);
                                                             }
-                                                            onSelect={(date) =>
-                                                                field.onChange(
-                                                                    date
-                                                                        ? new Date(
-                                                                              date.toDateString()
-                                                                          )
-                                                                        : undefined
-                                                                )
-                                                            }
-                                                            disabled={(date) =>
-                                                                date <
-                                                                    new Date(
-                                                                        "1900-01-01"
-                                                                    ) ||
-                                                                date <
-                                                                    form.getValues(
-                                                                        "contract_start"
-                                                                    )
-                                                            }
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
+                                                        }}
+                                                        endYear={2090}
+                                                    />
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
