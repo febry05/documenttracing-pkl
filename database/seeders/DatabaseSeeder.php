@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ProjectSeeder::class);
 
         $this->call(ProjectDocumentSeeder::class);
+
+        $this->call(ProjectDocumentVersionSeeder::class);
         
         // $adminRole = Role::where('name', 'Administrator')->first()->id; 
 

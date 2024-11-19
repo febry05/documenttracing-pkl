@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Projects;
 
+use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Users\User;
+use function Ramsey\Uuid\v1;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
-use App\Http\Controllers\Controller;
-use App\Models\MasterData\ProjectBusinessType;
 use App\Models\Users\UserProfile;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
-use function Ramsey\Uuid\v1;
+use App\Models\Projects\ProjectDocument;
+use App\Models\MasterData\ProjectBusinessType;
 
 class ProjectController extends Controller
 {
     protected $projects;
     protected $projectBusinessTypes;
     protected $projectManager;
+    protected $projectDocument;
 
     public function __construct()
     {
@@ -63,6 +65,19 @@ class ProjectController extends Controller
             return [
                 'id' => $user->id,
                 'name' => $user->profile->name,
+            ];
+        });
+
+        $this->projectDocument = ProjectDocument::with('document_version')->get()->map(function ($document) {
+            return [
+                'id' => $document->id,
+                'name' => $document->name,
+                'project_document_versions' => $document->document_version->map(function ($version){
+                    return [
+                        'version' => $version->version,
+                        'document_number' => $version->document_number,
+                    ];
+                }),
             ];
         });
 
@@ -151,7 +166,7 @@ class ProjectController extends Controller
 
         return Inertia::render('Projects/Show', [
             'project' => $this->projects->firstWhere('id', $id),
-            'documents' => $mockDocuments,
+            'documents' => $this->projectDocument,
             'priorities' => $this->priorities,
         ]);
     }

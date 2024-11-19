@@ -20,10 +20,10 @@ class ProjectDocumentController extends Controller
     protected $projectDocument;
     protected $projectDocumentVersion;
 
-    public function __construct()
-    {
-        $this->project = Project 
-    }
+    // public function __construct()
+    // {
+    //     $this->project = Project 
+    // }
 
     public function show(Project $project, ProjectDocument $projectDocument) {
         return Inertia::render('Projects/Documents/Show', [
