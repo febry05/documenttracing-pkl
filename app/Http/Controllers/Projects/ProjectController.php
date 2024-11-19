@@ -74,6 +74,7 @@ class ProjectController extends Controller
                 'name' => $document->name,
                 'project_document_versions' => $document->document_version->map(function ($version){
                     return [
+                        'id' => $version->id,
                         'version' => $version->version,
                         'document_number' => $version->document_number,
                     ];
@@ -166,7 +167,7 @@ class ProjectController extends Controller
 
         return Inertia::render('Projects/Show', [
             'project' => $this->projects->firstWhere('id', $id),
-            'documents' => $this->projectDocument,
+            'projectDocuments' => $this->projectDocument,
             'priorities' => $this->priorities,
         ]);
     }

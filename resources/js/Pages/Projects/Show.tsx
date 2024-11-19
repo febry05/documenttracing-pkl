@@ -7,6 +7,7 @@ import InfoPair from "@/Components/custom/InfoPair";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
 import { IconButton } from "@/Components/custom/IconButton";
 import ProjectDocumentCreateDialog from "./Documents/Components/Create";
+import { Project, ProjectDocument } from "@/types/model";
 
 type Priority = {
     key: number,
@@ -14,31 +15,13 @@ type Priority = {
 };
 
 interface PageProps {
-    project: {
-        id: number;
-        code: string;
-        name: string;
-        type: string;
-        customer: string;
-        person_in_charge: string;
-        contract_number: string;
-        contract_start: string;
-        contract_end: string;
-        duration: string;
-        days_left: number;
-    },
-    documents: {
-        id: number,
-        name: string,
-        project_document_versions: {
-            id: number,
-            date: string,
-        }[],
-    }[],
+    project: Project,
+    projectDocuments: ProjectDocument[],
     priorities: Priority[],
 }
 
-export default function ProjectShow({ project, documents, priorities }: PageProps) {
+export default function ProjectShow({ project, projectDocuments, priorities }: PageProps) {
+    console.log(projectDocuments);
     return (
         <DashboardLayout
             header={
@@ -83,21 +66,21 @@ export default function ProjectShow({ project, documents, priorities }: PageProp
             <Card className="flex flex-col">
                 <div className="p-8">
                 <Accordion type="multiple" className="flex flex-col gap-4">
-                    {documents.map(document => (
-                        <AccordionItem key={document.id} value={`item-${document.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
+                    {projectDocuments.map(projectDocument => (
+                        <AccordionItem key={projectDocument.id} value={`item-${projectDocument.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
                             <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-200/90 hover:dark:bg-gray-800/90">
                                 <div className="flex items-center">
-                                    <Link href={route('projects.documents.show', [project.id, document.id])} className="hover:underline">
-                                        <div className="text-sm">{document.name}</div>
+                                    <Link href={route('projects.documents.show', [project.id, projectDocument.id])} className="hover:underline">
+                                        <div className="text-sm">{projectDocument.name}</div>
                                     </Link>
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent>
                                 <div className="p-4 pb-0 flex flex-col gap-4">
-                                    {document.project_document_versions && document.project_document_versions.map(project_document_version => (
+                                    {projectDocument.project_document_versions && projectDocument.project_document_versions.map(project_document_version => (
                                         <div key={project_document_version.id} className="flex items-center gap-4">
-                                            <div className="text-sm">{project_document_version.date}</div>
-                                            <Link href={route('projects.documents.versions.show', [project.id, document.id, project_document_version.id])} className="ms-auto">
+                                            <div className="text-sm">{project_document_version.version}</div>
+                                            <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
                                                 <Ellipsis className="text-gray-500" size={20} />
                                             </Link>
                                         </div>

@@ -1,4 +1,4 @@
-export default function InfoPair({ label, value, width = 3, lineHeight = 8 }: { label: string, value: string, width?: number , lineHeight?: string | number }) {
+export default function InfoPair({ label, value = 'N/A', width = 3, lineHeight = 8 }: { label: string, value?: string | undefined, width?: number , lineHeight?: string | number }) {
     return (
         <div className={"grid gap-2 grid-cols-" + width}>
             <div className={"text-gray-500 text-sm flex leading-" + lineHeight}>

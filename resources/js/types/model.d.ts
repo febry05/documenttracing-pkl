@@ -46,6 +46,9 @@ export type Project = {
     // Foreign keys data
     type?: string;
     person_in_charge?: string;
+
+    // Additional data
+    project_documents?: ProjectDocument[];
 }
 
 export type ProjectDocument = {
@@ -53,14 +56,20 @@ export type ProjectDocument = {
     name: string,
     priority: string,
     monthly_deadline: string,
+
     project_id: string,
+
+    // Additional data
+    project_document_versions?: ProjectDocumentVersions[];
 }
 
 export type ProjectDocumentVersions = {
+    id: number;
     version: string;
     document_number: string;
     release_date: Date;
     file_name: string;
+
     project_document_id: string;
 }
 // PROJECT [END]
