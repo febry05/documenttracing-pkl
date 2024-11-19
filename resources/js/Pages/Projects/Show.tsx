@@ -6,8 +6,7 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import InfoPair from "@/Components/custom/InfoPair";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
 import { IconButton } from "@/Components/custom/IconButton";
-import TitleSeparator from "@/Components/custom/TitleSeparator";
-import ProjectDocumentCreateDialog from "./Documents/Create";
+import ProjectDocumentCreateDialog from "./Documents/Components/Create";
 
 type Priority = {
     key: number,

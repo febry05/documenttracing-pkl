@@ -6,9 +6,44 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Head, Link } from "@inertiajs/react";
 import { Ellipsis, PenLine, Plus } from "lucide-react";
-import TitleSeparator from "@/Components/custom/TitleSeparator";
 
-export default function ProjectDocumentsShow() {
+type ProjectDocument = {
+    id: number,
+    name: string,
+    priority: string,
+    monthly_deadline: string,
+    project_id: string,
+}
+
+type Project = {
+    id: number;
+    code: string;
+    name: string;
+    type: string;
+    customer: string;
+    person_in_charge: string;
+    contract_number: string;
+    contract_start: string;
+    contract_end: string;
+    duration: string;
+    days_left: number;
+}
+
+type ProjectDocumentVersions = {
+    version: string;
+    document_number: string;
+    release_date: Date;
+    file_name: string;
+    project_document_id: string;
+}
+
+interface PageProps {
+    project: Project,
+    projectDocument: ProjectDocument,
+    projectDocumentVersions: ProjectDocumentVersions
+}
+
+export default function ProjectDocumentsShow({ project, projectDocument, projectDocumentVersions }: PageProps) {
     return (
         <DashboardLayout
             header={
