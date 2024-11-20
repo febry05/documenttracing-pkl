@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Projects\Project;
 use App\Http\Controllers\Controller;
 use App\Models\Projects\ProjectDocument;
+use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentController extends Controller
 {
@@ -16,20 +17,67 @@ class ProjectDocumentController extends Controller
         3 => 'High',
     ];
 
-    protected $project;
-    protected $projectDocument;
-    protected $projectDocumentVersion;
+    protected $projects;
+    protected $projectDocuments;
+    protected $projectDocumentVersions;
 
-    // public function __construct()
-    // {
-    //     $this->project = Project
-    // }
+    public function __construct()
+    {
+        $this->projects = Project::with('document','profile')->get()->map(function ($project) {
+            return [
+                'id' => $project->id,
+                'name' => $project->name,
+                'person_in_charge' => $project->profile->name,
+                'documents' => $project->document->map(function ($documents) {
+                    return [
+                        'id' => $documents->id,
+                        'name' => $documents->name,
+                        'priority' => $documents->priority,
+                        'due_at' => $documents->deadline,
+                    ];
+                }),
+            ];
+        });
 
-    public function show(Project $project, ProjectDocument $projectDocument) {
+        $this->projectDocuments = ProjectDocument::with('document_version')->get()->map(function ($projectDocument) {
+            return [
+                'id' => $projectDocument->id,
+                'name' => $projectDocument->name,
+                'priority' => $projectDocument->priority,
+                'due_at' => $projectDocument->deadline,
+                'document_versions' => $projectDocument->document_version->map(function ($documentVersion) {
+                    return [
+                        'id' => $documentVersion->id,
+                        'version' => $documentVersion->version,
+                        'release_date' => $documentVersion->release_date,
+                    ];
+                }),
+            ];
+        });
+
+        $this->projectDocumentVersions = ProjectDocumentVersion::with('document_updates')->get()->map(function ($projectDocumentVersion) {
+            return [
+                'id' => $projectDocumentVersion->id,
+                'version' => $projectDocumentVersion->version,
+                'release_date' => $projectDocumentVersion->release_date,
+                'document_updates' => $projectDocumentVersion->document_updates->map(function ($documentUpdate) {
+                    return [
+                        'id' => $documentUpdate->id,
+                        'description' => $documentUpdate->description,
+                        'updated_at' => $documentUpdate->updated_at,
+                    ];
+                }),
+            ];
+        });
+        
+    }
+
+    public function show($id) {
+        // dd($this->projects->firstWhere('id', $id), $this->projectDocuments->firstWhere('id', $id), $this->projectDocumentVersions->firstWhere('id', $id)); 
         return Inertia::render('Projects/Documents/Show', [
-            'project' => $project,
-            'projectDocument' => $projectDocument,
-            'projectDocumentVersions' => $projectDocument->document_version,
+            'project' => $this->projects->firstWhere('id', $id),
+            'projectDocument' => $this->projectDocuments->firstWhere('id', $id),
+            'projectDocumentVersions' => $this->projectDocumentVersions->firstWhere('id', $id),
         ]);
     }
 

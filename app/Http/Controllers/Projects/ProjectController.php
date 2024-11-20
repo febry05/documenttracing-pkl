@@ -134,37 +134,6 @@ class ProjectController extends Controller
 
     public function show($id)
     {
-        $mockDocuments = [
-            [
-                'id' => 1,
-                'name' => 'BAPP dan Lampirannya',
-                'project_document_versions' => [
-                    [
-                        'id' => 1,
-                        'date' => 'October 2024',
-                    ],
-                    [
-                        'id' => 2,
-                        'date' => 'September 2024',
-                    ],
-                ],
-            ],
-            [
-                'id' => 2,
-                'name' => 'Laporan Bulanan',
-                'project_document_versions' => [
-                    [
-                        'id' => 1,
-                        'date' => 'October 2024',
-                    ],
-                    [
-                        'id' => 2,
-                        'date' => 'September 2024',
-                    ],
-                ],
-            ]
-        ];
-
         return Inertia::render('Projects/Show', [
             'project' => $this->projects->firstWhere('id', $id),
             'projectDocuments' => $this->projectDocument,

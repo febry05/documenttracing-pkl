@@ -27,10 +27,10 @@ class ProjectDocument extends Model
         return $this->hasMany(ProjectDocumentVersion::class);
     }
 
-    public function document_updates()
-    {
-        return $this->hasMany(ProjectDocumentVersionUpdate::class);
-    }
+    // public function document_updates()
+    // {
+    //     return $this->hasMany(ProjectDocumentVersionUpdate::class);
+    // }
 
 
 }
