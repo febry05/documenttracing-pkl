@@ -11,14 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('updates', function (Blueprint $table) {
+        Schema::create('project_document_version_updates', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status'); 
             $table->string('description');
             $table->string('document_link');
             $table->timestamps();
-            $table->foreignId('project_document_version_id')->constrained();
+            $table->unsignedBigInteger('project_document_version_id'); 
+            $table->foreign('project_document_version_id', 'fk_docver_update')
+                ->references('id')
+                ->on('project_document_versions')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
@@ -27,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('updates');
+        Schema::dropIfExists('project_document_version_updates');
     }
 };

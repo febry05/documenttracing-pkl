@@ -16,7 +16,7 @@ class ProjectDocumentSeeder extends Seeder
         ProjectDocument::create([
             'name' => 'BAPP dan Lampirannya Tes',
             'priority' => '3',
-            'monthly_deadline' => '2026-01-01',
+            'deadline' => '2026-01-01',
             'deadline_interval' => '7',
             'project_id' => 1,            
         ]);
