@@ -4,25 +4,17 @@ import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt";
 import { AppSidebar } from "@/Components/app-sidebar";
 import { ScrollArea } from "@/Components/ui/scroll-area";
 import {
-    Bell,
-    UserRound,
-    UserCog,
-    LogOut,
     CircleCheck,
     TriangleAlert,
 } from "lucide-react";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/Components/ui/popover";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { Link, router, usePage } from "@inertiajs/react";
-import { ModeToggle } from "@/Components/mode-toggle";
+import { usePage } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
 import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
+import NotificationPanel from "./Components/NotificationPanel";
+import ProfilePanel from "./Components/ProfilePanel";
 
 type User = {
     name: string;
@@ -51,7 +43,7 @@ export default function DashboardLayout({
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth, flash } = usePage<{ auth: Auth; flash: Flash }>().props;
+    const { auth, flash, notifications } = usePage<{ auth: Auth; flash: Flash; notifications: Notification[] }>().props;
 
     const fullName = auth.name.split(" ");
     const middleName = fullName[Math.floor((fullName.length / 2) | 0)];
@@ -136,7 +128,6 @@ export default function DashboardLayout({
                         </Form>
                     </div> */}
 
-                    {/* Theme Mode Toggle */}
                     <div className="ms-auto">
                         <Button
                             variant="outline"
@@ -156,70 +147,10 @@ export default function DashboardLayout({
                     </div>
 
                     {/* Notification Panel */}
-                    <Popover>
-                        <PopoverTrigger className="ms-auto" asChild>
-                            <Button
-                                variant="secondary"
-                                size="icon"
-                                className="shadow-none rounded-full w-12 h-12"
-                            >
-                                <Bell size={20} />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>Notification Panel</PopoverContent>
-                    </Popover>
+                    <NotificationPanel notifications={notifications}/>
 
                     {/* Profile Panel */}
-                    <Popover>
-                        <PopoverTrigger className="ms-4" asChild>
-                            <div>
-                                <Button
-                                    variant="secondary"
-                                    size="icon"
-                                    className="shadow-none rounded-full w-fit h-12 hidden md:block"
-                                >
-                                    <div className="my-auto px-6 flex flex-col pe-6 text-left">
-                                        <span className="text-xs">
-                                            {user.name}
-                                        </span>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                            {user.role}
-                                        </span>
-                                    </div>
-                                </Button>
-                                <Button
-                                    variant="secondary"
-                                    className="rounded-full p-4 md:hidden w-12 h-12"
-                                >
-                                    <UserRound size={20} />
-                                </Button>
-                            </div>
-                        </PopoverTrigger>
-
-                        <PopoverContent className="flex flex-col">
-                            <Link href={route("profile.edit")}>
-                                <Button
-                                    variant="ghost"
-                                    className="justify-start w-full"
-                                >
-                                    <UserCog className="me-6" size={18} />
-                                    Profile Settings
-                                </Button>
-                            </Link>
-
-                            <ModeToggle />
-
-                            <Link href={route("logout")} method="post">
-                                <Button
-                                    variant="ghost"
-                                    className="justify-start w-full"
-                                >
-                                    <LogOut className="me-6" size={18} />
-                                    Log out
-                                </Button>
-                            </Link>
-                        </PopoverContent>
-                    </Popover>
+                    <ProfilePanel {...user} />
                 </nav>
                 <ScrollArea className="px-6 pt-4 flex-1">
                     <div className="pb-4 font-semibold text-xl leading-tight">

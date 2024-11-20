@@ -34,3 +34,19 @@ export type MenuItemProp = {
         | null
         | undefined;
 };
+
+export type Notification = {
+    project: {
+        id: number,
+        name: string,
+        projectDocument: {
+            id: number,
+            name: string,
+            daysLeft: number,
+            priority: "High" | "Medium" | "Low",
+            projectDocumentVersion: {
+                id: number,
+            }
+        }
+    },
+};
