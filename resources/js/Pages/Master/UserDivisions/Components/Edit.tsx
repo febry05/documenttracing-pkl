@@ -7,9 +7,10 @@ import { z } from "zod";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
-import { Save, Trash2 } from "lucide-react";
+import { Save } from "lucide-react";
 import { UserDivisionDeleteDialog } from "./Delete";
 import { router } from "@inertiajs/react";
+import { UserDivision } from "@/types/model";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -17,11 +18,11 @@ const formSchema = z.object({
 })
 
 interface PageProps {
-    data: any,
+    data: UserDivision,
     closeDialog: () => void;
 }
 
-export default function UserDivisionsEditDialog({ data, closeDialog }: PageProps) {
+export default function UserDivisionEditDialog({ data, closeDialog }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

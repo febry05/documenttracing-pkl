@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Head, Link } from "@inertiajs/react";
 import { Ellipsis, PenLine, Plus } from "lucide-react";
+import ProjectDocumentVersionCreateDialog from "./Versions/Components/Create";
 
 type ProjectDocument = {
     id: number,
@@ -74,7 +75,7 @@ export default function ProjectDocumentsShow({ project, projectDocument, project
                 size="md"
                 breadcrumb={false}
                 button={
-                    <IconButton text="Create Version" icon={Plus} className="w-fit"/>
+                    <ProjectDocumentVersionCreateDialog projectId={project.id} projectDocumentId={projectDocument.id} />
                 }
                 className="mb-4"
             />

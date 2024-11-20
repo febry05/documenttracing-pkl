@@ -17,7 +17,7 @@ const formSchema = z.object({
     description: z.string().max(255).optional(),
 })
 
-export default function ProjectBusinessTypesCreateDialog() {
+export default function ProjectBusinessTypeCreateDialog() {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -32,7 +32,7 @@ export default function ProjectBusinessTypesCreateDialog() {
             await Inertia.post(route('project-business-types.store'), values, {
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                    router.visit(route('project-business-types.index'), { only: ['projectBusinessTypes'] });
                 },
             });
         } catch (error) {

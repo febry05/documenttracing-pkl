@@ -88,8 +88,6 @@ class ProjectDocumentController extends Controller
         ]);
     }
 
-    
-
     public function store(Request $request, Project $project)
     {
         $validated = $request->validate([
@@ -108,6 +106,6 @@ class ProjectDocumentController extends Controller
     }
 
     public function updateDeadline(Request $request, Project $project, ProjectDocument $projectDocument){
-        
+
     }
 }

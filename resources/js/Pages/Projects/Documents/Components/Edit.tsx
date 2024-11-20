@@ -15,13 +15,17 @@ import {
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { IconButton } from "@/Components/custom/IconButton";
-import { Plus, Save } from "lucide-react";
+import { PenLine, Plus, Save } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
+import { ProjectDocument } from "@/types/model";
+import { handleNumericInput } from "@/lib/utils";
+import { ProjectDocumentDeleteDialog } from "./Delete";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
-    document_number: z.string().min(5).max(255).optional(),
+    monthly_deadline: z.number().min(1).max(31),
+    deadline_interval: z.number().min(1).max(30),
     priority: z.string(),
     due_at: z.date(),
 });
@@ -34,41 +38,49 @@ type Priority = {
 interface PageProps {
     priorities: Priority[],
     projectId: number,
+    projectDocument: ProjectDocument,
 }
 
 export default function ProjectDocumentEditDialog(
-    { priorities, projectId }
+    { priorities, projectId, projectDocument }
     : PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            document_number: "",
-            priority: "",
-            due_at: new Date(),
+            name: projectDocument.name || "",
+            monthly_deadline: projectDocument.monthly_deadline || undefined,
+            deadline_interval:  projectDocument.deadline_interval || 1 | 3 | 7 | 30,
+            priority: projectDocument.priority || "",
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("projects.documents.update", [projectId, document.id]), values);
+            await router.post(route("projects.documents.update", [projectId, projectDocument.id]), values);
         } catch (error) {
             console.error("Submission error:", error);
         }
     }
 
+    const deadlineIntervals = [
+        { key: 1, value: 'Every 1 day' },
+        { key: 3, value: 'Every 3 days' },
+        { key: 7, value: 'Every 7 days' },
+        { key: 30, value: 'Every 30 days' },
+    ]
+
     return (
         <Dialog>
             <DialogTrigger asChild>
                 {/* <IconButton text="Create Document" icon={Plus} className="w-fit"/> */}
-                <Button className="w-fit" >
-                    <Plus className="me-2" size={18} />
-                    Create Document
+                <Button className="w-fit" variant="modify">
+                    <PenLine className="me-2" size={18} />
+                    Edit Document
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Create Project Document</DialogTitle>
+                    <DialogTitle>Edit Project Document</DialogTitle>
                 </DialogHeader>
 
                 <Form {...form}>
@@ -91,22 +103,64 @@ export default function ProjectDocumentEditDialog(
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="document_number"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            Document Number
-                                            <span className="text-destructive ms-1">*</span>
-                                        </FormLabel>
-                                            <FormControl>
-                                                <Input type="text" placeholder="Enter the project document number" {...field} minLength={3} maxLength={255} value={field.value || ''} />
-                                            </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            <div className="grid grid-cols-2 gap-2">
+                                <FormField
+                                    control={form.control}
+                                    name="monthly_deadline"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Monthly Deadline
+                                                <span className="text-destructive ms-1">*</span>
+                                            </FormLabel>
+                                                <FormControl>
+                                                    <Input type="text" placeholder="Enter the project document's monthly deadline date"
+                                                        {...field}
+                                                        minLength={1}
+                                                        maxLength={2}
+                                                        min={1}
+                                                        max={31}
+                                                        onKeyDown={
+                                                            handleNumericInput
+                                                        }
+                                                    />
+                                                </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="deadline_interval"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Deadline Interval
+                                                <span className="text-destructive ms-1">*</span>
+                                            </FormLabel>
+                                            <Select
+                                                    value={field.value ? String(field.value) : ''}
+                                                    onValueChange={(value) => field.onChange(Number(value))}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select the project document's deadline interval" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {deadlineIntervals.map((deadlineInterval) => (
+                                                            <SelectItem key={deadlineInterval.key} value={String(deadlineInterval.key)}>
+                                                                {deadlineInterval.value}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
                             <FormField
                                 control={form.control}
@@ -140,7 +194,10 @@ export default function ProjectDocumentEditDialog(
                             />
 
                             <DialogFooter>
-                                <IconButton text="Save" icon={Save} type="submit" />
+                                <div className="flex flex-row-reverse gap-4">
+                                    <IconButton text="Save" icon={Save} type="submit" />
+                                    <ProjectDocumentDeleteDialog projectId={projectId} projectDocument={projectDocument} />
+                                </div>
                             </DialogFooter>
                         </div>
 

@@ -17,10 +17,10 @@ import {
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { IconButton } from "@/Components/custom/IconButton";
 import { Plus, Save } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
-import { handleNumericInput } from "@/lib/utils";
 import { DatePicker } from "@/Components/custom/DatePicker";
+import { ProjectDocumentVersions } from "@/types/model";
+import { ProjectDocumentVersionDeleteDialog } from "./Delete";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),
@@ -35,22 +35,23 @@ type Priority = {
 interface PageProps {
     projectId: number,
     projectDocumentId: number,
+    projectDocumentVersion: ProjectDocumentVersions,
 }
 
-export default function ProjectDocumentVersionCreateDialog(
-    { projectId, projectDocumentId }
+export default function ProjectDocumentVersionEditDialog(
+    { projectId, projectDocumentId, projectDocumentVersion }
     : PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            document_number: "",
-            release_date: new Date(),
+            document_number: projectDocumentVersion.document_number || "",
+            release_date: new Date(projectDocumentVersion.release_date),
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("projects.documents.version.store", [projectId, projectDocumentId]), values);
+            await router.post(route("projects.documents.version.update", [projectId, projectDocumentId, projectDocumentVersion.id]), values);
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -82,7 +83,7 @@ export default function ProjectDocumentVersionCreateDialog(
                                             <span className="text-destructive ms-1">*</span>
                                         </FormLabel>
                                             <FormControl>
-                                                <Input type="text" placeholder="Enter the project document's number" {...field} minLength={1} maxLength={30} value={field.value || ''} />
+                                                <Input type="text" placeholder="Enter the project document's number" {...field} minLength={1} maxLength={30} />
                                             </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -114,7 +115,10 @@ export default function ProjectDocumentVersionCreateDialog(
                             />
 
                             <DialogFooter>
-                                <IconButton text="Save" icon={Save} type="submit" />
+                                <div className="flex flex-row-reverse gap-4">
+                                    <IconButton text="Save" icon={Save} type="submit" />
+                                    <ProjectDocumentVersionDeleteDialog projectId={projectId} projectDocumentId={projectDocumentId} projectDocumentVersion={projectDocumentVersion} />
+                                </div>
                             </DialogFooter>
                         </div>
 

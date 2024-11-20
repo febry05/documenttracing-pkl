@@ -6,21 +6,23 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { ProjectDocument } from "@/types/model";
 
 interface PageProps {
-    data: any,
+    projectId: number,
+    projectDocument: ProjectDocument,
 }
 
-export function ProjectBusinessTypesDeleteDialog({data}: PageProps) {
+export function ProjectDocumentDeleteDialog({ projectId, projectDocument }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-roles.destroy', data.id), {
+            await Inertia.delete(route('projects.documents.destroy', [projectId, projectDocument.id]), {
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
+                    router.visit(route('projects.documents.show', ), { only: ['userDivisions', 'userPositions'] });
                 },
             });
         } catch (error) {
@@ -41,7 +43,7 @@ export function ProjectBusinessTypesDeleteDialog({data}: PageProps) {
             description={
                 <span>
                     Are you sure want to delete project document "
-                    <strong>{data.name}</strong>
+                    <strong>{projectDocument.name}</strong>
                     "?
                 </span>
                 }

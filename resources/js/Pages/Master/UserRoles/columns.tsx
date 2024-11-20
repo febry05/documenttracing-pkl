@@ -1,12 +1,7 @@
 "use client"
 
+import { UserRole } from "@/types/model"
 import { ColumnDef } from "@tanstack/react-table"
-
-export type UserRole = {
-  id: number
-  name: string
-  description?: string | undefined
-}
 
 export const columns: ColumnDef<UserRole>[] = [
     {

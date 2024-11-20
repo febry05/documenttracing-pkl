@@ -47,7 +47,7 @@ export default function ProjectShow({ project, projectDocuments, priorities }: P
                     <InfoPair label="Contract Number" value={project.contract_number} />
                     <InfoPair label="Duration" value={project.duration} />
                     <InfoPair label="Type" value={project.type} />
-                    <InfoPair label="Days Left" value={project.days_left.toString()} />
+                    <InfoPair label="Days Left" value={project.days_left ? project.days_left.toString() : ""} />
                     <InfoPair label="Customer" value={project.customer} />
                     <InfoPair label="Person in Charge" value={project.person_in_charge} />
                 </div>

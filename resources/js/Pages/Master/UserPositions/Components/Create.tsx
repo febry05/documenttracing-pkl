@@ -10,9 +10,9 @@ import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
-import { UserDivision } from "../../UserDivisions/columns";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { UserDivision } from "@/types/model";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -24,7 +24,7 @@ interface PageProps {
     userDivisions: UserDivision[],
 }
 
-export default function UserPositionsCreateDialog({ userDivisions }: PageProps) {
+export default function UserPositionCreateDialog({ userDivisions }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
