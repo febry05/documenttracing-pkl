@@ -25,8 +25,8 @@ class UserController extends Controller
     //         new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('delete records,api'), only:['destroy']),
     //     ];
     // }
-    
-    
+
+
     public function index()
     {
         $userRoles = UserPosition::select('name', 'description')->get()->map(function ($role) {
@@ -182,6 +182,6 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'An error occurred while updating the user.']);
-        }    
+        }
     }
 }

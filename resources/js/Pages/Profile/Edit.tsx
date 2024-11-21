@@ -1,79 +1,53 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import DeleteUserForm from "./Partials/DeleteUserForm";
-import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
-import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
 import { Head } from "@inertiajs/react";
-import { PageProps } from "@/types";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/Components/ui/card";
+import { Card } from "@/Components/ui/card";
+import DashboardLayout from "@/Layouts/custom/DashboardLayout";
+import { User, UserDivision, UserPosition, UserRole } from "@/types/model";
+import InfoPair from "@/Components/custom/InfoPair";
+import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
+import { Separator } from "@/Components/ui/separator";
+import EditProfileForm from "./Components/EditProfileForm";
+import UpdatePasswordForm from "./Components/UpdatePasswordForm";
+
+interface PageProps {
+    user: User;
+    userRoles: UserRole[];
+    userPositions: UserPosition[];
+    userDivisions: UserDivision[];
+}
 
 export default function Edit({
-    auth,
-    mustVerifyEmail,
-    status,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+    user, userRoles, userPositions, userDivisions
+}: PageProps) {
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl leading-tight">Profile</h2>
-            }
+        <DashboardLayout
+            header={<HeaderNavigation title="Profile" />}
         >
             <Head title="Profile" />
 
             <div className="space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Profile Information</CardTitle>
-                        <CardDescription>
-                            Update your account's profile information and email
-                            address.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                            className="max-w-xl"
-                        />
-                    </CardContent>
+                <Card className="flex flex-col mb-4">
+                    <div className="px-8 py-4 border-b">
+                        <div className="col-span-5 leading-9 text-l font-semibold">Profile Information</div>
+                    </div>
+
+                    <EditProfileForm user={user} userRoles={userRoles} userPositions={userPositions} userDivisions={userDivisions} />
+
+                    <Separator className="mx-auto" />
+
+                    <div className="grid md:grid-cols-3 gap-8 p-8">
+                        <InfoPair label="Role" value={user.role} />
+                        <InfoPair label="Position" value={user.user_position} />
+                        <InfoPair label="Division" value={user.user_division} />
+                    </div>
                 </Card>
 
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Update Password</CardTitle>
-                        <CardDescription>
-                            Ensure your account is using a long, random password
-                            to stay secure.
-                        </CardDescription>
-                    </CardHeader>
-
-                    <CardContent>
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Delete Account</CardTitle>
-                        <CardDescription>
-                            Once your account is deleted, all of its resources
-                            and data will be permanently deleted. Before
-                            deleting your account, please download any data or
-                            information that you wish to retain.
-                        </CardDescription>
-                    </CardHeader>
-
-                    <CardContent>
-                        <DeleteUserForm className="max-w-xl" />
-                    </CardContent>
+                    <div className="px-8 py-4 border-b">
+                        <div className="col-span-5 leading-9 text-l font-semibold">Update Password</div>
+                    </div>
+                    <UpdatePasswordForm user={user} />
                 </Card>
             </div>
-        </AuthenticatedLayout>
+        </DashboardLayout>
     );
 }

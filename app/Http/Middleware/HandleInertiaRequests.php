@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use League\CommonMark\Util\PrioritizedList;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Models\Role as ModelsRole;
 
@@ -33,6 +34,69 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $notifications = [
+            [
+                'project' => [
+                    'id' => 1,
+                    'name' => 'Project Alpha',
+                    'projectDocument' => [
+                        'id' => 101,
+                        'name' => 'Document A',
+                        'daysLeft' => 5,
+                        'priority' => 'Medium',
+                        'projectDocumentVersion' => [
+                            'id' => 1001,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'project' => [
+                    'id' => 2,
+                    'name' => 'Project Beta',
+                    'projectDocument' => [
+                        'id' => 102,
+                        'name' => 'Document B',
+                        'daysLeft' => 10,
+                        'priority' => 'High',
+                        'projectDocumentVersion' => [
+                            'id' => 1002,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'project' => [
+                    'id' => 3,
+                    'name' => 'Project Gamma',
+                    'projectDocument' => [
+                        'id' => 103,
+                        'name' => 'Document C',
+                        'daysLeft' => 3,
+                        'priority' => 'High',
+                        'projectDocumentVersion' => [
+                            'id' => 1003,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'project' => [
+                    'id' => 4,
+                    'name' => 'Project Delta',
+                    'projectDocument' => [
+                        'id' => 104,
+                        'name' => 'Document D',
+                        'daysLeft' => 15,
+                        'priority' => 'Low',
+                        'projectDocumentVersion' => [
+                            'id' => 1004,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
         return array_merge(parent::share($request), [
             'auth' => Auth::check() ? [
                 'name' => Auth::user()->profile->name,
@@ -40,6 +104,7 @@ class HandleInertiaRequests extends Middleware
             ] : [
                 'user' => $request->user(),
             ],
+            'notifications' => $notifications,
             'flash' => [
                 'success' => session()->get('success'),
                 'error' => session()->get('error'),
