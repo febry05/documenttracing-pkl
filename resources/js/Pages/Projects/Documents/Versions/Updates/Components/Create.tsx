@@ -19,8 +19,8 @@ import { IconButton } from "@/Components/custom/IconButton";
 import { Plus, Save } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
-import { DatePicker } from "@/Components/custom/DatePicker";
 import { Textarea } from "@/Components/ui/textarea";
+import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 
 const formSchema = z.object({
     title: z.string().min(1).max(255),
@@ -127,7 +127,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Select the version status" />
+                                                        <SelectValue placeholder="Select the update status" />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -172,11 +172,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                             <span className="text-destructive ms-1">*</span>
                                         </FormLabel>
                                         <FormControl>
-                                            <DatePicker
-                                                date={field.value ? new Date(field.value) : undefined}
-                                                setDate={(date) => field.onChange(date)}
-                                                endYear={2090}
-                                            />
+                                            <DateTimePicker value={field.value} onChange={field.onChange} yearRange={2090} />
                                         </FormControl>
                                             <FormDescription>
                                                 Pick the date the update was issued. Leave it if it's today.

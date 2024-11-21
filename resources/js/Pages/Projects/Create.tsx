@@ -27,6 +27,7 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { ProjectBusinessType } from "@/types/model";
 import { DatePicker } from "@/Components/custom/DatePicker";
+import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 
 const formSchema = z
     .object({
@@ -354,10 +355,16 @@ export default function ProjectCreate({
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                 <FormControl>
-                                                    <DatePicker
+                                                    {/* <DatePicker
                                                         date={field.value ? new Date(field.value) : undefined}
                                                         setDate={(date) => field.onChange(date)}
                                                         endYear={2090} // Set an appropriate end year
+                                                    /> */}
+                                                    <DateTimePicker
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        hideTime={true}
+                                                        placeholder="Select the contract start date"
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -376,15 +383,12 @@ export default function ProjectCreate({
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                 <FormControl>
-                                                    <DatePicker
-                                                        date={field.value ? new Date(field.value) : undefined}
-                                                        setDate={(date) => {
-                                                            // Ensure contract_end cannot be earlier than contract_start
-                                                            if (date && (!form.getValues("contract_start") || date >= new Date(form.getValues("contract_start")))) {
-                                                                field.onChange(date);
-                                                            }
-                                                        }}
-                                                        endYear={2090}
+                                                    <DateTimePicker
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        hideTime={true}
+                                                        placeholder="Select the contract end date"
+                                                        min={new Date(form.getValues("contract_start"))}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
