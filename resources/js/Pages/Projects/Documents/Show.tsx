@@ -5,11 +5,12 @@ import { Card } from "@/Components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Head, Link } from "@inertiajs/react";
-import { Download, Ellipsis, PenLine, Plus } from "lucide-react";
+import { Download, PenLine, SquareArrowOutUpRight } from "lucide-react";
 import ProjectDocumentVersionCreateDialog from "./Versions/Components/Create";
 import { Project, ProjectDocument, ProjectDocumentVersions } from "@/types/model";
 import { Badge } from "@/Components/ui/badge";
 import { format } from "date-fns";
+import TextLink from "@/Components/custom/TextLink";
 
 interface PageProps {
     project: Project,
@@ -60,7 +61,9 @@ export default function ProjectDocumentsShow({ project, projectDocument, project
                     />
                     <InfoPair label="Deadline" value={format(projectDocument.deadline, "d MMMM yyyy")} />
                     <InfoPair label="Deadline Interval" value={"Every " + projectDocument.deadline_interval + " Days"}  />
-                    <InfoPair label="From Project" value={projectDocument.project} />
+                    <InfoPair label="From Project" value={
+                        <TextLink text={projectDocument.project} href={route('projects.show', project.id)} />
+                    } />
                 </div>
             </Card>
 
@@ -80,9 +83,7 @@ export default function ProjectDocumentsShow({ project, projectDocument, project
                         <AccordionItem key={projectDocumentVersion.id} value={`item-${projectDocumentVersion.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
                             <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-300 hover:dark:bg-gray-700">
                                 <div className="flex items-center">
-                                    <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, projectDocumentVersion.id])} className="hover:underline">
-                                        <div className="text-sm">{projectDocumentVersion.version}</div>
-                                    </Link>
+                                    <TextLink text={projectDocumentVersion.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, projectDocumentVersion.id])} className="text-sm" />
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent>
@@ -90,9 +91,11 @@ export default function ProjectDocumentsShow({ project, projectDocument, project
                                     <div className="grid md:grid-cols-3 gap-4">
                                         <InfoPair label="Document Number" value={projectDocumentVersion.document_number} width={7} lineHeight="normal" />
                                         <InfoPair label="Release Date" value={format(projectDocumentVersion.release_date, "d MMMM yyyy")} width={7} lineHeight="normal" />
-                                        <InfoPair label="Latest File"
+                                        <InfoPair label="Latest Document"
                                             value={
-                                                <IconButton icon={Download} variant="outline" text="Download File" />
+                                                <Link href={projectDocumentVersion.latest_document} target="_blank">
+                                                    <IconButton icon={Download} variant="outline" text="Download File" />
+                                                </Link>
                                             }
                                             width={7}
                                             lineHeight="normal"

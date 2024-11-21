@@ -11,8 +11,28 @@ use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentVersionController extends Controller
 {
+    protected $statuses = [
+        [
+            'key' => 1,
+            'value' => 'Completed'
+        ],
+        [
+            'key' => 2,
+            'value' => 'On Process'
+        ],
+        [
+            'key' => 3,
+            'value' => 'Pending'
+        ],
+        [
+            'key' => 4,
+            'value' => 'Not Started'
+        ],
+    ];
+
     public function show(Project $project, ProjectDocument $projectDocument, ProjectDocumentVersion $projectDocumentVersion) {
         return Inertia::render('Projects/Documents/Versions/Show', [
+            'statuses' => $this->statuses,
             'project' => $project,
             'projectDocument' => $projectDocument,
             'projectDocumentVersion' => $projectDocumentVersion,

@@ -1,6 +1,16 @@
-// USER [START]
-export type UserProfile = {
+type BaseModel = {
     id: number;
+    created_at: Date;
+    updated_at: Date;
+}
+
+type BaseMasterData = BaseModel & {
+    name: string;
+    description?: string | undefined;
+};
+
+// USER [START]
+export type UserProfile = BaseModel & {
     name?: string;
     nik?: string;
     phone?: string;
@@ -28,8 +38,7 @@ export type User = UserProfile & {
 // USER [END]
 
 // PROJECT [START]
-export type Project = {
-    id: number;
+export type Project = BaseModel & {
     code: string;
     name: string;
     customer: string;
@@ -52,8 +61,7 @@ export type Project = {
     project_documents?: ProjectDocument[];
 }
 
-export type ProjectDocument = {
-    id: number,
+export type ProjectDocument = BaseModel & {
     name: string,
     priority: number,
     priority_name?: string,
@@ -64,27 +72,33 @@ export type ProjectDocument = {
     project?: string,
 
     // Additional data
-    project_document_versions?: ProjectDocumentVersions[];
+    project_document_versions?: ProjectDocumentVersion[];
 }
 
-export type ProjectDocumentVersions = {
-    id: number;
+export type ProjectDocumentVersion = BaseModel & {
     version: string;
     document_number: string;
     release_date: Date;
     file_name: string;
 
+    project_document_version_updates?: ProjectDocumentVersionUpdate[];
+
     project_document_id: string;
+
+    latest_document: string;
+}
+
+export type ProjectDocumentVersionUpdate = BaseModel & {
+    title: string;
+    description: string;
+    document_link: string;
+    status: number;
+
+    project_document_version_id: number;
 }
 // PROJECT [END]
 
 // MASTER [START]
-export type BaseMasterData = {
-    id: number;
-    name: string;
-    description?: string | undefined;
-};
-
 export type UserRole = BaseMasterData;
 
 export type UserDivision = BaseMasterData;

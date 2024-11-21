@@ -65,6 +65,7 @@ class ProjectDocumentController extends Controller
                 'release_date' => $projectDocumentVersion->release_date,
                 'document_number' => $projectDocumentVersion->document_number,
                 'project_document_id' => $projectDocumentVersion->project_document_id,
+                'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
                 'document_updates' => $projectDocumentVersion->document_updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id,

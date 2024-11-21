@@ -1,14 +1,15 @@
 import { Head, Link } from "@inertiajs/react";
 import { Card } from "@/Components/ui/card";
-import { Ellipsis, PenLine, Plus } from "lucide-react";
+import { Download, Ellipsis, PenLine, Plus } from "lucide-react";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import InfoPair from "@/Components/custom/InfoPair";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
 import { IconButton } from "@/Components/custom/IconButton";
 import ProjectDocumentCreateDialog from "./Documents/Components/Create";
-import { Project, ProjectDocument } from "@/types/model";
+import { Project, ProjectDocument, ProjectDocumentVersion } from "@/types/model";
 import { format } from "date-fns";
+import TextLink from "@/Components/custom/TextLink";
 
 type Priority = {
     key: number,
@@ -18,10 +19,11 @@ type Priority = {
 interface PageProps {
     project: Project,
     projectDocuments: ProjectDocument[],
+    projectDocumentVersions: ProjectDocumentVersion[],
     priorities: Priority[],
 }
 
-export default function ProjectShow({ project, projectDocuments, priorities }: PageProps) {
+export default function ProjectShow({ project, projectDocuments, projectDocumentVersions, priorities }: PageProps) {
     console.log(projectDocuments);
     return (
         <DashboardLayout
@@ -71,16 +73,14 @@ export default function ProjectShow({ project, projectDocuments, priorities }: P
                         <AccordionItem key={projectDocument.id} value={`item-${projectDocument.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
                             <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-200/90 hover:dark:bg-gray-800/90">
                                 <div className="flex items-center">
-                                    <Link href={route('projects.documents.show', [project.id, projectDocument.id])} className="hover:underline">
-                                        <div className="text-sm">{projectDocument.name}</div>
-                                    </Link>
+                                    <TextLink text={projectDocument.name} href={route('projects.documents.show', [project.id, projectDocument.id])} className="text-sm" />
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent>
                                 <div className="p-4 pb-0 flex flex-col gap-4">
                                     {projectDocument.project_document_versions && projectDocument.project_document_versions.map(project_document_version => (
                                         <div key={project_document_version.id} className="flex items-center gap-4">
-                                            <div className="text-sm">{project_document_version.version}</div>
+                                            <TextLink text={project_document_version.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="text-sm" />
                                             <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
                                                 <Ellipsis className="text-gray-500" size={20} />
                                             </Link>
