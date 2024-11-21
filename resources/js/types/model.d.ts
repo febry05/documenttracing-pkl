@@ -55,11 +55,13 @@ export type Project = {
 export type ProjectDocument = {
     id: number,
     name: string,
-    priority: string,
-    monthly_deadline: number,
+    priority: number,
+    priority_name?: string,
+    deadline: Date,
     deadline_interval: number,
 
     project_id: string,
+    project?: string,
 
     // Additional data
     project_document_versions?: ProjectDocumentVersions[];

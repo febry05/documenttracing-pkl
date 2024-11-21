@@ -8,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { IconButton } from "@/Components/custom/IconButton";
 import ProjectDocumentCreateDialog from "./Documents/Components/Create";
 import { Project, ProjectDocument } from "@/types/model";
+import { format } from "date-fns";
 
 type Priority = {
     key: number,
@@ -43,7 +44,7 @@ export default function ProjectShow({ project, projectDocuments, priorities }: P
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 p-8">
                     <InfoPair label="Project Code" value={project.code} />
-                    <InfoPair label="Start & End Date" value={project.contract_start + ' - ' + project.contract_end} />
+                    <InfoPair label="Start & End Date" value={format(project.contract_start, "d MMMM yyyy") + ' - ' + format(project.contract_end, "d MMMM yyyy")} />
                     <InfoPair label="Contract Number" value={project.contract_number} />
                     <InfoPair label="Duration" value={project.duration} />
                     <InfoPair label="Type" value={project.type} />
