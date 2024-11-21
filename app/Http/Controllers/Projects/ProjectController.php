@@ -230,7 +230,7 @@ class ProjectController extends Controller
 
             DB::commit();
 
-            return redirect()->route('projects.index')->with('flash', [
+            return redirect()->route('projects.show', $id)->with('flash', [
                 'status' => 'success',
                 'message' => 'Project updated successfully',
             ]);
