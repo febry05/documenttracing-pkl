@@ -18,9 +18,9 @@ import { IconButton } from "@/Components/custom/IconButton";
 import { User } from "@/types/model";
 
 const formSchema = z.object({
-    password: z.string().min(6).max(255).optional(),
-    password_new: z.string().min(6).max(255).optional(),
-    password_confirmation: z.string().min(6).max(255).optional(),
+    password: z.string().min(6).max(255),
+    password_new: z.string().min(6).max(255),
+    password_confirmation: z.string().min(6).max(255),
 });
 
 interface PageProps {

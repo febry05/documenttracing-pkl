@@ -21,10 +21,9 @@ import { User, UserDivision, UserPosition, UserRole } from "@/types/model";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
-    password: z.string().min(6).max(255).optional(),
     name: z.string().min(3).max(255),
-    nik: z.string().min(16).max(16).optional(),
-    phone: z.string().min(10).max(15).optional(),
+    nik: z.string().max(16).optional(),
+    phone: z.string().max(15).optional(),
     employee_no: z.string().min(7).max(7),
 });
 
@@ -45,7 +44,6 @@ export default function EditProfileForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: user.email || "",
-            password: user.password || "",
             name: user.name || "",
             nik: user.nik || "",
             phone: user.phone || "",

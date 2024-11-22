@@ -20,7 +20,7 @@ import { Plus, Save } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { handleNumericInput } from "@/lib/utils";
-import { DatePicker } from "@/Components/custom/DatePicker";
+import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),
@@ -99,10 +99,11 @@ export default function ProjectDocumentVersionCreateDialog(
                                             <span className="text-destructive ms-1">*</span>
                                         </FormLabel>
                                         <FormControl>
-                                            <DatePicker
-                                                date={field.value ? new Date(field.value) : undefined}
-                                                setDate={(date) => field.onChange(date)}
-                                                endYear={2090} // Set an appropriate end year
+                                            <DateTimePicker
+                                                value={field.value ? new Date(field.value) : undefined}
+                                                onChange={(date) => field.onChange(date)}
+                                                hideTime={true}
+                                                placeholder="Select the contract start date"
                                             />
                                         </FormControl>
                                             <FormDescription>

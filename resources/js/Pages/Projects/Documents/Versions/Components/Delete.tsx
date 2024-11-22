@@ -6,12 +6,12 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
-import { ProjectDocumentVersions } from "@/types/model";
+import { ProjectDocumentVersion } from "@/types/model";
 
 interface PageProps {
     projectId: number,
     projectDocumentId: number,
-    projectDocumentVersion: ProjectDocumentVersions,
+    projectDocumentVersion: ProjectDocumentVersion,
 }
 
 export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentId, projectDocumentVersion }: PageProps) {

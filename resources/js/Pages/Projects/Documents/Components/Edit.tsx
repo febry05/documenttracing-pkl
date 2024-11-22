@@ -24,7 +24,7 @@ import { ProjectDocumentDeleteDialog } from "./Delete";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
-    monthly_deadline: z.number().min(1).max(31),
+    deadline: z.number().min(1).max(31),
     deadline_interval: z.number().min(1).max(30),
     priority: z.string(),
     due_at: z.date(),
@@ -48,9 +48,9 @@ export default function ProjectDocumentEditDialog(
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: projectDocument.name || "",
-            monthly_deadline: projectDocument.monthly_deadline || undefined,
+            deadline: projectDocument.deadline || undefined,
             deadline_interval:  projectDocument.deadline_interval || 1 | 3 | 7 | 30,
-            priority: projectDocument.priority || "",
+            priority: projectDocument.priority || undefined,
         },
     });
 
@@ -106,7 +106,7 @@ export default function ProjectDocumentEditDialog(
                             <div className="grid grid-cols-2 gap-2">
                                 <FormField
                                     control={form.control}
-                                    name="monthly_deadline"
+                                    name="deadline"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>

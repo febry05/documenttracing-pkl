@@ -12,9 +12,18 @@ use App\Models\Projects\ProjectDocumentVersion;
 class ProjectDocumentController extends Controller
 {
     protected $priorities = [
-        1 => 'Low',
-        2 => 'Medium',
-        3 => 'High',
+        [
+            'key' => '1',
+            'value' => 'Low',
+        ],
+        [
+            'key' => '2',
+            'value' => 'Medium',
+        ],
+        [
+            'key' => '3',
+            'value' => 'High',
+        ],
     ];
 
     protected $projects;
@@ -44,7 +53,10 @@ class ProjectDocumentController extends Controller
                 'id' => $projectDocument->id,
                 'name' => $projectDocument->name,
                 'priority' => $projectDocument->priority,
-                'due_at' => $projectDocument->deadline,
+                'deadline' => $projectDocument->deadline,
+                'deadline_interval' => $projectDocument->deadline_interval,
+                'project' => $projectDocument->project->name,
+                'project_id' => $projectDocument->project_id,
                 'document_versions' => $projectDocument->document_version->map(function ($documentVersion) {
                     return [
                         'id' => $documentVersion->id,
@@ -60,6 +72,9 @@ class ProjectDocumentController extends Controller
                 'id' => $projectDocumentVersion->id,
                 'version' => $projectDocumentVersion->version,
                 'release_date' => $projectDocumentVersion->release_date,
+                'document_number' => $projectDocumentVersion->document_number,
+                'project_document_id' => $projectDocumentVersion->project_document_id,
+                'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
                 'document_updates' => $projectDocumentVersion->document_updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id,
@@ -69,15 +84,15 @@ class ProjectDocumentController extends Controller
                 }),
             ];
         });
-        
+
     }
 
-    public function show($id) {
-        // dd($this->projects->firstWhere('id', $id), $this->projectDocuments->firstWhere('id', $id), $this->projectDocumentVersions->firstWhere('id', $id)); 
+    public function show($projectId, $projectDocumentId) {
         return Inertia::render('Projects/Documents/Show', [
-            'project' => $this->projects->firstWhere('id', $id),
-            'projectDocument' => $this->projectDocuments->firstWhere('id', $id),
-            'projectDocumentVersions' => $this->projectDocumentVersions->firstWhere('id', $id),
+            'priorities' => $this->priorities,
+            'project' => $this->projects->firstWhere('id', $projectId),
+            'projectDocument' => $this->projectDocuments->firstWhere('id', $projectDocumentId),
+            'projectDocumentVersions' => $this->projectDocumentVersions->where('project_document_id', $projectDocumentId),
         ]);
     }
 

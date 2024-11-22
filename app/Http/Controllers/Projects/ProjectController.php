@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Projects\ProjectDocument;
 use App\Models\MasterData\ProjectBusinessType;
+use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectController extends Controller
 {
@@ -21,6 +22,7 @@ class ProjectController extends Controller
     protected $projectBusinessTypes;
     protected $projectManager;
     protected $projectDocument;
+    protected $projectDocumentVersions;
 
     public function __construct()
     {
@@ -82,7 +84,23 @@ class ProjectController extends Controller
             ];
         });
 
-
+        $this->projectDocumentVersions = ProjectDocumentVersion::with('document_updates')->get()->map(function ($projectDocumentVersion) {
+            return [
+                'id' => $projectDocumentVersion->id,
+                'version' => $projectDocumentVersion->version,
+                'release_date' => $projectDocumentVersion->release_date,
+                'document_number' => $projectDocumentVersion->document_number,
+                'project_document_id' => $projectDocumentVersion->project_document_id,
+                'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
+                'document_updates' => $projectDocumentVersion->document_updates->map(function ($documentUpdate) {
+                    return [
+                        'id' => $documentUpdate->id,
+                        'description' => $documentUpdate->description,
+                        'updated_at' => $documentUpdate->updated_at,
+                    ];
+                }),
+            ];
+        });
     }
 
     protected function calculateDays($contractEnd)
@@ -137,6 +155,7 @@ class ProjectController extends Controller
         return Inertia::render('Projects/Show', [
             'project' => $this->projects->firstWhere('id', $id),
             'projectDocuments' => $this->projectDocument,
+            'projectDocumentVersions' => $this->projectDocumentVersions,
             'priorities' => $this->priorities,
         ]);
     }
