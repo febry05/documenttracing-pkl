@@ -25,7 +25,7 @@ import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 const formSchema = z.object({
     title: z.string().min(1).max(255),
     description: z.string().min(1).max(255),
-    document_link: z.string().min(1).max(255).optional(),
+    document_link: z.string().max(255).optional(),
     status: z.number(),
     release_date: z.date(),
 });
@@ -46,7 +46,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
             title: "",
             description: "",
             document_link: "",
-            status: 0,
+            status: undefined,
             release_date: new Date(),
         },
     });
@@ -145,7 +145,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
 
                             <FormField
                                 control={form.control}
-                                name="title"
+                                name="document_link"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
@@ -172,7 +172,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                             <span className="text-destructive ms-1">*</span>
                                         </FormLabel>
                                         <FormControl>
-                                            <DateTimePicker value={field.value} onChange={field.onChange} yearRange={2090} />
+                                            <DateTimePicker value={field.value} onChange={field.onChange} />
                                         </FormControl>
                                             <FormDescription>
                                                 Pick the date the update was issued. Leave it if it's today.

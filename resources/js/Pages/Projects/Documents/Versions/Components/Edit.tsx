@@ -16,26 +16,21 @@ import {
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
 import { IconButton } from "@/Components/custom/IconButton";
-import { Plus, Save } from "lucide-react";
+import { PenLine, Save } from "lucide-react";
 import { Button } from "@/Components/ui/button";
-import { DatePicker } from "@/Components/custom/DatePicker";
-import { ProjectDocumentVersions } from "@/types/model";
+import { ProjectDocumentVersion } from "@/types/model";
 import { ProjectDocumentVersionDeleteDialog } from "./Delete";
+import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),
     release_date: z.date(),
 });
 
-type Priority = {
-    key: number,
-    value: string,
-};
-
 interface PageProps {
     projectId: number,
     projectDocumentId: number,
-    projectDocumentVersion: ProjectDocumentVersions,
+    projectDocumentVersion: ProjectDocumentVersion,
 }
 
 export default function ProjectDocumentVersionEditDialog(
@@ -60,14 +55,14 @@ export default function ProjectDocumentVersionEditDialog(
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="w-fit" >
-                    <Plus className="me-2" size={18} />
-                    Create Version
+                <Button className="w-fit" variant="modify">
+                    <PenLine className="me-2" size={18} />
+                    Edit Version
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Create Project Document Version</DialogTitle>
+                    <DialogTitle>Edit Project Document Version</DialogTitle>
                 </DialogHeader>
 
                 <Form {...form}>
@@ -100,10 +95,11 @@ export default function ProjectDocumentVersionEditDialog(
                                             <span className="text-destructive ms-1">*</span>
                                         </FormLabel>
                                         <FormControl>
-                                            <DatePicker
-                                                date={field.value ? new Date(field.value) : undefined}
-                                                setDate={(date) => field.onChange(date)}
-                                                endYear={2090} // Set an appropriate end year
+                                            <DateTimePicker
+                                                value={field.value ? new Date(field.value) : undefined}
+                                                onChange={(date) => field.onChange(date)}
+                                                hideTime={true}
+                                                placeholder="Select the contract start date"
                                             />
                                         </FormControl>
                                             <FormDescription>

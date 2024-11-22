@@ -12,9 +12,18 @@ use App\Models\Projects\ProjectDocumentVersion;
 class ProjectDocumentController extends Controller
 {
     protected $priorities = [
-        1 => 'Low',
-        2 => 'Medium',
-        3 => 'High',
+        [
+            'key' => '1',
+            'value' => 'Low',
+        ],
+        [
+            'key' => '2',
+            'value' => 'Medium',
+        ],
+        [
+            'key' => '3',
+            'value' => 'High',
+        ],
     ];
 
     protected $projects;
@@ -80,6 +89,7 @@ class ProjectDocumentController extends Controller
 
     public function show($projectId, $projectDocumentId) {
         return Inertia::render('Projects/Documents/Show', [
+            'priorities' => $this->priorities,
             'project' => $this->projects->firstWhere('id', $projectId),
             'projectDocument' => $this->projectDocuments->firstWhere('id', $projectDocumentId),
             'projectDocumentVersions' => $this->projectDocumentVersions->where('project_document_id', $projectDocumentId),

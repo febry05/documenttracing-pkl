@@ -242,6 +242,7 @@ export function DateTimePicker({
             </div>
             {clearable && value && (
               <Button
+                type="button"
                 disabled={disabled}
                 variant="ghost"
                 size="sm"
@@ -272,15 +273,15 @@ export function DateTimePicker({
                 {format(month, 'yyyy')}
               </span>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setMonthYearPicker(monthYearPicker ? false : 'year')}>
+            <Button type="button" variant="ghost" size="icon" onClick={() => setMonthYearPicker(monthYearPicker ? false : 'year')}>
               {monthYearPicker ? <ChevronUpIcon size={20} /> : <ChevronDownIcon size={20} />}
             </Button>
           </div>
           <div className={cn('flex space-x-2', monthYearPicker ? 'hidden' : '')}>
-            <Button variant="ghost" size="icon" onClick={onPrevMonth}>
+            <Button type="button" variant="ghost" size="icon" onClick={onPrevMonth}>
               <ChevronLeftIcon size={20} />
             </Button>
-            <Button variant="ghost" size="icon" onClick={onNextMonth}>
+            <Button type="button" variant="ghost" size="icon" onClick={onNextMonth}>
               <ChevronRightIcon size={20} />
             </Button>
           </div>
@@ -348,7 +349,7 @@ export function DateTimePicker({
             />
           )}
           <div className="flex flex-row-reverse items-center justify-between">
-            <Button className="ms-2 h-7 px-2" onClick={onSubmit}>
+            <Button className="ms-2 h-7 px-2" onClick={onSubmit} type="button">
               Done
             </Button>
             {timezone && (
@@ -436,6 +437,7 @@ function MonthYearPicker({
                   variant={getYear(value) === year.value ? 'default' : 'ghost'}
                   className="rounded-full"
                   onClick={() => onYearChange(year)}
+                  type="button"
                 >
                   {year.label}
                 </Button>
@@ -453,6 +455,7 @@ function MonthYearPicker({
                 variant={getMonth(value) === month.value ? 'default' : 'ghost'}
                 className="rounded-full"
                 onClick={() => onChange(setMonthFns(value, month.value), 'month')}
+                type="button"
               >
                 {month.label}
               </Button>
@@ -673,7 +676,7 @@ function TimePicker({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="justify-between">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="justify-between" type="button">
           <Clock className="mr-2 size-4" />
           {display}
           <ChevronDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
@@ -771,6 +774,7 @@ const TimeItem = ({
 }) => {
   return (
     <Button
+      type="button"
       variant="ghost"
       className={cn('flex justify-center px-1 pe-2 ps-1', className)}
       onClick={() => onSelect(option)}

@@ -2,7 +2,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { Head } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { number, z } from "zod";
+import { z } from "zod";
 
 import {
     Select,
@@ -11,7 +11,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/Components/ui/select";
-import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
 import {
@@ -33,11 +32,11 @@ import { UserDeleteDialog } from "./Components/Delete";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
-    password: z.string().min(6).max(255).optional(),
+    password: z.string().max(255).optional(),
     roles_id: z.number(),
     name: z.string().min(3).max(255),
-    nik: z.string().min(16).max(16).optional(),
-    phone: z.string().min(10).max(15).optional(),
+    nik: z.string().max(16).optional(),
+    phone: z.string().max(15).optional(),
     employee_no: z.string().min(7).max(7),
     user_division_id: z.number(),
     user_position_id: z.number(),

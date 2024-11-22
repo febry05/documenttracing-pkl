@@ -7,18 +7,20 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Head, Link } from "@inertiajs/react";
 import { Download, PenLine, SquareArrowOutUpRight } from "lucide-react";
 import ProjectDocumentVersionCreateDialog from "./Versions/Components/Create";
-import { Project, ProjectDocument, ProjectDocumentVersions } from "@/types/model";
+import { Project, ProjectDocument, ProjectDocumentVersion } from "@/types/model";
 import { Badge } from "@/Components/ui/badge";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
+import ProjectDocumentEditDialog from "./Components/Edit";
 
 interface PageProps {
     project: Project,
     projectDocument: ProjectDocument,
-    projectDocumentVersions: ProjectDocumentVersions[]
+    projectDocumentVersions: ProjectDocumentVersion[],
+    priorities: { key: number, value: string }[]
 }
 
-export default function ProjectDocumentsShow({ project, projectDocument, projectDocumentVersions }: PageProps) {
+export default function ProjectDocumentsShow({ project, projectDocument, projectDocumentVersions, priorities }: PageProps) {
     const priorityValue = projectDocument.priority;
     type Variant = 'default' | 'secondary' | 'destructive' | 'outline';
     let variant: Variant;
@@ -33,16 +35,13 @@ export default function ProjectDocumentsShow({ project, projectDocument, project
         priority = 'Low';
     }
 
-    console.log(projectDocumentVersions);
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Document Details"
                     button={
-                        <Link href="{route('projects.documents.edit', projectDocuments)}">
-                            <IconButton icon={PenLine} text="Edit Document" variant="modify"/>
-                        </Link>
+                        <ProjectDocumentEditDialog priorities={priorities} projectId={project.id} projectDocument={projectDocument}/>
                     }
                 />
             }

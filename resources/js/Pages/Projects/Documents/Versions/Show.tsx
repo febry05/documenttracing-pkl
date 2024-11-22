@@ -9,6 +9,8 @@ import { PenLine, Plus } from "lucide-react";
 import ProjectDocumentVersionUpdateCreateDialog from "./Updates/Components/Create";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
+import ProjectDocumentVersionCreateDialog from "./Components/Create";
+import ProjectDocumentVersionEditDialog from "./Components/Edit";
 
 interface PageProps {
     project: Project,
@@ -45,9 +47,7 @@ export default function ProjectDocumentVersionShow({ project, projectDocument, p
                 <HeaderNavigation
                     title="Project Document Version Details"
                     button={
-                        <Link href="{route('projects.documents.versions.edit', projectDocumentVersions)}">
-                            <IconButton icon={PenLine} text="Edit Version" variant="modify"/>
-                        </Link>
+                        <ProjectDocumentVersionEditDialog projectId={project.id} projectDocumentId={projectDocument.id} projectDocumentVersion={projectDocumentVersion} />
                     }
                 />
             }
