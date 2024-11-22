@@ -8,6 +8,10 @@ use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentService
 {
+    const DAILY = 1;
+    const WEEKLY = 7;
+    const MONTHLY = 30;
+
     public function generateDocumentVersion(ProjectDocument $document)
     {
         if (Carbon::now()->greaterThan($document->project->contract_end)) {
@@ -41,24 +45,21 @@ class ProjectDocumentService
     {
         $currentDeadline = Carbon::parse($document->deadline);
 
-        switch($document->deadline_interval){
-            case 1:
+        switch ($document->deadline_interval) {
+            case self::DAILY:
                 return $currentDeadline->addDay();
-            case 7:
+            case self::WEEKLY:
                 return $currentDeadline->addWeek();
-            default: //Monthy
-                return $currentDeadline->addMonth();
-        }
+            case self::MONTHLY:
+        default:
+            return $currentDeadline->addMonth();
+    }
     }
 
     public function updateDocumentDeadline(ProjectDocument $document, int $newInterval, bool $applyImmediately = false)
     {
-        $now = Carbon::now();
-
-         if ($applyImmediately) {
+        if ($applyImmediately) {
             $document->deadline = $this->calculateDeadline($document);
-        } else {
-            $document->deadline = $document->deadline; // No change
         }
 
         $document->deadline_interval = $newInterval;
