@@ -65,6 +65,7 @@ export type ProjectDocument = BaseModel & {
     name: string,
     priority: number,
     priority_name?: string,
+    base_deadline: number,
     deadline: Date,
     deadline_interval: number,
 

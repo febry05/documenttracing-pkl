@@ -105,6 +105,7 @@ class ProjectDocumentController extends Controller
 
     public function store(Request $request, Project $project)
     {
+        dd($request);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'priority' => 'required|integer|in:1,2,3', // Low, Medium, High

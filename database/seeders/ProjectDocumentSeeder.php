@@ -18,7 +18,8 @@ class ProjectDocumentSeeder extends Seeder
             'priority' => '3',
             'deadline' => '2026-01-01',
             'deadline_interval' => '7',
-            'project_id' => 1,            
+            'base_deadline' => '16',
+            'project_id' => 1,
         ]);
     }
 }

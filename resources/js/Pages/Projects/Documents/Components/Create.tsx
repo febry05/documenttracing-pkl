@@ -22,9 +22,9 @@ import { handleNumericInput } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
-    monthly_deadline: z.number().min(1).max(31),
+    base_deadline: z.number().min(1).max(31),
     deadline_interval: z.number().min(1).max(30),
-    priority: z.string(),
+    priority: z.number(),
     due_at: z.date(),
 });
 
@@ -45,9 +45,9 @@ export default function ProjectDocumentCreateDialog(
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
-            monthly_deadline: undefined,
+            base_deadline: undefined,
             deadline_interval:  1 | 3 | 7 | 30,
-            priority: "",
+            priority: undefined,
             due_at: new Date(),
         },
     });
@@ -104,11 +104,11 @@ export default function ProjectDocumentCreateDialog(
                             <div className="grid grid-cols-2 gap-2">
                                 <FormField
                                     control={form.control}
-                                    name="monthly_deadline"
+                                    name="base_deadline"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>
-                                                Monthly Deadline
+                                                Monthly Deadline Date
                                                 <span className="text-destructive ms-1">*</span>
                                             </FormLabel>
                                                 <FormControl>
@@ -119,9 +119,8 @@ export default function ProjectDocumentCreateDialog(
                                                         min={1}
                                                         max={31}
                                                         value={field.value || ''}
-                                                        onKeyDown={
-                                                            handleNumericInput
-                                                        }
+                                                        onKeyDown={handleNumericInput}
+                                                        onChange={(e) => field.onChange(Number(e.target.value))}
                                                     />
                                                 </FormControl>
                                             <FormMessage />

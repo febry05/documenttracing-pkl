@@ -29,6 +29,7 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useEffect, useState } from "react";
 import { IconButton } from "@/Components/custom/IconButton";
 import { UserDeleteDialog } from "./Components/Delete";
+import { User, UserDivision, UserPosition, UserRole } from "@/types/model";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -42,29 +43,11 @@ const formSchema = z.object({
     user_position_id: z.number(),
 });
 
-type UserMasterData = {
-    id: number;
-    name: string;
-    description?: string;
-    user_division_id?: number;
-};
-
 interface PageProps {
-    user: {
-        id: number;
-        email: string;
-        password: string;
-        roles_id: number;
-        name: string;
-        nik: string;
-        phone: string;
-        employee_no: string;
-        user_division_id: number;
-        user_position_id: number;
-    };
-    userRoles: UserMasterData[];
-    userDivisions: UserMasterData[];
-    userPositions: UserMasterData[];
+    user: User;
+    userRoles: UserRole[];
+    userDivisions: UserDivision[];
+    userPositions: UserPosition[];
 }
 
 export default function UsersEdit({
