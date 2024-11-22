@@ -24,10 +24,9 @@ import { ProjectDocumentDeleteDialog } from "./Delete";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
-    deadline: z.number().min(1).max(31),
+    base_deadline: z.number().min(1).max(31),
     deadline_interval: z.number().min(1).max(30),
-    priority: z.string(),
-    due_at: z.date(),
+    priority: z.number(),
 });
 
 type Priority = {
@@ -48,9 +47,9 @@ export default function ProjectDocumentEditDialog(
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: projectDocument.name || "",
-            deadline: projectDocument.deadline || undefined,
+            base_deadline: projectDocument.deadline || undefined,
             deadline_interval:  projectDocument.deadline_interval || 1 | 3 | 7 | 30,
-            priority: projectDocument.priority || undefined,
+            priority: projectDocument.priority,
         },
     });
 
@@ -72,7 +71,6 @@ export default function ProjectDocumentEditDialog(
     return (
         <Dialog>
             <DialogTrigger asChild>
-                {/* <IconButton text="Create Document" icon={Plus} className="w-fit"/> */}
                 <Button className="w-fit" variant="modify">
                     <PenLine className="me-2" size={18} />
                     Edit Document
@@ -106,11 +104,11 @@ export default function ProjectDocumentEditDialog(
                             <div className="grid grid-cols-2 gap-2">
                                 <FormField
                                     control={form.control}
-                                    name="deadline"
+                                    name="base_deadline"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>
-                                                Monthly Deadline
+                                                Monthly Deadline Date
                                                 <span className="text-destructive ms-1">*</span>
                                             </FormLabel>
                                                 <FormControl>

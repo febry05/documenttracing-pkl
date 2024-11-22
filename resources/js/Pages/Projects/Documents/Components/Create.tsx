@@ -25,7 +25,6 @@ const formSchema = z.object({
     base_deadline: z.number().min(1).max(31),
     deadline_interval: z.number().min(1).max(30),
     priority: z.number(),
-    due_at: z.date(),
 });
 
 type Priority = {
@@ -46,9 +45,8 @@ export default function ProjectDocumentCreateDialog(
         defaultValues: {
             name: "",
             base_deadline: undefined,
-            deadline_interval:  1 | 3 | 7 | 30,
+            deadline_interval: undefined,
             priority: undefined,
-            due_at: new Date(),
         },
     });
 
