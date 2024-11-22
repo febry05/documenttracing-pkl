@@ -14,7 +14,6 @@ class ProjectDocumentVersionUpdate extends Model
 
     protected $fillable = [
         'name',
-
         'description',
         'priority',
         'due_at',

@@ -108,4 +108,15 @@ class ProjectDocumentController extends Controller
     public function updateDeadline(Request $request, Project $project, ProjectDocument $projectDocument){
 
     }
+
+    public function generateVersions()
+    {
+        $documents = ProjectDocument::all();
+
+        foreach ($documents as $document) {
+            $document->generateVersionIfNeeded();
+        }
+
+        return response()->json(['message' => 'Document versions checked and generated if needed.']);
+    }
 }
