@@ -16,19 +16,19 @@ class GenerateDocumentVersionsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    protected $service;
+    // protected $service;
     /**
      * Create a new job instance.
      */
-    public function __construct(DocumentVersionService $service)
+    public function __construct()
     {
-         $this->service = $service;
+    //      $this->service = $service;
     }
 
     /**
      * Execute the job.
      */
-    public function handle()
+    public function handle(DocumentVersionService $service)
     {
         $documents = ProjectDocument::all();
 
@@ -36,6 +36,6 @@ class GenerateDocumentVersionsJob implements ShouldQueue
             $document->generateVersionIfNeeded();
         }
 
-        $this->service->checkAndGenerateVersions();
+        $service->checkAndGenerateVersions(); // If needed
     }
 }
