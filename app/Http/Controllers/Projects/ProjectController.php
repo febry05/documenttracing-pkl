@@ -70,11 +70,11 @@ class ProjectController extends Controller
             ];
         });
 
-        $this->projectDocument = ProjectDocument::with('document_version')->get()->map(function ($document) {
+        $this->projectDocument = ProjectDocument::with('versions')->get()->map(function ($document) {
             return [
                 'id' => $document->id,
                 'name' => $document->name,
-                'project_document_versions' => $document->document_version->map(function ($version){
+                'project_document_versions' => $document->versions->map(function ($version){
                     return [
                         'id' => $version->id,
                         'version' => $version->version,
@@ -84,15 +84,15 @@ class ProjectController extends Controller
             ];
         });
 
-        $this->projectDocumentVersions = ProjectDocumentVersion::with('document_updates')->get()->map(function ($projectDocumentVersion) {
+        $this->projectDocumentVersions = ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
             return [
                 'id' => $projectDocumentVersion->id,
                 'version' => $projectDocumentVersion->version,
                 'release_date' => $projectDocumentVersion->release_date,
                 'document_number' => $projectDocumentVersion->document_number,
                 'project_document_id' => $projectDocumentVersion->project_document_id,
-                'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
-                'document_updates' => $projectDocumentVersion->document_updates->map(function ($documentUpdate) {
+                // 'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
+                'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id,
                         'description' => $documentUpdate->description,
@@ -116,7 +116,7 @@ class ProjectController extends Controller
 
         return collect([
             $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
-            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
+            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null, 
             $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
         ])->filter()->implode(' ') ?: 'Today';
     }
