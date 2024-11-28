@@ -131,7 +131,7 @@ export function DatePicker({ date, setDate, endYear }: DatePickerProps) {
             setMonth(newMonth.getMonth());
             setYear(newMonth.getFullYear());
           }}
-          initialFocus
+        //   initialFocus
         />
       </PopoverContent>
     </Popover>

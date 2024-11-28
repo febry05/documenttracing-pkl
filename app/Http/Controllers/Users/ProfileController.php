@@ -49,8 +49,9 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(Request $request, $userId): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
+        dd($request->all());
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([

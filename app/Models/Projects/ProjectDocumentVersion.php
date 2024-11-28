@@ -17,9 +17,9 @@ class ProjectDocumentVersion extends Model
         'release_date'
     ];
 
-    public function documents()
+    public function document()
     {
-        return $this->belongsTo(ProjectDocument::class);
+        return $this->belongsTo(ProjectDocument::class, 'project_document_id');
     }
 
     public function document_updates()

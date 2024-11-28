@@ -35,7 +35,7 @@ export default function Edit({
                     <Separator className="mx-auto" />
 
                     <div className="grid md:grid-cols-3 gap-8 p-8">
-                        <InfoPair label="Role" value={user.role} />
+                        <InfoPair label="Role" value={user.role} labelClassName="font-semibold text-foreground" />
                         <InfoPair label="Position" value={user.user_position} />
                         <InfoPair label="Division" value={user.user_division} />
                     </div>

@@ -40,5 +40,9 @@ class Project extends Model
         return $this->belongsTo(ProjectBusinessType::class, 'project_business_type_id');
     }
 
+    public function documentVersions()
+    {
+        return $this->hasManyThrough(ProjectDocumentVersion::class, ProjectDocument::class);
+    }
 
 }
