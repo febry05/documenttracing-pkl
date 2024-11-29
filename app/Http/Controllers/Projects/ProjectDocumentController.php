@@ -10,6 +10,7 @@ use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
 
 use App\Services\ProjectDocumentService;
+use App\Services\ProjectService;
 
 class ProjectDocumentController extends Controller
 {
@@ -31,70 +32,21 @@ class ProjectDocumentController extends Controller
     protected $projects;
     protected $projectDocuments;
     protected $projectDocumentVersions;
+    protected $projectService;
 
-    public function __construct()
+    public function __construct(ProjectService $projectService)
     {
-        $this->projects = Project::with('documents','profile')->get()->map(function ($project) {
-            return [
-                'id' => $project->id,
-                'name' => $project->name,
-                'person_in_charge' => $project->profile->name,
-                'documents' => $project->documents->map(function ($documents) {
-                    return [
-                        'id' => $documents->id,
-                        'name' => $documents->name,
-                        'priority' => $documents->priority,
-                        'due_at' => $documents->deadline,
-                    ];
-                }),
-            ];
-        });
-
-        $this->projectDocuments = ProjectDocument::with('versions')->get()->map(function ($projectDocument) {
-            return [
-                'id' => $projectDocument->id,
-                'name' => $projectDocument->name,
-                'priority' => $projectDocument->priority,
-                'deadline' => $projectDocument->deadline,
-                'deadline_interval' => $projectDocument->deadline_interval,
-                'project' => $projectDocument->project->name,
-                'project_id' => $projectDocument->project_id,
-                'document_versions' => $projectDocument->versions->map(function ($documentVersion) {
-                    return [
-                        'id' => $documentVersion->id,
-                        'version' => $documentVersion->version,
-                        'release_date' => $documentVersion->release_date,
-                    ];
-                }),
-            ];
-        });
-
-        $this->projectDocumentVersions = ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
-            return [
-                'id' => $projectDocumentVersion->id,
-                'version' => $projectDocumentVersion->version,
-                'release_date' => $projectDocumentVersion->release_date,
-                'document_number' => $projectDocumentVersion->document_number,
-                'project_document_id' => $projectDocumentVersion->project_document_id,
-                // 'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
-                'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
-                    return [
-                        'id' => $documentUpdate->id,
-                        'description' => $documentUpdate->description,
-                        'updated_at' => $documentUpdate->updated_at,
-                    ];
-                }),
-            ];
-        });
-
+        $this->projectService = $projectService;
     }
 
     public function show($projectId, $projectDocumentId) {
+
+
         return Inertia::render('Projects/Documents/Show', [
             'priorities' => $this->priorities,
-            'project' => $this->projects->firstWhere('id', $projectId),
-            'projectDocument' => $this->projectDocuments->firstWhere('id', $projectDocumentId),
-            'projectDocumentVersions' => $this->projectDocumentVersions->where('project_document_id', $projectDocumentId)->values()->all(),
+            'project' => $this->projectService->getProjects()->firstWhere('id', $projectId),
+            'projectDocument' => $this->projectService->getProjectDocuments($projectId)->firstWhere('id', $projectDocumentId),
+            'projectDocumentVersions' => $this->projectService->getProjectDocumentVersions()->where('project_document_id', $projectDocumentId)->values()->all(),
         ]);
     }
 

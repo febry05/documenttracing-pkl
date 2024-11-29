@@ -15,6 +15,7 @@ use App\Http\Controllers\MasterData\UserPositionController;
 use App\Http\Controllers\Projects\ProjectDocumentController;
 use App\Http\Controllers\MasterData\ProjectBusinessTypeController;
 use App\Http\Controllers\Projects\ProjectDocumentVersionController;
+use App\Http\Controllers\Projects\UpdateController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -44,6 +45,9 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
         Route::resource('/{project}/documents', ProjectDocumentController::class);
         Route::name('documents.')->group(function () {
             Route::resource('/{project}/documents/{document}/versions', ProjectDocumentVersionController::class);
+            Route::name('versions.')->group(function () {
+                Route::resource('/{project}/documents/{document}/versions/{version}/updates', UpdateController::class);
+            });
         });
     });
 

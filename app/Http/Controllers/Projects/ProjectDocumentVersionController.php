@@ -11,7 +11,12 @@ use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentVersionController extends Controller
-{
+{   
+    protected $projects;
+    protected $projectDocuments;
+    protected $projectDocumentVersions;
+
+
     protected $statuses = [
         [
             'key' => 1,
@@ -37,7 +42,7 @@ class ProjectDocumentVersionController extends Controller
             'project' => $project,
             'projectDocument' => $projectDocument,
             'projectDocumentVersion' => $projectDocumentVersion,
-            'projectDocumentVersionUpdates' => $projectDocumentVersion->document_updates,
+            'projectDocumentVersionUpdates' => $projectDocumentVersion->updates,
         ]);
 
     }
@@ -64,8 +69,7 @@ class ProjectDocumentVersionController extends Controller
             30 => $now->format('F Y'),
         };
 
-        $deadline = Carbon::parse($this->calculateDeadline($document)->diffInDays($now));
-
+        $deadline = $this->calculateDeadline($document);
 
         $debug = ProjectDocumentVersion::create([
             'version' => $versionName,
@@ -74,8 +78,6 @@ class ProjectDocumentVersionController extends Controller
             'deadline' => $deadline,
             'project_document_id' => $document->id,
         ]);
-
-        // dd($debug);
 
         // If no release date is provided, schedule automation
         // if (!$releaseDate) {
@@ -97,9 +99,13 @@ class ProjectDocumentVersionController extends Controller
         $now = now();
 
         return match ($document->deadline_interval) {
-            1 => $now->addDay(), // Daily: Add 1 day
-            7 => $now->addWeek()->startOfWeek(Carbon::MONDAY), // Weekly: Start of next week (Monday)
-            30 => Carbon::create($now->year, $now->month, $document->base_deadline)->addMonth(), // Monthly: Next month with base_deadline
+            1 => $now->addDay(), 
+            7 => $now->next('Monday'), 
+            30 => Carbon::createFromDate($now->year, $now->month, $document->base_deadline)
+                ->greaterThanOrEqualTo($now)
+                    ? Carbon::createFromDate($now->year, $now->month, $document->base_deadline)
+                    : Carbon::createFromDate($now->year, $now->month, $document->base_deadline)->addMonth(), 
+        default => $now
         };
     }
 }
