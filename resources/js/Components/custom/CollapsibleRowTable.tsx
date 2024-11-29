@@ -42,7 +42,7 @@ export default function CollapsibleRowTable({columns, data}: DataTableProps<any,
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
-                                className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 text-background" : ""}
+                                className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background" : ""}
                                 {...row.depth === 0 &&{
                                     onClick: row.getToggleExpandedHandler(),
                                     style: { cursor: 'pointer' },

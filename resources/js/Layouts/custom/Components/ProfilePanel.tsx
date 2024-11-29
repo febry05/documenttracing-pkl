@@ -50,7 +50,7 @@ export default function ProfilePanel(user: User) {
 
                 <ModeToggle />
 
-                <Link href={route("logout")} method="post">
+                <Link href={route("logout")} method="post" as="form">
                     <Button
                         variant="ghost"
                         className="justify-start w-full"
