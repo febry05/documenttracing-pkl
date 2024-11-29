@@ -10,8 +10,7 @@ use App\Models\Projects\ProjectDocumentVersion;
 use App\Models\Projects\ProjectDocumentVersionUpdate;
 
 class UpdateController extends Controller
-{   
-
+{ 
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
         $validated = $request->validate([

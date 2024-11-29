@@ -8,6 +8,7 @@ use App\Models\Projects\Project;
 use App\Models\Projects\ProjectDocument;
 use App\Models\MasterData\ProjectBusinessType;
 use App\Models\Projects\ProjectDocumentVersion;
+use App\Models\Projects\ProjectDocumentVersionUpdate;
 use Illuminate\Http\Request;
 
 class ProjectService {
@@ -46,13 +47,14 @@ class ProjectService {
                             'priority' => $documents->priority,
                             'due_at' => $documents->deadline,
                         ];
-                    }),
+                    }),  
             ];
         });
     }
 
     public function getProjectDocuments($projectId) {
         // $projectId = $request->route('project');
+        // dd($projectId);
         return ProjectDocument::with('versions')->where('project_id', $projectId)->get()->map(function ($document) {
             return [
                 'id' => $document->id,
@@ -64,11 +66,14 @@ class ProjectService {
                         'document_number' => $version->document_number,
                     ];
                 }),
+                'priority' => $document->priority,
             ];
         });
     }
 
     public function getProjectDocumentVersions() {
+        // $projectDocumentVersionA = ProjectDocumentVersion::with('updates')->first();
+        // dd($projectDocumentVersionA);
         return ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
             return [
                 'id' => $projectDocumentVersion->id,
@@ -77,7 +82,7 @@ class ProjectService {
                 'document_number' => $projectDocumentVersion->document_number,
                 'deadline' => $projectDocumentVersion->deadline,
                 'project_document_id' => $projectDocumentVersion->project_document_id,
-                // 'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
+                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates[0]->document_link : 'N/A',
                 'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id,
@@ -85,6 +90,20 @@ class ProjectService {
                         'updated_at' => $documentUpdate->updated_at,
                     ];
                 }),
+            ];
+        });
+    }
+
+    public function getProjectDocumentVersionUpdates($projectDocumentVersionId){
+        return ProjectDocumentVersionUpdate::select('id', 'title', 'status', 'description', 'document_link', 'project_document_version_id', 'created_at')->where('project_document_version_id', $projectDocumentVersionId)->get()->map(function ($projectDocumentVersionUpdate) {
+            return [
+                'id' => $projectDocumentVersionUpdate->id,
+                'title' => $projectDocumentVersionUpdate->title,
+                'status' => $projectDocumentVersionUpdate->status,
+                'description' => $projectDocumentVersionUpdate->description,
+                'document_link' => $projectDocumentVersionUpdate->document_link,
+                'project_document_version_id' => $projectDocumentVersionUpdate->project_document_version_id,
+                'created_at' => $projectDocumentVersionUpdate->created_at,
             ];
         });
     }
