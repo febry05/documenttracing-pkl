@@ -100,13 +100,14 @@ class ProjectDocument extends Model
     }
 
     //Relationships
+    //version(s) is hasMany
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
-    public function document_version()
+    public function versions()
     {
         return $this->hasMany(ProjectDocumentVersion::class);
     }

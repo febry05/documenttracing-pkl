@@ -20,7 +20,7 @@ class ProjectDocumentVersionUpdate extends Model
 
     ];
 
-    public function document_version()
+    public function version()
     {
         return $this->belongsTo(ProjectDocumentVersion::class);
     }

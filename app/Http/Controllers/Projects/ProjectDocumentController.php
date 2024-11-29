@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
 
+use App\Services\ProjectDocumentService;
+
 class ProjectDocumentController extends Controller
 {
     protected $priorities = [
@@ -32,12 +34,12 @@ class ProjectDocumentController extends Controller
 
     public function __construct()
     {
-        $this->projects = Project::with('document','profile')->get()->map(function ($project) {
+        $this->projects = Project::with('documents','profile')->get()->map(function ($project) {
             return [
                 'id' => $project->id,
                 'name' => $project->name,
                 'person_in_charge' => $project->profile->name,
-                'documents' => $project->document->map(function ($documents) {
+                'documents' => $project->documents->map(function ($documents) {
                     return [
                         'id' => $documents->id,
                         'name' => $documents->name,
@@ -48,7 +50,7 @@ class ProjectDocumentController extends Controller
             ];
         });
 
-        $this->projectDocuments = ProjectDocument::with('document_version')->get()->map(function ($projectDocument) {
+        $this->projectDocuments = ProjectDocument::with('versions')->get()->map(function ($projectDocument) {
             return [
                 'id' => $projectDocument->id,
                 'name' => $projectDocument->name,
@@ -57,7 +59,7 @@ class ProjectDocumentController extends Controller
                 'deadline_interval' => $projectDocument->deadline_interval,
                 'project' => $projectDocument->project->name,
                 'project_id' => $projectDocument->project_id,
-                'document_versions' => $projectDocument->document_version->map(function ($documentVersion) {
+                'document_versions' => $projectDocument->versions->map(function ($documentVersion) {
                     return [
                         'id' => $documentVersion->id,
                         'version' => $documentVersion->version,
@@ -67,15 +69,15 @@ class ProjectDocumentController extends Controller
             ];
         });
 
-        $this->projectDocumentVersions = ProjectDocumentVersion::with('document_updates')->get()->map(function ($projectDocumentVersion) {
+        $this->projectDocumentVersions = ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
             return [
                 'id' => $projectDocumentVersion->id,
                 'version' => $projectDocumentVersion->version,
                 'release_date' => $projectDocumentVersion->release_date,
                 'document_number' => $projectDocumentVersion->document_number,
                 'project_document_id' => $projectDocumentVersion->project_document_id,
-                'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
-                'document_updates' => $projectDocumentVersion->document_updates->map(function ($documentUpdate) {
+                // 'latest_document' => $projectDocumentVersion->document_updates()->first()->document_link,
+                'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id,
                         'description' => $documentUpdate->description,
@@ -92,7 +94,7 @@ class ProjectDocumentController extends Controller
             'priorities' => $this->priorities,
             'project' => $this->projects->firstWhere('id', $projectId),
             'projectDocument' => $this->projectDocuments->firstWhere('id', $projectDocumentId),
-            'projectDocumentVersions' => $this->projectDocumentVersions->where('project_document_id', $projectDocumentId),
+            'projectDocumentVersions' => $this->projectDocumentVersions->where('project_document_id', $projectDocumentId)->values()->all(),
         ]);
     }
 
@@ -103,36 +105,34 @@ class ProjectDocumentController extends Controller
         ]);
     }
 
-    public function store(Request $request, Project $project)
+    public function store(Request $request, Project $project , ProjectDocumentService $projectDocumentService)
     {
-        dd($request);
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
-            'deadline_interval' => 'required|integer|in:7,15,30',
-            'monthly_deadline' => 'required|date',
-        ]);
+        try 
+        {
+         // dd($request);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
+                'deadline_interval' => 'required|integer|in:1,7,30',
+                // 'deadline' => 'date',
+                'base_deadline' => 'required|integer|min:1|max:31',
+            ]);
 
         $validated['project_id'] = $project->id;
 
+        // $validated['deadline'] = $projectDocumentService->calculateDeadline(
+        //     $validated['deadline_interval'],
+        //     $validated['base_deadline'] === 30
+        // );
+
+        // dd($validated);
+
         ProjectDocument::create($validated);
 
-        return redirect()->route('projects.documents.index', $project)
+        return redirect()->route('projects.show', $project)
             ->with('success', 'Document created successfully.');
-    }
-
-    public function updateDeadline(Request $request, Project $project, ProjectDocument $projectDocument){
-
-    }
-
-    public function generateVersions()
-    {
-        $documents = ProjectDocument::all();
-
-        foreach ($documents as $document) {
-            $document->generateVersionIfNeeded();
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
         }
-
-        return response()->json(['message' => 'Document versions checked and generated if needed.']);
     }
 }

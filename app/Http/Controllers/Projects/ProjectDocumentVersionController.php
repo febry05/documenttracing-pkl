@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Projects;
 
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
@@ -39,5 +40,66 @@ class ProjectDocumentVersionController extends Controller
             'projectDocumentVersionUpdates' => $projectDocumentVersion->document_updates,
         ]);
 
+    }
+
+    public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
+    {
+        $validated = $request->validate([
+            'release_date' => 'nullable|date', // Optional release date
+            'document_number' => 'required|string',
+        ]);
+
+        $documentNumber = $validated['document_number'];
+
+        $releaseDate = $validated['release_date']
+            ? now()->create($validated['release_date'])
+            : null;
+
+
+        $now = now();
+
+        $versionName = match ($document->deadline_interval) {
+            1 => $now->format('Ymd'), // For daily, use date (e.g., `20241125`)
+            7 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'), 
+            30 => $now->format('F Y'),
+        };
+
+        $deadline = Carbon::parse($this->calculateDeadline($document)->diffInDays($now));
+
+
+        $debug = ProjectDocumentVersion::create([
+            'version' => $versionName,
+            'document_number' => $documentNumber,
+            'release_date' => $releaseDate,
+            'deadline' => $deadline,
+            'project_document_id' => $document->id,
+        ]);
+
+        // dd($debug);
+
+        // If no release date is provided, schedule automation
+        // if (!$releaseDate) {
+        //     // Logic for scheduling automation
+        //     $this->scheduleAutomation($document);
+        // }
+
+        return redirect()->route('projects.documents.show', [
+            'project' => $project->id,
+            'document' => $document->id,
+            ])
+            ->with('success', $releaseDate
+                ? "Version {$version->version} created successfully with release date {$releaseDate->format('Y-m-d')}."
+                : "Version {$version->version} created successfully and will be automated.");
+    }
+
+    private function calculateDeadline(ProjectDocument $document): Carbon
+    {
+        $now = now();
+
+        return match ($document->deadline_interval) {
+            1 => $now->addDay(), // Daily: Add 1 day
+            7 => $now->addWeek()->startOfWeek(Carbon::MONDAY), // Weekly: Start of next week (Monday)
+            30 => Carbon::create($now->year, $now->month, $document->base_deadline)->addMonth(), // Monthly: Next month with base_deadline
+        };
     }
 }

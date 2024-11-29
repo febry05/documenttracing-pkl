@@ -24,13 +24,14 @@ class Project extends Model
 
     ];
 
+    //name(s) is HasMany
 
     public function profile()
     {
         return $this->belongsTo(UserProfile::class, 'user_profile_id');
     }
 
-    public function document()
+    public function documents()
     {
         return $this->hasMany(ProjectDocument::class);
     }

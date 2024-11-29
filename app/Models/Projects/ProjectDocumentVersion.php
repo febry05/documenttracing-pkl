@@ -14,7 +14,10 @@ class ProjectDocumentVersion extends Model
 
     protected $fillable = [
         'version',
-        'release_date'
+        'document_number',
+        'release_date',
+        'deadline',
+        'project_document_id',
     ];
 
     public function document()
@@ -22,7 +25,7 @@ class ProjectDocumentVersion extends Model
         return $this->belongsTo(ProjectDocument::class, 'project_document_id');
     }
 
-    public function document_updates()
+    public function updates()
     {
         return $this->hasMany(ProjectDocumentVersionUpdate::class);
     }
