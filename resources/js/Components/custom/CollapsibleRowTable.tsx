@@ -39,9 +39,17 @@ export default function CollapsibleRowTable({columns, data}: DataTableProps<any,
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={row.depth === 0 ? '' : ''}>
+                            <TableRow
+                                key={row.id}
+                                data-state={row.getIsSelected() && "selected"}
+                                className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 text-background" : ""}
+                                {...row.depth === 0 &&{
+                                    onClick: row.getToggleExpandedHandler(),
+                                    style: { cursor: 'pointer' },
+                                }}
+                            >
                             {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id} style={{ width: cell.column.getSize() }}>
+                                <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </TableCell>
                             ))}

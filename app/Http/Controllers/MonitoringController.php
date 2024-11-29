@@ -23,7 +23,7 @@ class MonitoringController extends Controller
         ];
 
         $projects = Project
-            ::with(['documentVersions', 'documentVersions.document', 'documentVersions.document_updates'])->
+            ::with(['documentVersions', 'documentVersions.document', 'documentVersions.updates'])->
             // Year Filter
             whereYear('contract_start', '>=', $year)
             ->whereYear('contract_end', '<=', $year)
@@ -44,8 +44,8 @@ class MonitoringController extends Controller
                             'priority' => $documentVersion->document->priority_type_name,
                             'due_date' => $documentVersion->document->deadline,
                             'days_left' => $this->calculateDays($documentVersion->document->deadline),
-                            'status' => $documentVersion->document_updates[0]->status,
-                            'document_link' => $documentVersion->document_updates[0]->document_link,
+                            'status' => $documentVersion->updates[0]->status,
+                            'document_link' => $documentVersion->updates[0]->document_link,
                         ];
                     })->toArray()
                 ];

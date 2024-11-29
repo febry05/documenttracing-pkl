@@ -30,7 +30,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
     {
         header: 'No',
         cell: ({ row }) => (
-            <div className="text-right">
+            <div>
                 <div>
                     {row.index + 1}{row.depth > 0 ? '.' + row.index + 1 : ''}
                 </div>
@@ -141,17 +141,20 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
             <div>
                 <div className="flex">
                     {row.getCanExpand() ? (
-                        <Button
-                            {...{
-                            onClick: row.getToggleExpandedHandler(),
-                            style: { cursor: 'pointer' },
-                            }}
-                            className="ms-auto px-2.5"
-                            variant="outline"
-                            size="sm"
+                        // <Button
+                        //     {...{
+                        //     onClick: row.getToggleExpandedHandler(),
+                        //     style: { cursor: 'pointer' },
+                        //     }}
+                        //     className="ms-auto px-2.5 "
+                        //     size="sm"
+                        // >
+                        <div
+                            className="ms-auto"
                         >
                             {row.getIsExpanded() ? <ChevronLeft size={16} /> : <ChevronDown size={16} />}
-                        </Button>
+                        </div>
+                        // </Button>
                     ) : (
                         ''
                     )}{' '}
