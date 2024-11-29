@@ -1,40 +1,99 @@
 "use client"
 
 import { Badge } from "@/Components/ui/badge"
+import { Button } from "@/Components/ui/button";
 import { ColumnDef } from "@tanstack/react-table"
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Project = {
-  id: number
-  document: string
-  project: string
-  pic: string
-  due_date: string
-  days_left: string
-  priority: "High"  | "Medium" | "Low"
-}
+export type ProjectMonitoring = {
+    id: number
+    name: string
+    person_in_charge: string
+    documentVersions: {
+        id: number
+        name: string
+        person_in_charge: string
+        priority: "High" | "Medium" | "Low"
+        due_date: string
+        status: string
+        document_link: string
+    }[]
+}[];
 
-export const columns: ColumnDef<Project>[] = [
+// Next:
+// 1. Parent row coloring
+// 2. Expand animation
+
+export const columns: ColumnDef<ProjectMonitoring>[] = [
     {
         header: 'No',
-        accessorFn: (row, index) => index + 1,
+        cell: ({ row }) => (
+            <div>
+                <div>
+                    {row.index + 1}{row.depth > 0 ? '.' + row.index + 1 : ''}
+                </div>
+            </div>
+        ),
+        size: 10,
+        minSize: 10,
+        maxSize: 10,
+        enableResizing: false,
     },
     {
-        accessorKey: "document",
-        header: "Document",
+        accessorKey: "name",
+        header: "Name",
+        size: 200,
+        minSize: 200,
+        maxSize: 200,
+        enableResizing: false,
     },
     {
-        accessorKey: "project",
-        header: "Project",
+        accessorKey: "person_in_charge",
+        header: "Person in Charge",
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
+        enableResizing: false,
     },
-    {
-        accessorKey: "pic",
-        header: "PIC",
+        {
+        accessorKey: "priority",
+        header: "Priority",
+        cell: ({ row }) => {
+            const priorityValue = row.getValue<string>("priority");
+            if (priorityValue != undefined) {
+                let variant;
+                if (priorityValue === 'High') {
+                    variant = 'destructive';
+                } else if (priorityValue === 'Medium') {
+                    variant = '';
+                } else {
+                    variant = 'secondary';
+                }
+                return (
+                    <div className="w-full flex">
+                        <div className="mx-auto">
+                            <Badge variant={variant as "destructive" | "secondary" | "default" | "outline" | undefined} className={priorityValue === 'Medium' ? 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background' : ''}>
+                                {priorityValue}
+                            </Badge>
+                        </div>
+                    </div>
+                );
+            }
+        },
+        size: 25,
+        minSize: 25,
+        maxSize: 25,
+        enableResizing: false,
     },
     {
         accessorKey: "due_date",
         header: "Due Date",
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
+        enableResizing: false,
     },
     {
         accessorKey: "days_left",
@@ -66,34 +125,46 @@ export const columns: ColumnDef<Project>[] = [
         cell: ({ getValue }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
-                    {getValue()}
+                    {getValue() as React.ReactNode}
                 </div>
             </div>
         ),
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
+        enableResizing: false,
     },
     {
-        accessorKey: "priority",
-        header: "Priority",
-        cell: ({ row }) => {
-            const priorityValue = row.getValue("priority");
-            let variant;
-            if (priorityValue === 'High') {
-                variant = 'destructive';
-            } else if (priorityValue === 'Medium') {
-                variant = '';
-            } else {
-                variant = 'secondary';
-            }
-
-            return (
-                <div className="w-full flex">
-                    <div className="mx-auto">
-                        <Badge variant={variant} className={priorityValue === 'Medium' && 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background'}>
-                            {priorityValue}
-                        </Badge>
-                    </div>
+        accessorKey: "document_link",
+        header: "File",
+        cell: ({ row, getValue }) => (
+            <div>
+                <div className="flex">
+                    {row.getCanExpand() ? (
+                        // <Button
+                        //     {...{
+                        //     onClick: row.getToggleExpandedHandler(),
+                        //     style: { cursor: 'pointer' },
+                        //     }}
+                        //     className="ms-auto px-2.5 "
+                        //     size="sm"
+                        // >
+                        <div
+                            className="ms-auto"
+                        >
+                            {row.getIsExpanded() ? <ChevronLeft size={16} /> : <ChevronDown size={16} />}
+                        </div>
+                        // </Button>
+                    ) : (
+                        ''
+                    )}{' '}
+                    {getValue<boolean>()}
                 </div>
-            );
-        },
-    }
+            </div>
+        ),
+        size: 100,
+        minSize: 100,
+        maxSize: 100,
+        enableResizing: false,
+    },
 ]

@@ -22,7 +22,7 @@ class ProjectDocumentVersion extends Model
 
     public function document()
     {
-        return $this->belongsTo(ProjectDocument::class);
+        return $this->belongsTo(ProjectDocument::class, 'project_document_id');
     }
 
     public function updates()

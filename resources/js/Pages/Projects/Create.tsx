@@ -355,11 +355,6 @@ export default function ProjectCreate({
                                                     <span className="text-destructive ms-1">*</span>
                                                 </FormLabel>
                                                 <FormControl>
-                                                    {/* <DatePicker
-                                                        date={field.value ? new Date(field.value) : undefined}
-                                                        setDate={(date) => field.onChange(date)}
-                                                        endYear={2090} // Set an appropriate end year
-                                                    /> */}
                                                     <DateTimePicker
                                                         value={field.value}
                                                         onChange={field.onChange}
