@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Input } from "@/Components/ui/input";
@@ -14,10 +14,23 @@ import {
     FormMessage,
 } from "@/Components/ui/form";
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/Components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/Components/ui/dialog";
 import { IconButton } from "@/Components/custom/IconButton";
 import { Plus, Save } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
@@ -31,15 +44,18 @@ const formSchema = z.object({
 });
 
 interface PageProps {
-    projectId: number,
-    projectDocumentId: number,
-    projectDocumentVersionId: number,
-    statuses: { key: number, value: string }[],
+    projectId: number;
+    projectDocumentId: number;
+    projectDocumentVersionId: number;
+    statuses: { key: number; value: string }[];
 }
 
-export default function ProjectDocumentVersionUpdateCreateDialog(
-    { projectId, projectDocumentId, projectDocumentVersionId, statuses }
-    : PageProps) {
+export default function ProjectDocumentVersionUpdateCreateDialog({
+    projectId,
+    projectDocumentId,
+    projectDocumentVersionId,
+    statuses,
+}: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -53,16 +69,25 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("projects.documents.version.updates.store", [projectId, projectDocumentId, projectDocumentVersionId]), values);
+            await router.post(
+                route("projects.documents.versions.updates.store", [
+                    projectId,
+                    projectDocumentId,
+                    projectDocumentVersionId,
+                ]),
+                values
+            );
         } catch (error) {
             console.error("Submission error:", error);
         }
     }
 
+    console.log(projectDocumentId);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="w-fit" >
+                <Button className="w-fit">
                     <Plus className="me-2" size={18} />
                     Add New Update
                 </Button>
@@ -73,7 +98,11 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
+                    <form
+                        action=""
+                        method="POST"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                    >
                         <div className="flex flex-col gap-4">
                             <FormField
                                 control={form.control}
@@ -82,11 +111,20 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                     <FormItem>
                                         <FormLabel>
                                             Title
-                                            <span className="text-destructive ms-1">*</span>
+                                            <span className="text-destructive ms-1">
+                                                *
+                                            </span>
                                         </FormLabel>
-                                            <FormControl>
-                                                <Input type="text" placeholder="Enter the update title" {...field} minLength={1} maxLength={255} value={field.value || ''} />
-                                            </FormControl>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                placeholder="Enter the update title"
+                                                {...field}
+                                                minLength={1}
+                                                maxLength={255}
+                                                value={field.value || ""}
+                                            />
+                                        </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -98,13 +136,17 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
-                                        <span className="text-destructive ms-1">*</span>
+                                        <span className="text-destructive ms-1">
+                                            *
+                                        </span>
                                         <FormControl>
                                             <Textarea
                                                 placeholder="Enter the update description"
                                                 className="resize-none"
                                                 {...field}
-                                                minLength={3} maxLength={255} value={field.value || ''}
+                                                minLength={3}
+                                                maxLength={255}
+                                                value={field.value || ""}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -119,25 +161,38 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                     <FormItem>
                                         <FormLabel>
                                             Status
-                                            <span className="text-destructive ms-1">*</span>
+                                            <span className="text-destructive ms-1">
+                                                *
+                                            </span>
                                         </FormLabel>
                                         <Select
-                                                value={field.value ? String(field.value) : ''}
-                                                onValueChange={(value) => field.onChange(Number(value))}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select the update status" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {statuses.map((status) => (
-                                                        <SelectItem key={status.key} value={String(status.key)}>
-                                                            {status.value}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            value={
+                                                field.value
+                                                    ? String(field.value)
+                                                    : ""
+                                            }
+                                            onValueChange={(value) =>
+                                                field.onChange(Number(value))
+                                            }
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select the update status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {statuses.map((status) => (
+                                                    <SelectItem
+                                                        key={status.key}
+                                                        value={String(
+                                                            status.key
+                                                        )}
+                                                    >
+                                                        {status.value}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -148,14 +203,20 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                 name="document_link"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>
-                                            Document Link
-                                        </FormLabel>
+                                        <FormLabel>Document Link</FormLabel>
                                         <FormControl>
-                                            <Input type="text" placeholder="Enter the update document link" {...field} minLength={1} maxLength={255} value={field.value || ''} />
+                                            <Input
+                                                type="text"
+                                                placeholder="Enter the update document link"
+                                                {...field}
+                                                minLength={1}
+                                                maxLength={255}
+                                                value={field.value || ""}
+                                            />
                                         </FormControl>
                                         <FormDescription>
-                                            Leave blank to use the last document link.
+                                            Leave blank to use the last document
+                                            link.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -169,27 +230,35 @@ export default function ProjectDocumentVersionUpdateCreateDialog(
                                     <FormItem className="flex flex-col">
                                         <FormLabel>
                                             Release Date
-                                            <span className="text-destructive ms-1">*</span>
+                                            <span className="text-destructive ms-1">
+                                                *
+                                            </span>
                                         </FormLabel>
                                         <FormControl>
-                                            <DateTimePicker value={field.value} onChange={field.onChange} />
+                                            <DateTimePicker
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                            />
                                         </FormControl>
-                                            <FormDescription>
-                                                Pick the date the update was issued. Leave it if it's today.
-                                            </FormDescription>
+                                        <FormDescription>
+                                            Pick the date the update was issued.
+                                            Leave it if it's today.
+                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
 
                             <DialogFooter>
-                                <IconButton text="Save" icon={Save} type="submit" />
+                                <IconButton
+                                    text="Save"
+                                    icon={Save}
+                                    type="submit"
+                                />
                             </DialogFooter>
                         </div>
-
                     </form>
                 </Form>
-
             </DialogContent>
         </Dialog>
     );

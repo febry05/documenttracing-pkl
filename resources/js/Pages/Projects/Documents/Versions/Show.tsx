@@ -3,7 +3,12 @@ import { IconButton } from "@/Components/custom/IconButton";
 import InfoPair from "@/Components/custom/InfoPair";
 import { Card } from "@/Components/ui/card";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { Project, ProjectDocument, ProjectDocumentVersion, ProjectDocumentVersionUpdate } from "@/types/model";
+import {
+    Project,
+    ProjectDocument,
+    ProjectDocumentVersion,
+    ProjectDocumentVersionUpdate,
+} from "@/types/model";
 import { Head, Link } from "@inertiajs/react";
 import { PenLine, Plus } from "lucide-react";
 import ProjectDocumentVersionUpdateCreateDialog from "./Updates/Components/Create";
@@ -13,25 +18,32 @@ import ProjectDocumentVersionCreateDialog from "./Components/Create";
 import ProjectDocumentVersionEditDialog from "./Components/Edit";
 
 interface PageProps {
-    project: Project,
-    projectDocument: ProjectDocument,
-    projectDocumentVersion: ProjectDocumentVersion,
-    projectDocumentVersionUpdates: ProjectDocumentVersionUpdate[],
-    statuses: { key: number, value: string }[],
+    project: Project;
+    projectDocument: ProjectDocument;
+    projectDocumentVersion: ProjectDocumentVersion;
+    projectDocumentVersionUpdates: ProjectDocumentVersionUpdate[];
+    statuses: { key: number; value: string }[];
 }
 
-function Update({projectDocumentVersionUpdate} : {projectDocumentVersionUpdate: ProjectDocumentVersionUpdate}) {
+function Update({
+    projectDocumentVersionUpdate,
+}: {
+    projectDocumentVersionUpdate: ProjectDocumentVersionUpdate;
+}) {
     return (
         <div className="flex">
             <div className="flex flex-col">
                 <span className="font-semibold">
-                {projectDocumentVersionUpdate.title}
+                    {projectDocumentVersionUpdate.title}
                 </span>
                 {projectDocumentVersionUpdate.description}
             </div>
             <div className="flex flex-col basis-1/4 items-end text-right">
                 <span className="font-semibold">
-                    {format(projectDocumentVersionUpdate.created_at, "EEEE, d MMMM yyyy")}
+                    {format(
+                        projectDocumentVersionUpdate.created_at,
+                        "EEEE, d MMMM yyyy"
+                    )}
                 </span>
                 {format(projectDocumentVersionUpdate.created_at, "ppp")}
             </div>
@@ -39,15 +51,24 @@ function Update({projectDocumentVersionUpdate} : {projectDocumentVersionUpdate: 
     );
 }
 
-export default function ProjectDocumentVersionShow({ project, projectDocument, projectDocumentVersion, projectDocumentVersionUpdates, statuses }: PageProps) {
-    console.log(projectDocumentVersion);
+export default function ProjectDocumentVersionShow({
+    project,
+    projectDocument,
+    projectDocumentVersion,
+    projectDocumentVersionUpdates,
+    statuses,
+}: PageProps) {
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Document Version Details"
                     button={
-                        <ProjectDocumentVersionEditDialog projectId={project.id} projectDocumentId={projectDocument.id} projectDocumentVersion={projectDocumentVersion} />
+                        <ProjectDocumentVersionEditDialog
+                            projectId={project.id}
+                            projectDocumentId={projectDocument.id}
+                            projectDocumentVersion={projectDocumentVersion}
+                        />
                     }
                 />
             }
@@ -56,20 +77,71 @@ export default function ProjectDocumentVersionShow({ project, projectDocument, p
 
             <Card className="flex-auto mb-4">
                 <div className="grid md:grid-cols-2 gap-8 p-8">
-                    <InfoPair label="From Project" value={
-                        <TextLink text={project.name} href={route('projects.show', project.id)} />
-                    } />
-                    <InfoPair label="Part of Document" value={
-                        "<TextLink text={projectDocument.name} href={route('projects.documents.show', [project.id, projectDocument.id])} />"
-                    } />
-                    <InfoPair label="Document Number" value={projectDocumentVersion.document_number} />
-                    <InfoPair label="Person In Charge" value={project.person_in_charge} />
-                    <InfoPair label="Priority" value={projectDocument.priority} />
-                    <InfoPair label="Deadline" value={projectDocument.deadline} />
-                    <InfoPair label="Last Updated" value={projectDocumentVersionUpdates.length > 0 ? projectDocumentVersionUpdates[0].created_at : "N/A"} />
-                    <InfoPair label="Days Remaining" value={Math.ceil((new Date(projectDocument.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) + " Days Left"} />
-                    <InfoPair label="Status" value={projectDocumentVersionUpdates.length > 0 ? projectDocumentVersionUpdates[0].status : "N/A"} />
-                    <InfoPair label="Latest File" value={projectDocumentVersionUpdates.length > 0 ? projectDocumentVersionUpdates[0].document_link : "N/A"} />
+                    <InfoPair
+                        label="From Project"
+                        value={
+                            <TextLink
+                                text={project.name}
+                                href={route("projects.show", project.id)}
+                            />
+                        }
+                    />
+                    <InfoPair
+                        label="Part of Document"
+                        value={
+                            "<TextLink text={projectDocument.name} href={route('projects.documents.show', [project.id, projectDocument.id])} />"
+                        }
+                    />
+                    <InfoPair
+                        label="Document Number"
+                        value={projectDocumentVersion.document_number}
+                    />
+                    <InfoPair
+                        label="Person In Charge"
+                        value={project.person_in_charge}
+                    />
+                    <InfoPair
+                        label="Priority"
+                        value={projectDocument.priority}
+                    />
+                    <InfoPair
+                        label="Deadline"
+                        value={projectDocument.deadline}
+                    />
+                    <InfoPair
+                        label="Last Updated"
+                        value={
+                            projectDocumentVersionUpdates.length > 0
+                                ? projectDocumentVersionUpdates[0].created_at
+                                : "N/A"
+                        }
+                    />
+                    <InfoPair
+                        label="Days Remaining"
+                        value={
+                            Math.ceil(
+                                (new Date(projectDocument.deadline).getTime() -
+                                    new Date().getTime()) /
+                                    (1000 * 60 * 60 * 24)
+                            ) + " Days Left"
+                        }
+                    />
+                    <InfoPair
+                        label="Status"
+                        value={
+                            projectDocumentVersionUpdates.length > 0
+                                ? projectDocumentVersionUpdates[0].status
+                                : "N/A"
+                        }
+                    />
+                    <InfoPair
+                        label="Latest File"
+                        value={
+                            projectDocumentVersionUpdates.length > 0
+                                ? projectDocumentVersionUpdates[0].document_link
+                                : "N/A"
+                        }
+                    />
                 </div>
             </Card>
 
@@ -78,18 +150,31 @@ export default function ProjectDocumentVersionShow({ project, projectDocument, p
                 size="md"
                 breadcrumb={false}
                 button={
-                    <ProjectDocumentVersionUpdateCreateDialog projectId={project.id} projectDocumentId={projectDocument.id} projectDocumentVersionId={projectDocumentVersion.id} statuses={statuses} />
+                    <ProjectDocumentVersionUpdateCreateDialog
+                        projectId={project.id}
+                        projectDocumentId={projectDocument.id}
+                        projectDocumentVersionId={projectDocumentVersion.id}
+                        statuses={statuses}
+                    />
                 }
                 className="mb-4"
             />
 
             <Card className="flex flex-col gap-4 p-8 mb-4">
                 {projectDocumentVersionUpdates.length === 0 && (
-                    <span className="text-sm text-center">There are no updates yet.</span>
+                    <span className="text-sm text-center">
+                        There are no updates yet.
+                    </span>
                 )}
-                {projectDocumentVersionUpdates.map((projectDocumentVersionUpdate) => (
-                    <Update projectDocumentVersionUpdate={projectDocumentVersionUpdate}/>
-                ))}
+                {projectDocumentVersionUpdates.map(
+                    (projectDocumentVersionUpdate) => (
+                        <Update
+                            projectDocumentVersionUpdate={
+                                projectDocumentVersionUpdate
+                            }
+                        />
+                    )
+                )}
             </Card>
         </DashboardLayout>
     );
