@@ -1,15 +1,11 @@
-import { Head } from "@inertiajs/react";
 import { Card } from "@/Components/ui/card"
 import { InfoCard } from "@/Components/custom/InfoCard";
 import { FileBarChart, FileCog, FileClock, FileCheck2  } from "lucide-react";
-import { ColumnFilterConfig, DataTable } from "@/Components/ui/data-table";
+import { ColumnFilterConfig } from "@/Components/ui/data-table";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { DateSelectForm } from "./Components/DateSelectForm";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
 import { columns } from "./columns";
-import TextLink from "@/Components/custom/TextLink";
-import { ColumnDef } from "@tanstack/react-table";
 import CollapsibleRowTable from "@/Components/custom/CollapsibleRowTable";
 
 export type ProjectMonitoring = {
@@ -35,10 +31,12 @@ interface PageProps {
         completed_documents: number,
     },
     projects: ProjectMonitoring[],
-    availableYears: number[]
+    availableYears: number[],
+    selectedMonth: string,
+    selectedYear: string
 }
 
-export default function MonitoringIndex({ stats, projects, availableYears }: PageProps) {
+export default function MonitoringIndex({ stats, projects, availableYears, selectedMonth, selectedYear }: PageProps) {
 
     const filters: ColumnFilterConfig[] = [
         // {
@@ -70,7 +68,7 @@ export default function MonitoringIndex({ stats, projects, availableYears }: Pag
                 <HeaderNavigation
                     title="Monitoring Page"
                     button={
-                        <DateSelectForm availableYears={availableYears}  />
+                        <DateSelectForm availableYears={availableYears} selectedYear={selectedYear} selectedMonth={selectedMonth}  />
                     }
                 />
             }

@@ -32,7 +32,12 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         cell: ({ row }) => (
             <div>
                 <div>
-                    {row.index + 1}{row.depth > 0 ? '.' + row.index + 1 : ''}
+                    {
+                        // row.depth > 0
+                        // ? `${row.getParentRow()?.original}.${row.index + 1}`
+                        // : row.index + 1
+                        row.index + 1
+                    }
                 </div>
             </div>
         ),
@@ -140,21 +145,10 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         cell: ({ row, getValue }) => (
             <div>
                 <div className="flex">
-                    {row.getCanExpand() ? (
-                        // <Button
-                        //     {...{
-                        //     onClick: row.getToggleExpandedHandler(),
-                        //     style: { cursor: 'pointer' },
-                        //     }}
-                        //     className="ms-auto px-2.5 "
-                        //     size="sm"
-                        // >
-                        <div
-                            className="ms-auto"
-                        >
+                    {row.getCanExpand() && row.depth === 0 ? (
+                        <div className="ms-auto">
                             {row.getIsExpanded() ? <ChevronLeft size={16} /> : <ChevronDown size={16} />}
                         </div>
-                        // </Button>
                     ) : (
                         ''
                     )}{' '}

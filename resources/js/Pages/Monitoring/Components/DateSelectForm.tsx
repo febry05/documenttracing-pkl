@@ -24,23 +24,22 @@ import {
 import { Link, router } from "@inertiajs/react"
 
 const FormSchema = z.object({
-  month: z.number().optional(),
-  year: z.number().optional(),
+    year: z.string().optional(),
+    month: z.string().optional(),
 })
 
-export function DateSelectForm({availableYears}: {availableYears: number[]}) {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-        month: undefined,
-        year: undefined,
-    },
-  })
+export function DateSelectForm({ availableYears, selectedYear, selectedMonth }: { availableYears: number[], selectedYear: string, selectedMonth: string }) {
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            year: availableYears.includes(Number(selectedYear)) ? selectedYear : undefined,
+            month: selectedMonth || undefined,
+        },
+    })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("change date")
-    router.get(route("monitoring.index", ));
-  }
+    function onSubmit(data: z.infer<typeof FormSchema>) {
+        router.get(route("monitoring.index", [data.year, data.month]));
+    }
 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -53,21 +52,21 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
             name="year"
             render={({ field }) => (
                 <FormItem>
-                <Select onValueChange={field.onChange} defaultValue={field.value ? field.value.toString() : ""}>
-                    <FormControl>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select year" />
-                    </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                    {availableYears.map((year, index) => (
-                        <SelectItem key={index + 1} value={year.toString()}>
-                            {year}
-                        </SelectItem>
-                    ))}
-                    </SelectContent>
-                </Select>
-                <FormMessage />
+                    <Select onValueChange={(value) => { field.onChange(value); form.handleSubmit(onSubmit)(); }} defaultValue={field.value ? field.value.toString() : ""}>
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select year" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {availableYears.map((year, index) => (
+                                <SelectItem key={index + 1} value={year.toString()}>
+                                    {year}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
                 </FormItem>
             )}
         />
@@ -78,21 +77,21 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
           name="month"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value ? field.value.toString() : ""}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select month" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                {months.map((month, index) => (
-                    <SelectItem key={index + 1} value={month} onClick={() => form.handleSubmit(onSubmit)()}>
-                        {month}
-                    </SelectItem>
-                ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
+                <Select onValueChange={(value) => { field.onChange(value); form.handleSubmit(onSubmit)(); }} defaultValue={field.value ? field.value.toString() : ""}>
+                    <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select month" />
+                        </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {months.map((month, index) => (
+                            <SelectItem key={index + 1} value={(index + 1).toString()} onClick={() => form.handleSubmit(onSubmit)()}>
+                                {month}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
             </FormItem>
           )}
         />

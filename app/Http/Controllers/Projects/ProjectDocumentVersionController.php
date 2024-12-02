@@ -11,7 +11,7 @@ use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentVersionController extends Controller
-{   
+{
     protected $projects;
     protected $projectDocuments;
     protected $projectDocumentVersions;
@@ -65,7 +65,7 @@ class ProjectDocumentVersionController extends Controller
 
         $versionName = match ($document->deadline_interval) {
             1 => $now->format('Ymd'), // For daily, use date (e.g., `20241125`)
-            7 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'), 
+            7 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'),
             30 => $now->format('F Y'),
         };
 
@@ -99,12 +99,12 @@ class ProjectDocumentVersionController extends Controller
         $now = now();
 
         return match ($document->deadline_interval) {
-            1 => $now->addDay(), 
-            7 => $now->next('Monday'), 
+            1 => $now->addDay(),
+            7 => $now->next('Monday'),
             30 => Carbon::createFromDate($now->year, $now->month, $document->base_deadline)
                 ->greaterThanOrEqualTo($now)
                     ? Carbon::createFromDate($now->year, $now->month, $document->base_deadline)
-                    : Carbon::createFromDate($now->year, $now->month, $document->base_deadline)->addMonth(), 
+                    : Carbon::createFromDate($now->year, $now->month, $document->base_deadline)->addMonth(),
         default => $now
         };
     }

@@ -2,6 +2,7 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, useReactTable } from '@tanstack/react-table';
+import TextLink from './TextLink';
 
 type Column = {
     accessorKey: string;
@@ -20,7 +21,11 @@ export default function CollapsibleRowTable({columns, data}: DataTableProps<any,
         getSubRows: (row) => row.documentVersions,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
-    })
+        getRowCanExpand: () => true,
+        initialState: {
+            expanded: true,
+        },
+    });
 
     return (
         <div className="rounded-md border">
@@ -50,7 +55,13 @@ export default function CollapsibleRowTable({columns, data}: DataTableProps<any,
                             >
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    {row.depth === 0 && row.getCanExpand() && cell.column.columnDef.header === "Name" ? (
+                                        <>
+                                            <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
+                                        </>
+                                    ) : (
+                                        flexRender(cell.column.columnDef.cell, cell.getContext())
+                                    )}
                                 </TableCell>
                             ))}
                             </TableRow>

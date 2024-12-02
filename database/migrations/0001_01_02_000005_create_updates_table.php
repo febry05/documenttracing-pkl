@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('project_document_version_updates', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->tinyInteger('status'); // 0 = Completed, 1 = On Process, 2 = Pending, 3 = Not Started
+            $table->tinyInteger('status'); // 1 = Completed, 2 = On Process, 3 = Pending, 4 = Not Started
             $table->string('description');
             $table->string('document_link');
             $table->timestamps();

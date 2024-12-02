@@ -33,7 +33,7 @@ class MonitoringController extends Controller
             ->get()
             ->map(function ($project) {
                 return [
-                    'id' => $project->project_id,
+                    'id' => $project->id,
                     'name' => $project->name,
                     // 'person_in_charge' => $project->praofile->name,
                     'documentVersions' => $project->documentVersions->map(function ($documentVersion) use ($project) {
@@ -43,9 +43,10 @@ class MonitoringController extends Controller
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,
                             'due_date' => $documentVersion->document->deadline,
-                            'days_left' => $this->calculateDays($documentVersion->document->deadline),
-                            'status' => $documentVersion->updates[0]->status,
-                            'document_link' => $documentVersion->updates[0]->document_link,
+                            // 'days_left' => $this->calculateDays($documentVersion->document->deadline),
+                            'days_left' => "21 Days",
+                            'status' => $documentVersion->updates[0]->status ?? "N/A",
+                            'document_link' => $documentVersion->updates[0]->document_link ?? "N/A",
                         ];
                     })->toArray()
                 ];
@@ -64,6 +65,8 @@ class MonitoringController extends Controller
             'projects' => $projects,
             'availableYears' => $availableYears,
             'stats' => $mockStats,
+            'selectedYear' => $year,
+            'selectedMonth' => $month,
         ]);
     }
 
