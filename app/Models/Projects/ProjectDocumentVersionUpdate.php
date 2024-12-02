@@ -11,12 +11,33 @@ class ProjectDocumentVersionUpdate extends Model
 {
     use HasFactory;
 
+    const Completed = 1; // Document are Completed
+    const On_Process = 2; // Medium priority
+    const Pending = 3; // High priority
+    const Not_Started = 4; // High priority
+
+
+
+    public function getStatusTypeNameAttribute()
+    {
+        switch ($this->status) {
+            case 1:
+                return 'Completed';
+            case 2:
+                return 'On Process';
+            case 3:
+                return 'Pending';
+            case 4:
+                return 'Not Started';
+        }
+    }
 
     protected $fillable = [
-        'name',
+        'title',
         'description',
-        'priority',
-        'due_at',
+        'status',
+        'document_link',
+        'project_document_version_id',
 
     ];
 

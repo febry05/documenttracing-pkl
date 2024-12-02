@@ -17,15 +17,17 @@ class ProjectDocumentSeeder extends Seeder
             'name' => 'BAPP dan Lampirannya Tes',
             'priority' => '3',
             'deadline_interval' => '7',
-            'base_deadline' => '16',
+            'weekly_deadline' => '3',
+            'monthly_deadline' => null,
             'project_id' => 1,
         ]);
 
         ProjectDocument::create([
             'name' => 'Laporan Bulanan',
             'priority' => '3',
-            'deadline_interval' => '7',
-            'base_deadline' => '16',
+            'deadline_interval' => '30',
+            'weekly_deadline' => null,
+            'monthly_deadline' => '16',
             'project_id' => 1,
         ]);
 
@@ -33,15 +35,17 @@ class ProjectDocumentSeeder extends Seeder
             'name' => 'Berita Acara Recapitulasi Jumlah Pax',
             'priority' => '3',
             'deadline_interval' => '7',
-            'base_deadline' => '16',
+            'weekly_deadline' => '5',
+            'monthly_deadline' => null,
             'project_id' => 1,
         ]);
 
         ProjectDocument::create([
             'name' => 'SLA',
             'priority' => '2',
-            'deadline_interval' => '7',
-            'base_deadline' => '16',
+            'deadline_interval' => '30',
+            'weekly_deadline' => null,
+            'monthly_deadline' => '20',
             'project_id' => 1,
         ]);
     }

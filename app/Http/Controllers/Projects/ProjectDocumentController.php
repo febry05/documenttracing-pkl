@@ -5,26 +5,27 @@ namespace App\Http\Controllers\Projects;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
-use App\Http\Controllers\Controller;
-use App\Models\Projects\ProjectDocument;
-use App\Models\Projects\ProjectDocumentVersion;
-
-use App\Services\ProjectDocumentService;
 use App\Services\ProjectService;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+
+use App\Models\Projects\ProjectDocument;
+use App\Services\ProjectDocumentService;
+use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentController extends Controller
 {
     protected $priorities = [
         [
-            'key' => '1',
+            'key' => 1,
             'value' => 'Low',
         ],
         [
-            'key' => '2',
+            'key' => 2,
             'value' => 'Medium',
         ],
         [
-            'key' => '3',
+            'key' => 3,
             'value' => 'High',
         ],
     ];
@@ -59,6 +60,7 @@ class ProjectDocumentController extends Controller
 
     public function store(Request $request, Project $project , ProjectDocumentService $projectDocumentService)
     {
+        DB::beginTransaction();
         try 
         {
          // dd($request);
@@ -66,25 +68,52 @@ class ProjectDocumentController extends Controller
                 'name' => 'required|string|max:255',
                 'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
                 'deadline_interval' => 'required|integer|in:1,7,30',
-                // 'deadline' => 'date',
-                'base_deadline' => 'required|integer|min:1|max:31',
+                'weekly' => 'required|integer|min:1|max:5', // 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday
+                'monthly_deadline' => 'required|integer|min:1|max:31',
             ]);
 
         $validated['project_id'] = $project->id;
-
-        // $validated['deadline'] = $projectDocumentService->calculateDeadline(
-        //     $validated['deadline_interval'],
-        //     $validated['base_deadline'] === 30
-        // );
-
-        // dd($validated);
-
+        
         ProjectDocument::create($validated);
+
+        DB::commit();
 
         return redirect()->route('projects.show', $project)
             ->with('success', 'Document created successfully.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
         }
     }
+
+    public function update($id, Request $request, Project $project , ProjectDocumentService $projectDocumentService)
+    {
+        DB::beginTransaction();
+        try 
+        {
+         dd($request);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
+                'deadline_interval' => 'required|integer|in:1,7,30',
+                'base_deadline' => 'required|integer|min:1|max:31',
+            ]);
+
+        $validated['project_id'] = $project->id;
+        
+        
+        $projectDocument = ProjectDocument::findOrFail($id);
+        $projectDocument->update($validated);
+
+        DB::commit();
+
+        return redirect()->route('projects.show', $project)
+            ->with('success', 'Document created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
+        }
+    }
+
+    
 }

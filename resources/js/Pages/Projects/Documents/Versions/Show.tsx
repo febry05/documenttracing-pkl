@@ -115,19 +115,21 @@ export default function ProjectDocumentVersionShow({
                     />
                     <InfoPair
                         label="Priority"
-                        value={projectDocument.priority}
+                        value={projectDocument.priority_name}
                     />
                     <InfoPair
                         label="Deadline"
-                        value={projectDocument.deadline}
+                        value={projectDocumentVersion.deadline}
                     />
                     <InfoPair
                         label="Last Updated"
                         value={
                             projectDocumentVersionUpdates.length > 0
                                 ? format(
-                                      projectDocumentVersionUpdates[0]
-                                          .created_at,
+                                      projectDocumentVersionUpdates[
+                                          projectDocumentVersionUpdates.length -
+                                              1
+                                      ].updated_at,
                                       "EEEE, d MMMM yyyy, kk:mm:ss"
                                   )
                                 : "N/A"
@@ -147,7 +149,9 @@ export default function ProjectDocumentVersionShow({
                         label="Status"
                         value={
                             projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[0].status
+                                ? projectDocumentVersionUpdates[
+                                      projectDocumentVersionUpdates.length - 1
+                                  ].status_name
                                 : "N/A"
                         }
                     />
@@ -155,7 +159,9 @@ export default function ProjectDocumentVersionShow({
                         label="Latest File"
                         value={
                             projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[0].document_link
+                                ? projectDocumentVersionUpdates[
+                                      projectDocumentVersionUpdates.length - 1
+                                  ].document_link
                                 : "N/A"
                         }
                     />

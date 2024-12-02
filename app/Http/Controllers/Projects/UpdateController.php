@@ -20,13 +20,17 @@ class UpdateController extends Controller
             'document_link' => 'nullable|string',
         ]);
 
-        ProjectDocumentVersionUpdate::create([
+        // dd($validated);
+
+        $documentUpdate = ProjectDocumentVersionUpdate::create([
             'title' => $validated['title'],
             'status' => $validated['status'],
             'description' => $validated['description'],
             'document_link' => $validated['document_link'],
             'project_document_version_id' => $version->id,
         ]);
+
+        // dd($documentUpdate);
 
         return redirect()->route('projects.documents.versions.show', [
             'project' => $project->id,
