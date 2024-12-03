@@ -17,13 +17,15 @@ use App\Http\Controllers\MasterData\ProjectBusinessTypeController;
 use App\Http\Controllers\Projects\ProjectDocumentVersionController;
 use App\Http\Controllers\Projects\UpdateController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::middleware('block.root')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    });
 });
 
 Route::middleware(['auth'])->group(function () {

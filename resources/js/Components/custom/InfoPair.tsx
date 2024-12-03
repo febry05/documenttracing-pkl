@@ -7,12 +7,11 @@ export default function InfoPair({ label, value = 'N/A', width = 3, lineHeight =
         labelClassName?: string,
     }) {
     return (
-        <div className={"grid gap-2 grid-cols-" + width}>
-            <div className={"text-gray-500 text-sm flex leading-" + lineHeight}>
+        <div className={`w-full grid gap-2 grid-cols-${width}`}>
+            <div className={`text-gray-500 text-sm flex leading-${lineHeight}`}>
                 {label}
-                {/* <span className="ms-auto me-1">:</span> */}
             </div>
-            <div className={"text-sm leading-" + lineHeight}>
+            <div className={`text-sm leading-${lineHeight} col-span-${width - 1}`}>
                 {value}
             </div>
         </div>

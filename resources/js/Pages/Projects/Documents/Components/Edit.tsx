@@ -245,7 +245,6 @@ export default function ProjectDocumentEditDialog({
                                     )}
                                 />
                             )}
-                        </div>
 
                             <FormField
                                 control={form.control}
