@@ -25,6 +25,7 @@ import {
     CollapsibleTrigger,
 } from "@/Components/ui/collapsible";
 import { Link } from "@inertiajs/react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 export function AppSidebar(url: any) {
     const items = [
@@ -119,13 +120,15 @@ export function AppSidebar(url: any) {
                                         )
                                     );
                                     return (
-                                        <Collapsible
+                                        <Accordion
+                                            type="single"
                                             key={item.title}
-                                            className="group/collapsible"
+                                            collapsible
                                         >
-                                            <SidebarMenuItem>
-                                                <CollapsibleTrigger asChild>
+                                            <AccordionItem value="item-1" className="border-0">
+                                                <AccordionTrigger className="p-0 border-0 hover:bg-accent hover:text-accent-foreground rounded pe-2">
                                                     <SidebarMenuButton
+                                                        className="hover:bg-red"
                                                         asChild
                                                         {...(item.href.includes(
                                                             url.url
@@ -137,18 +140,17 @@ export function AppSidebar(url: any) {
                                                             <item.icon
                                                                 size={32}
                                                             />
-                                                            <span className="ms-7">
+                                                            <span className="ms-7" style={{ fontWeight: 400 }}>
                                                                 {item.title}
                                                             </span>
-                                                            <ChevronsUpDown className="ms-auto" />
                                                         </div>
                                                     </SidebarMenuButton>
-                                                </CollapsibleTrigger>
-                                                <CollapsibleContent>
+                                                </AccordionTrigger>
+                                                <AccordionContent className="flex flex-col text-muted-foreground">
                                                     {listSubMenu}
-                                                </CollapsibleContent>
-                                            </SidebarMenuItem>
-                                        </Collapsible>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        </Accordion>
                                     );
                                 } else {
                                     return (
