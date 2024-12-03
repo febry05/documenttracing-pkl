@@ -14,9 +14,9 @@ class ProjectDocument extends Model
     protected $fillable = [
         'name',
         'priority',
-        'base_deadline',
-        'deadline_interval',
-        'deadline',
+        // 'base_deadline', // Removed
+        'weekly_deadline',
+        'monthly_deadline',
         'project_id',
     ];
 
@@ -33,8 +33,6 @@ class ProjectDocument extends Model
                 return 'Medium';
             case 3:
                 return 'High';
-            default:
-                return 'Unknown Priority';
         }
     }
 

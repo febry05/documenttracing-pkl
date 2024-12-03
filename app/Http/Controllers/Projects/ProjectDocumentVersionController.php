@@ -6,15 +6,16 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
+use App\Services\ProjectService;
 use App\Http\Controllers\Controller;
 use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentVersionController extends Controller
 {
-    protected $projects;
-    protected $projectDocuments;
-    protected $projectDocumentVersions;
+    protected $projectService;
+    // protected $projectDocuments;
+    // protected $projectDocumentVersions;
 
 
     protected $statuses = [
@@ -36,15 +37,20 @@ class ProjectDocumentVersionController extends Controller
         ],
     ];
 
-    public function show(Project $project, ProjectDocument $projectDocument, ProjectDocumentVersion $projectDocumentVersion) {
-        return Inertia::render('Projects/Documents/Versions/Show', [
-            'statuses' => $this->statuses,
-            'project' => $project,
-            'projectDocument' => $projectDocument,
-            'projectDocumentVersion' => $projectDocumentVersion,
-            'projectDocumentVersionUpdates' => $projectDocumentVersion->updates,
-        ]);
+    public function __construct(Request $request, ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
 
+    public function show($projectId, $projectDocumentId, $projectDocumentVersionId) {
+        // dd($this->projectService->getProjectDocuments($projectId)->firstWhere('id', $projectDocumentId));
+        return Inertia::render('Projects/Documents/Versions/Show', [
+            'project' => $this->projectService->getProjects($projectId)->firstWhere('id', $projectId),
+            'projectDocument' => $this->projectService->getProjectDocuments($projectId)->firstWhere('id', $projectDocumentId),
+            'projectDocumentVersion' => $this->projectService->getProjectDocumentVersions($projectDocumentVersionId)->firstWhere('id', $projectDocumentVersionId),
+            'projectDocumentVersionUpdates' => $this->projectService->getProjectDocumentVersionUpdates($projectDocumentVersionId),
+            'statuses' => $this->statuses,
+        ]);
     }
 
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)

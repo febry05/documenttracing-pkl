@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
 import ProjectDocumentVersionCreateDialog from "./Components/Create";
 import ProjectDocumentVersionEditDialog from "./Components/Edit";
+import { Separator } from "@/Components/ui/separator";
 
 interface PageProps {
     project: Project;
@@ -38,14 +39,20 @@ function Update({
                 </span>
                 {projectDocumentVersionUpdate.description}
             </div>
-            <div className="flex flex-col basis-1/4 items-end text-right">
+            <div className="flex flex-col basis-1/4 items-end text-right ms-auto">
                 <span className="font-semibold">
                     {format(
                         projectDocumentVersionUpdate.created_at,
                         "EEEE, d MMMM yyyy"
                     )}
                 </span>
-                {format(projectDocumentVersionUpdate.created_at, "ppp")}
+                <div>
+                    <span className="text-muted-foreground">at </span>
+                    {format(
+                        projectDocumentVersionUpdate.created_at,
+                        "kk:mm:ss"
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -89,7 +96,13 @@ export default function ProjectDocumentVersionShow({
                     <InfoPair
                         label="Part of Document"
                         value={
-                            "<TextLink text={projectDocument.name} href={route('projects.documents.show', [project.id, projectDocument.id])} />"
+                            <TextLink
+                                text={projectDocument.name}
+                                href={route("projects.documents.show", [
+                                    project.id,
+                                    projectDocument.id,
+                                ])}
+                            />
                         }
                     />
                     <InfoPair
@@ -102,17 +115,23 @@ export default function ProjectDocumentVersionShow({
                     />
                     <InfoPair
                         label="Priority"
-                        value={projectDocument.priority}
+                        value={projectDocument.priority_name}
                     />
                     <InfoPair
                         label="Deadline"
-                        value={projectDocument.deadline}
+                        value={projectDocumentVersion.deadline}
                     />
                     <InfoPair
                         label="Last Updated"
                         value={
                             projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[0].created_at
+                                ? format(
+                                      projectDocumentVersionUpdates[
+                                          projectDocumentVersionUpdates.length -
+                                              1
+                                      ].updated_at,
+                                      "EEEE, d MMMM yyyy, kk:mm:ss"
+                                  )
                                 : "N/A"
                         }
                     />
@@ -130,7 +149,9 @@ export default function ProjectDocumentVersionShow({
                         label="Status"
                         value={
                             projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[0].status
+                                ? projectDocumentVersionUpdates[
+                                      projectDocumentVersionUpdates.length - 1
+                                  ].status_name
                                 : "N/A"
                         }
                     />
@@ -138,7 +159,9 @@ export default function ProjectDocumentVersionShow({
                         label="Latest File"
                         value={
                             projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[0].document_link
+                                ? projectDocumentVersionUpdates[
+                                      projectDocumentVersionUpdates.length - 1
+                                  ].document_link
                                 : "N/A"
                         }
                     />
@@ -168,11 +191,19 @@ export default function ProjectDocumentVersionShow({
                 )}
                 {projectDocumentVersionUpdates.map(
                     (projectDocumentVersionUpdate) => (
-                        <Update
-                            projectDocumentVersionUpdate={
+                        <>
+                            <Update
+                                projectDocumentVersionUpdate={
+                                    projectDocumentVersionUpdate
+                                }
+                            />
+                            {projectDocumentVersionUpdates.indexOf(
                                 projectDocumentVersionUpdate
-                            }
-                        />
+                            ) !==
+                                projectDocumentVersionUpdates.length - 1 && (
+                                <Separator />
+                            )}
+                        </>
                     )
                 )}
             </Card>

@@ -2,7 +2,7 @@ type BaseModel = {
     id: number;
     created_at: Date;
     updated_at: Date;
-}
+};
 
 type BaseMasterData = BaseModel & {
     name: string;
@@ -23,7 +23,7 @@ export type UserProfile = BaseModel & {
     // Foreign keys data
     user_division?: string;
     user_position?: string;
-}
+};
 
 export type User = UserProfile & {
     email: string;
@@ -34,7 +34,7 @@ export type User = UserProfile & {
 
     // Foreign key data
     role?: string;
-}
+};
 // USER [END]
 
 // PROJECT [START]
@@ -59,22 +59,23 @@ export type Project = BaseModel & {
 
     // Additional data
     project_documents?: ProjectDocument[];
-}
+};
 
 export type ProjectDocument = BaseModel & {
-    name: string,
-    priority: number,
-    priority_name?: string,
-    base_deadline: number,
-    deadline: Date,
-    deadline_interval: number,
+    name: string;
+    priority: number;
+    priority_name?: string;
 
-    project_id: string,
-    project?: string,
+    monthly_deadline: number;
+    weekly_deadline: number;
+    deadline_interval: number;
+
+    project_id: string;
+    project?: string;
 
     // Additional data
     project_document_versions?: ProjectDocumentVersion[];
-}
+};
 
 export type ProjectDocumentVersion = BaseModel & {
     version: string;
@@ -87,16 +88,17 @@ export type ProjectDocumentVersion = BaseModel & {
     project_document_id: string;
 
     latest_document: string;
-}
+};
 
 export type ProjectDocumentVersionUpdate = BaseModel & {
     title: string;
     description: string;
     document_link: string;
     status: number;
+    status_name?: string;
 
     project_document_version_id: number;
-}
+};
 // PROJECT [END]
 
 // MASTER [START]

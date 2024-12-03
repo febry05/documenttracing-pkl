@@ -75,16 +75,7 @@ class ProjectController extends Controller
             $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
             $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
 
-            $project = Project::create([
-                'name' => $validatedData['name'],
-                'code' => $validatedData['code'],
-                 'customer' => $validatedData['customer'],
-                'contract_number' => $validatedData['contract_number'],
-                'contract_start' => $validatedData['contract_start'],
-                'contract_end' => $validatedData['contract_end'],
-                'user_profile_id' => $validatedData['user_profile_id'],
-                'project_business_type_id' => $validatedData['project_business_type_id'],
-            ]);
+            Project::create($validatedData);
 
             DB::commit();
 
@@ -126,15 +117,8 @@ class ProjectController extends Controller
             $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
 
             $project = Project::findOrFail($id);
-            $project->name = $validatedData['name'];
-            $project->code = $validatedData['code'];
-            $project->customer = $validatedData['customer'];
-            $project->contract_number = $validatedData['contract_number'];
-            $project->contract_start = $validatedData['contract_start'];
-            $project->contract_end = $validatedData['contract_end'];
-            $project->user_profile_id = $validatedData['user_profile_id'];
-            $project->project_business_type_id = $validatedData['project_business_type_id'];
-            $project->save();
+            
+            $project->update($validatedData);
 
             DB::commit();
 
