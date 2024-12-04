@@ -130,7 +130,7 @@ export default function MonitoringIndex({ stats, projects, availableYears, selec
                             </Accordion>
                             </div> */}
                         {/* </div> */}
-                        <CollapsibleRowTable data={projects} columns={columns} />
+                        <CollapsibleRowTable data={projects} columns={columns} detailPage="projects.documents.versions.show"/>
                     </Card>
                 </div>
             </div>

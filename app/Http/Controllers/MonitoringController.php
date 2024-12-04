@@ -39,6 +39,7 @@ class MonitoringController extends Controller
                     'documentVersions' => $project->documentVersions->map(function ($documentVersion) use ($project) {
                         return [
                             'id' => $documentVersion->id,
+                            'project_document_id' => $documentVersion->document->id,
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,

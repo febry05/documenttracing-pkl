@@ -33,10 +33,9 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
             <div>
                 <div>
                     {
-                        // row.depth > 0
-                        // ? `${row.getParentRow()?.original}.${row.index + 1}`
-                        // : row.index + 1
-                        row.index + 1
+                        row.depth > 0
+                        ? `${row.getParentRow()!.index + 1}.${row.index + 1}`
+                        : row.index + 1
                     }
                 </div>
             </div>

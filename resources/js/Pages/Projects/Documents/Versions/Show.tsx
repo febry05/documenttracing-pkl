@@ -1,5 +1,4 @@
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
-import { IconButton } from "@/Components/custom/IconButton";
 import InfoPair from "@/Components/custom/InfoPair";
 import { Card } from "@/Components/ui/card";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
@@ -9,12 +8,10 @@ import {
     ProjectDocumentVersion,
     ProjectDocumentVersionUpdate,
 } from "@/types/model";
-import { Head, Link } from "@inertiajs/react";
-import { PenLine, Plus } from "lucide-react";
+import { Head } from "@inertiajs/react";
 import ProjectDocumentVersionUpdateCreateDialog from "./Updates/Components/Create";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
-import ProjectDocumentVersionCreateDialog from "./Components/Create";
 import ProjectDocumentVersionEditDialog from "./Components/Edit";
 import { Separator } from "@/Components/ui/separator";
 
@@ -191,7 +188,7 @@ export default function ProjectDocumentVersionShow({
                 )}
                 {projectDocumentVersionUpdates.map(
                     (projectDocumentVersionUpdate) => (
-                        <>
+                        <div key={projectDocumentVersionUpdate.id}>
                             <Update
                                 projectDocumentVersionUpdate={
                                     projectDocumentVersionUpdate
@@ -201,9 +198,9 @@ export default function ProjectDocumentVersionShow({
                                 projectDocumentVersionUpdate
                             ) !==
                                 projectDocumentVersionUpdates.length - 1 && (
-                                <Separator />
+                                <Separator className="mt-4"/>
                             )}
-                        </>
+                        </div>
                     )
                 )}
             </Card>
