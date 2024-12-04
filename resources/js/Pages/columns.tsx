@@ -66,34 +66,39 @@ export const columns: ColumnDef<Project>[] = [
         cell: ({ getValue }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
-                    {getValue()}
+                    {getValue() as React.ReactNode}
                 </div>
             </div>
         ),
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
+        enableResizing: false,
     },
     {
         accessorKey: "priority",
         header: "Priority",
         cell: ({ row }) => {
-            const priorityValue = row.getValue("priority");
-            let variant;
-            if (priorityValue === 'High') {
-                variant = 'destructive';
-            } else if (priorityValue === 'Medium') {
-                variant = '';
-            } else {
-                variant = 'secondary';
-            }
-
-            return (
-                <div className="w-full flex">
-                    <div className="mx-auto">
-                        <Badge variant={variant} className={priorityValue === 'Medium' && 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background'}>
-                            {priorityValue}
-                        </Badge>
+            const priorityValue = row.getValue<string>("priority");
+            if (priorityValue != undefined) {
+                let variant;
+                if (priorityValue === 'High') {
+                    variant = 'destructive';
+                } else if (priorityValue === 'Medium') {
+                    variant = '';
+                } else {
+                    variant = 'secondary';
+                }
+                return (
+                    <div className="w-full flex">
+                        <div className="mx-auto">
+                            <Badge variant={variant as "destructive" | "secondary" | "default" | "outline" | undefined} className={priorityValue === 'Medium' ? 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background' : ''}>
+                                {priorityValue}
+                            </Badge>
+                        </div>
                     </div>
-                </div>
-            );
+                );
+            }
         },
     }
 ]

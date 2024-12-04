@@ -29,14 +29,14 @@ class UserController extends Controller
 
     public function index()
     {
-        $userRoles = UserPosition::select('name', 'description')->get()->map(function ($role) {
+        $userRoles = Role::select('name')->get()->map(function ($role) {
             return [
                 'value' => $role->name,
                 'label' => $role->name,
             ];
         });
 
-        $userPositions = UserPosition::select('name', 'description')->get()->map(function ($position) {
+        $userPositions = UserPosition::select('name')->get()->map(function ($position) {
             return [
                 'value' => $position->name,
                 'label' => $position->name,
@@ -49,7 +49,7 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->user->email,
                 'position' => $user->position->name ?? 'N/A',
-                'role' => $user->user->getRoleNames() ?? 'N/A',
+                'role' => $user->user->getRoleNames()[0] ?? 'N/A',
             ];
         });
 

@@ -23,7 +23,7 @@ export type ProjectMonitoring = {
 }[];
 
 // Next:
-// 1. Parent row coloring
+// ~1. Parent row coloring~
 // 2. Expand animation
 
 export const columns: ColumnDef<ProjectMonitoring>[] = [
@@ -61,7 +61,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         maxSize: 50,
         enableResizing: false,
     },
-        {
+    {
         accessorKey: "priority",
         header: "Priority",
         cell: ({ row }) => {

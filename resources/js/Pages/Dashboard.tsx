@@ -34,7 +34,7 @@ export default function Dashboard({ stats, documents }: PageProps) {
             label: "Days left",
             compare: "<",
             options: [
-                { value: "all", label: "All" },
+                { value: "all", label: "All Remaining Days" },
                 { value: "11", label: "Next 10 Days" },
                 { value: "8", label: "Next 7 Days" },
                 { value: "4", label: "Next 3 Days" },

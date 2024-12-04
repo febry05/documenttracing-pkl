@@ -45,7 +45,7 @@ class MonitoringController extends Controller
                             'priority' => $documentVersion->document->priority_type_name,
                             'due_date' => $documentVersion->document->deadline,
                             // 'days_left' => $this->calculateDays($documentVersion->document->deadline),
-                            'days_left' => "21 Days",
+                            'days_left' => "8",
                             'status' => $documentVersion->updates[0]->status ?? "N/A",
                             'document_link' => $documentVersion->updates[0]->document_link ?? "N/A",
                         ];
