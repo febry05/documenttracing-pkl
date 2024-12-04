@@ -183,9 +183,8 @@ class ProjectService {
 
         return match ($document->deadline_interval) {
             1 => $now->addDay(), // Daily
-            7 => $this->calculateWeeklyDeadline($document->weekly_deadline, $now, $holidayChecker),
-            30 => $this->calculateMonthlyDeadline($document->monthly_deadline, $now, $holidayChecker),
-            default => $now, // Fallback for unsupported intervals
+            2 => $this->calculateWeeklyDeadline($document->weekly_deadline, $now, $holidayChecker),
+            3 => $this->calculateMonthlyDeadline($document->monthly_deadline, $now, $holidayChecker),
         };
     }
 
