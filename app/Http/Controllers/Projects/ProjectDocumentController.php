@@ -41,8 +41,6 @@ class ProjectDocumentController extends Controller
     }
 
     public function show($projectId, $projectDocumentId) {
-
-
         return Inertia::render('Projects/Documents/Show', [
             'priorities' => $this->priorities,
             'project' => $this->projectService->getProjects()->firstWhere('id', $projectId),
@@ -61,7 +59,6 @@ class ProjectDocumentController extends Controller
     public function store(Request $request, Project $project , ProjectDocumentService $projectDocumentService)
     {
         DB::beginTransaction();
-
         try {
             // dd($request);
             $validated = $request->validate([
@@ -69,7 +66,7 @@ class ProjectDocumentController extends Controller
                 'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
                 'weekly_deadline' => 'nullable|integer|min:1|max:5', // 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday
                 'monthly_deadline' => 'nullable|integer|min:1|max:31',
-                'deadline_interval' => 'required|integer|in:1,2,3',
+                'deadline_interval' => 'required|integer|in:1,2,3,4',
                 // 'project_id' => $project->id,
                 
             ]);
@@ -93,7 +90,6 @@ class ProjectDocumentController extends Controller
         DB::beginTransaction();
         try 
         {
-        //  dd($request);
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
@@ -103,8 +99,7 @@ class ProjectDocumentController extends Controller
             ]);
 
         $validated['project_id'] = $project->id;
-        
-        
+                
         $projectDocument = ProjectDocument::findOrFail($id);
         $projectDocument->update($validated);
 
@@ -117,6 +112,4 @@ class ProjectDocumentController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
         }
     }
-
-    
 }
