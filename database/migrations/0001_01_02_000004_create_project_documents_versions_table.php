@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('version');
             $table->string('document_number', 30);
             $table->date('release_date');  //Release date of the document for knowing this version for which document
-            // $table->boolean('is_auto')->default(false);  //If this version is generated from the system
+            $table->boolean('is_auto')->default(false);  //If this version is generated from the system
             $table->dateTime('deadline'); 
             $table->foreignId('project_document_id')->constrained();
             $table->timestamps();

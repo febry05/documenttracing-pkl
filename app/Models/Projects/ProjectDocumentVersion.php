@@ -3,12 +3,14 @@
 namespace App\Models\Projects;
 
 use App\Models\Users\User;
+use InvalidArgumentException;
 use App\Models\Projects\Project;
+use App\Services\ProjectService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Projects\ProjectDocumentVersionUpdate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Services\ProjectService;
 
 class ProjectDocumentVersion extends Model
 {
@@ -25,10 +27,17 @@ class ProjectDocumentVersion extends Model
 
     public function auto_generated()
     {
-        if($this->is_auto){
-            $this->storeNewVersion();
-        } else  {
-            //do nothing
+        try {
+            if ($this->is_auto == true && $this->deadline >= now()) {
+                Log::info("Storing new version for document ID: {$this->id}");
+                $this->storeNewVersion();
+            }
+        } catch (\Exception $e) {
+            // dd(($e->getMessage()));
+            logger()->error('Failed to auto-generate version', [
+                'document_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -38,11 +47,12 @@ class ProjectDocumentVersion extends Model
         try {
             $now = now();
             // Generate version name based on deadline interval
-            $versionName = match ($this->deadline_interval) {
+            $versionName = match ($this->document->deadline_interval) {
                 1 => $now->format('Ymd'), // Daily
                 2 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'), // Weekly
                 3 => $now->format('F Y'), // Monthly
-                default => throw new \InvalidArgumentException('Invalid deadline interval.'),
+                4 => $now->format('Y'), // Monthly
+                default => throw new InvalidArgumentException('Invalid deadline interval.'),
             };
 
             $deadline = $this->calculateDeadline();

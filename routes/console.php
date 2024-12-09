@@ -1,9 +1,10 @@
 <?php
 
-use App\Models\Projects\ProjectDocumentVersion;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Schedule;
+use App\Models\Projects\ProjectDocumentVersion;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -16,6 +17,23 @@ Artisan::command('inspire', function () {
 // });
 
 //Schedule
-Schedule::call(function()){
-    ProjectDocumentVersion::('deadline', '>=', now())->
-}
+// Schedule::call(function (){
+//     $projectDocumentVersion = ProjectDocumentVersion::where('deadline', '>=', now());
+//     $projectDocumentVersion->auto_generated();
+// })->everyMinute();
+
+Schedule::call(function () {
+    $versions = ProjectDocumentVersion::where('is_auto', true)->where('deadline', '>=', now())->get();
+    Log::info("Documents retrieved for auto-generation: ", $versions->toArray());
+
+    foreach ($versions as $version) {
+        try {
+            $version->auto_generated();
+        } catch (\Exception $e) {
+            logger()->error('Auto-generation failed for version', [
+                'version_id' => $version->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+})->everyMinute();
