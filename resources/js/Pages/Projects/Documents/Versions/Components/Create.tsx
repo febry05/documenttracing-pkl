@@ -34,6 +34,7 @@ import {
 import { Button } from "@/Components/ui/button";
 import { handleNumericInput } from "@/lib/utils";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
+import { Switch } from "@/Components/ui/switch";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),

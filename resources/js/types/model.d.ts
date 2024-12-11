@@ -70,6 +70,8 @@ export type ProjectDocument = BaseModel & {
     weekly_deadline: number;
     deadline_interval: number;
 
+    is_auto: boolean;
+
     project_id: string;
     project?: string;
 

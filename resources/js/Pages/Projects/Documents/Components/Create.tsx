@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import LearnTooltip from "@/Components/custom/LearnTooltip";
 import { Input } from "@/Components/ui/input";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -32,6 +34,7 @@ import {
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { handleNumericInput } from "@/lib/utils";
+import { Switch } from "@/Components/ui/switch";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -39,6 +42,7 @@ const formSchema = z.object({
     weekly_deadline: z.number().optional(),
     monthly_deadline: z.number().min(1).max(31).optional(),
     priority: z.number(),
+    is_auto: z.boolean(),
 });
 
 type Priority = {
@@ -79,6 +83,7 @@ export default function ProjectDocumentCreateDialog({
             monthly_deadline: undefined,
             deadline_interval: undefined,
             priority: undefined,
+            is_auto: false,
         },
     });
 
@@ -294,6 +299,30 @@ export default function ProjectDocumentCreateDialog({
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="is_auto"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border border-input px-4 py-2 space-y-0">
+                                        <div className="space-y-0.5">
+                                            <FormLabel className="flex gap-2">
+                                                Generate Automatically
+                                                <LearnTooltip
+                                                    text="Automatically generate the next document version when the current document version deadline ends."
+                                                    className="my-auto"
+                                                />
+                                            </FormLabel>
+                                        </div>
+                                        <FormControl className="mt-0">
+                                            <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
                                     </FormItem>
                                 )}
                             />

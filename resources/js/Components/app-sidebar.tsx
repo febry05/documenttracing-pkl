@@ -73,7 +73,6 @@ export function AppSidebar(url: any) {
             ],
         },
     ];
-
     return (
         <Sidebar collapsible="icon" className="flex">
             <SidebarHeader className="px-6 border-b">
