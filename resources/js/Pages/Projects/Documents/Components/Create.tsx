@@ -64,6 +64,7 @@ export const deadlineIntervals = [
     { key: 1, value: "Daily" },
     { key: 2, value: "Weekly" },
     { key: 3, value: "Monthy" },
+    { key: 4, value: "30 Seconds" } //Testing purposes,
 ];
 
 export default function ProjectDocumentCreateDialog({

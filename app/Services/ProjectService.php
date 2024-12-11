@@ -182,42 +182,41 @@ class ProjectService {
         $holidayChecker = new TanggalMerah();
 
         return match ($document->deadline_interval) {
-            1 => $now->addDay(), // Daily
-            7 => $this->calculateWeeklyDeadline($document->weekly_deadline, $now, $holidayChecker),
-            30 => $this->calculateMonthlyDeadline($document->monthly_deadline, $now, $holidayChecker),
-            default => $now, // Fallback for unsupported intervals
+            1 => $this->adjustForHolidays($now->addDay(), $holidayChecker), // Daily
+            2 => $this->calculateWeeklyDeadline($document->weekly_deadline, $now, $holidayChecker), // Weekly
+            3 => $this->calculateMonthlyDeadline($document->monthly_deadline, $now, $holidayChecker), // Monthly
+            4 => $this->adjustForHolidays($now->addMinute(), $holidayChecker), // Tetsting
+            default => throw new \InvalidArgumentException('Invalid deadline interval.'),
         };
     }
 
-    public function calculateWeeklyDeadline(int $weeklyDeadline, Carbon $now, TanggalMerah $holidayChecker): Carbon
+    protected function calculateWeeklyDeadline(int $weeklyDeadline, Carbon $now, TanggalMerah $holidayChecker): Carbon
     {
-        $dayOfWeek = $weeklyDeadline;
-        $deadline = $now->next($this->mapDayToWeekday($dayOfWeek));
+        $dayOfWeek = $this->mapDayToWeekday($weeklyDeadline);
+        $deadline = $now->next($dayOfWeek);
 
-        // Adjust for holidays
-        while ($holidayChecker->is_holiday($deadline->toDateString()) || $deadline->isSaturday() || $deadline->isSunday()) {
-            $deadline->addDay();
-        }
-
-        return $deadline;
+        return $this->adjustForHolidays($deadline, $holidayChecker);
     }
 
-    public function calculateMonthlyDeadline(int $monthlyDeadline, Carbon $now, TanggalMerah $holidayChecker): Carbon
+    protected function calculateMonthlyDeadline(int $monthlyDeadline, Carbon $now, TanggalMerah $holidayChecker): Carbon
     {
-        $dayOfMonth = $monthlyDeadline; 
-        $deadline = Carbon::create($now->year, $now->month, $dayOfMonth);
+        $deadline = Carbon::create($now->year, $now->month, $monthlyDeadline);
 
-        // If the date is in the past, move to the next month
+        // Move to the next month if the date is in the past
         if ($deadline->lessThan($now)) {
             $deadline->addMonth();
         }
 
-        // Adjust for holidays
-        while ($holidayChecker->is_holiday($deadline->toDateString()) || $deadline->isSaturday() || $deadline->isSunday()) {
-            $deadline->addDay();
+        return $this->adjustForHolidays($deadline, $holidayChecker);
+    }
+
+    protected function adjustForHolidays(Carbon $date, TanggalMerah $holidayChecker): Carbon
+    {
+        while ($holidayChecker->is_holiday($date->toDateString()) || $date->isSaturday() || $date->isSunday()) {
+            $date->addDay();
         }
 
-        return $deadline;
+        return $date;
     }
 
     public function mapDayToWeekday(int $day): string
@@ -228,7 +227,7 @@ class ProjectService {
             3 => 'Wednesday',
             4 => 'Thursday',
             5 => 'Friday',
-            default => 'Monday', // Default to Monday for unsupported values
+            default => 'Monday',
         };
     } 
 }
