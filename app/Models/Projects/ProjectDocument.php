@@ -17,6 +17,7 @@ class ProjectDocument extends Model
         // 'base_deadline', // Removed
         'weekly_deadline',
         'monthly_deadline',
+        'is_auto',
         'deadline_interval',
         'project_id',
     ];

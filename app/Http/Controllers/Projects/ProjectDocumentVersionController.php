@@ -81,7 +81,7 @@ class ProjectDocumentVersionController extends Controller
         
         $deadline = $this->projectService->calculateDeadline($document);
         
-        $debug = ProjectDocumentVersion::create([
+        $version = ProjectDocumentVersion::create([
             'version' => $versionName,
             'document_number' => $documentNumber,
             'release_date' => $releaseDate->toDateTimeString(),

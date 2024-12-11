@@ -67,6 +67,7 @@ class ProjectDocumentController extends Controller
                 'weekly_deadline' => 'nullable|integer|min:1|max:5', // 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday
                 'monthly_deadline' => 'nullable|integer|min:1|max:31',
                 'deadline_interval' => 'required|integer|in:1,2,3,4',
+                'is_auto' => 'required|boolean',
                 // 'project_id' => $project->id,
                 
             ]);
