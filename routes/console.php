@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use App\Models\Projects\ProjectDocument;
 use Illuminate\Support\Facades\Schedule;
 use App\Models\Projects\ProjectDocumentVersion;
 
@@ -23,17 +24,21 @@ Artisan::command('inspire', function () {
 // })->everyMinute();
 
 Schedule::call(function () {
-    $versions = ProjectDocumentVersion::where('is_auto', true)->where('deadline', '>=', now())->get();
-    Log::info("Documents retrieved for auto-generation: ", $versions->toArray());
+    $projectDocuments = ProjectDocument::where('is_auto', 1)->get();
 
-    foreach ($versions as $version) {
-        try {
-            $version->auto_generated();
-        } catch (\Exception $e) {
-            logger()->error('Auto-generation failed for version', [
-                'version_id' => $version->id,
-                'error' => $e->getMessage(),
-            ]);
+    foreach ($projectDocuments as $projectDocument) {
+        if ($projectDocument->versions->count() > 0) {
+            foreach ($projectDocument->versions as $documentVersion) {
+                try {
+                    $documentVersion->check_auto();  
+                } catch (\Exception $e) {
+                    Log::error('Error processing document version: ' . $e->getMessage());
+                }
+            }
+        } else {
+            Log::warning('No document versions found for project document ID: ' . $projectDocument->id);
         }
     }
+
+    Log::info("Documents retrieved for auto-generation: " . now());
 })->everyMinute();

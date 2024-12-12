@@ -19,6 +19,7 @@ class ProjectDocumentSeeder extends Seeder
             'deadline_interval' => '7',
             'weekly_deadline' => '3',
             'monthly_deadline' => null,
+            'is_auto' => true,
             'project_id' => 1,
         ]);
 
@@ -28,6 +29,7 @@ class ProjectDocumentSeeder extends Seeder
             'deadline_interval' => '30',
             'weekly_deadline' => null,
             'monthly_deadline' => '16',
+            'is_auto' => true,
             'project_id' => 1,
         ]);
 
@@ -37,6 +39,7 @@ class ProjectDocumentSeeder extends Seeder
             'deadline_interval' => '7',
             'weekly_deadline' => '5',
             'monthly_deadline' => null,
+            'is_auto' => true,
             'project_id' => 1,
         ]);
 
@@ -46,6 +49,7 @@ class ProjectDocumentSeeder extends Seeder
             'deadline_interval' => '30',
             'weekly_deadline' => null,
             'monthly_deadline' => '20',
+            'is_auto' => false,
             'project_id' => 1,
         ]);
     }

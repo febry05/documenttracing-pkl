@@ -18,7 +18,6 @@ class ProjectDocumentVersionSeeder extends Seeder
             'document_number' => '3234238798324',
             'release_date' => '2024-01-15',
             'deadline' => '2024-12-09 00:00:00',
-            'is_auto' => true,
             'project_document_id' => 1,          
         ]);
 
@@ -27,7 +26,6 @@ class ProjectDocumentVersionSeeder extends Seeder
             'document_number' => '3234238798324',
             'release_date' => '2024-01-15',
             'deadline' => '2024-12-09 00:00:00',
-            'is_auto' => false,
             'project_document_id' => 1,          
         ]);
         
