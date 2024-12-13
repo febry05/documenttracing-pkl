@@ -30,7 +30,14 @@ import { Auth } from "@/types/model";
 import { can, canAny } from "@/lib/utils";
 
 export function AppSidebar(url: any) {
-    const items = [
+    type SidebarItem = {
+        title: string;
+        href: string;
+        icon: React.ComponentType<any>;
+        submenu?: { title: string; href: string }[];
+    };
+
+    const items: SidebarItem[] = [
         {
             title: "Home",
             href: "/dashboard",

@@ -29,10 +29,10 @@ class ProjectDocumentVersion extends Model
 
     protected $projectService;
 
-    public function __construct(ProjectService $projectService)
-    {
-        $this->projectService = $projectService;
-    }
+    // public function __construct(ProjectService $projectService)
+    // {
+    //     $this->projectService = $projectService;
+    // }
 
     public function check_auto()
     {
@@ -43,7 +43,7 @@ class ProjectDocumentVersion extends Model
         // Log::info("Deadline: " . $deadlineCarbon);
         // Log::info("Now: " . $nowDate);
         // Log::info("Is deadline greater than or equal to now? (Method 1): " . $deadlineCarbon->gte($nowDate));
-        // Log::info("Is deadline greater than or equal to now? (Method 2): " . $nowDate->gte($deadlineCarbon));    
+        // Log::info("Is deadline greater than or equal to now? (Method 2): " . $nowDate->gte($deadlineCarbon));
         // Log::info("Checking auto-generation for document version ID: {$this->id}");
         // Log::info("Document is_auto: " . ($this->document->is_auto ? 'true' : 'false'));
         // Log::info("Document deadline: " . $this->deadline);
@@ -81,23 +81,23 @@ class ProjectDocumentVersion extends Model
                 4 => $now->format('Y'), // Monthly
                 default => throw new InvalidArgumentException('Invalid deadline interval.'),
             };
-            
+
 
             $deadline = $this->projectService->calculateDeadline($this->document->deadline_interval);
 
             $this->versions()->create([
                 'version' => $versionName,
                 'document_number' => $this->generateDocumentNumber(),
-                'release_date' => $now->toDateTimeString(), 
-                'deadline' => $deadline->toDateTimeString(), 
+                'release_date' => $now->toDateTimeString(),
+                'deadline' => $deadline->toDateTimeString(),
             ]);
             Log::info("Condition met: Storing new version for document ID: {$this->id} are completed");
             DB::commit();
         } catch (\Exception $e) {
             Log::info("Condition not met: Storing new version for document ID: {$this->id} are failed");
             DB::rollBack();
-            throw $e; 
-        }   
+            throw $e;
+        }
     }
 
     public function document()

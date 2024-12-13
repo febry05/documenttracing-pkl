@@ -93,15 +93,12 @@ export default function DashboardLayout({
         }
     }, [flash]);
 
-
-    console.log(auth.permissions);
-
     return (
         <SidebarProvider>
             <AppSidebar url={url} />
             <main className="w-full">
                 <nav className="w-full p-3 px-4 flex border-b sticky top-0 z-10 bg-sidebar dark:bg-sidebar">
-                    <SidebarTrigger className="my-auto" />
+                    <SidebarTrigger className="my-auto md:hidden" />
 
                     {/* Search Bar */}
                     {/* <div className="rounded-full bg-white hover:bg-gray-100 flex ms-4 w-72">

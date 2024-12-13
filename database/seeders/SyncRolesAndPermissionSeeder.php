@@ -33,9 +33,8 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Update Project Document Version',
             'Delete Project Document Version',
 
-            'View Update Project Document Version',
-            'Add Update Project Document Version',
-            'Delete Update Project Document Version',
+            'View Project Document Version Update',
+            'Add Project Document Version Update',
 
             'Manage User',
             'Manage Master Data',
@@ -70,7 +69,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Update Project Document',
             // 'Delete Project Document',
 
-            'Add Update Project Document Version',
+            'Add Project Document Version Update',
         ]);
         $projectManager = User::where('email', 'projectmanager@example.com')->first();
         // $projectManager->assignRole($projectManagerRole);

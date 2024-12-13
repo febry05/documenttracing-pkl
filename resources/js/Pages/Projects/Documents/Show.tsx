@@ -9,10 +9,11 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { Download, PenLine, SquareArrowOutUpRight } from "lucide-react";
 import ProjectDocumentVersionCreateDialog from "./Versions/Components/Create";
 import {
+    Auth,
     Project,
     ProjectDocument,
     ProjectDocumentVersion,
@@ -21,6 +22,7 @@ import { Badge } from "@/Components/ui/badge";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
 import ProjectDocumentEditDialog from "./Components/Edit";
+import { can } from "@/lib/utils";
 
 interface PageProps {
     project: Project;
@@ -49,18 +51,21 @@ export default function ProjectDocumentsShow({
         priority = "Low";
     }
 
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Document Details"
-                    button={
+                    button={can(userPermissions, "Update Project Document") && (
                         <ProjectDocumentEditDialog
                             priorities={priorities}
                             projectId={project.id}
                             projectDocument={projectDocument}
                         />
-                    }
+                    )}
                 />
             }
         >
@@ -83,7 +88,6 @@ export default function ProjectDocumentsShow({
                             </Badge>
                         }
                     />
-                    {/* <InfoPair label="Deadline" value={format(projectDocument.deadline, "d MMMM yyyy")} /> */}
                     <InfoPair
                         label="Deadline Interval"
                         value={
@@ -96,30 +100,45 @@ export default function ProjectDocumentsShow({
                         label="From Project"
                         value={
                             <TextLink
-                                text={projectDocument.project}
+                                text={project.name}
                                 href={route("projects.show", project.id)}
                             />
                         }
                     />
+                    <InfoPair
+                        label="Automatically Generate Version"
+                        value={projectDocument.is_auto_name}
+                    />
                 </div>
             </Card>
 
+            {can(userPermissions, "View Project Document Version Update") && (
+                <VersionsSection project={project} projectDocument={projectDocument} projectDocumentVersions={projectDocumentVersions} userPermissions={userPermissions} />
+            )}
+        </DashboardLayout>
+    );
+}
+
+function VersionsSection({project, projectDocument, projectDocumentVersions, userPermissions}: {project: Project, projectDocument: ProjectDocument, projectDocumentVersions: ProjectDocumentVersion[], userPermissions: string[]}) {
+
+    return(
+        <>
             <HeaderNavigation
                 title="Versions"
                 size="md"
                 breadcrumb={false}
-                button={
+                button={can(userPermissions, "Create Project Document Version") && (
                     <ProjectDocumentVersionCreateDialog
                         projectId={project.id}
                         projectDocumentId={projectDocument.id}
                     />
-                }
+                )}
                 className="mb-4"
             />
 
             <Card className="flex-auto p-4">
                 <Accordion type="multiple" className="flex flex-col gap-4">
-                    {projectDocumentVersions.map((projectDocumentVersion) => (
+                    {projectDocumentVersions.length > 0 ? projectDocumentVersions.map((projectDocumentVersion) => (
                         <AccordionItem
                             key={projectDocumentVersion.id}
                             value={`item-${projectDocumentVersion.id}`}
@@ -184,9 +203,9 @@ export default function ProjectDocumentsShow({
                                 </div>
                             </AccordionContent>
                         </AccordionItem>
-                    ))}
+                    )) : 'No versions available.'}
                 </Accordion>
             </Card>
-        </DashboardLayout>
-    );
+        </>
+    )
 }

@@ -60,43 +60,50 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                 </div>
             </Card>
 
-            <HeaderNavigation
-                title="Documents"
-                size="md"
-                breadcrumb={false}
-                button={can(userPermissions, "Create Project Document") && (
-                    <ProjectDocumentCreateDialog priorities={priorities} projectId={project.id}/>
-                )}
-                className="mb-4"
-            />
 
-            <Card className="flex flex-col">
-                <div className="p-8">
-                <Accordion type="multiple" className="flex flex-col gap-4">
-                    {projectDocuments.map(projectDocument => (
-                        <AccordionItem key={projectDocument.id} value={`item-${projectDocument.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
-                            <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-200/90 hover:dark:bg-gray-800/90">
-                                <div className="flex items-center">
-                                    <TextLink text={projectDocument.name} href={route('projects.documents.show', [project.id, projectDocument.id])} className="text-sm" />
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                                <div className="p-4 pb-0 flex flex-col gap-4">
-                                    {projectDocument.project_document_versions && projectDocument.project_document_versions.map(project_document_version => (
-                                        <div key={project_document_version.id} className="flex items-center gap-4">
-                                            <TextLink text={project_document_version.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="text-sm" />
-                                            <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
-                                                <Ellipsis className="text-gray-500" size={20} />
-                                            </Link>
+            {can(userPermissions, "View Project Document") && (
+                <>
+                    <HeaderNavigation
+                        title="Documents"
+                        size="md"
+                        breadcrumb={false}
+                        button={can(userPermissions, "Create Project Document") && (
+                            <ProjectDocumentCreateDialog priorities={priorities} projectId={project.id}/>
+                        )}
+                        className="mb-4"
+                    />
+
+                    <Card className="flex flex-col">
+                        <div className="p-8">
+                        <Accordion type="multiple" className="flex flex-col gap-4">
+                            {projectDocuments.length > 0 ? projectDocuments.map(projectDocument => (
+                                <AccordionItem key={projectDocument.id} value={`item-${projectDocument.id}`} className="bg-gray-50 dark:bg-background border-none rounded-md">
+                                    <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-200/90 hover:dark:bg-gray-800/90">
+                                        <div className="flex items-center">
+                                            <TextLink text={projectDocument.name} href={route('projects.documents.show', [project.id, projectDocument.id])} className="text-sm" />
                                         </div>
-                                    ))}
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    ))}
-                </Accordion>
-                </div>
-            </Card>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="p-4 pb-0 flex flex-col gap-4">
+                                            {Array.isArray(projectDocument.project_document_versions) && projectDocument.project_document_versions.length > 0 ? projectDocument.project_document_versions.map(project_document_version => (
+                                                <div key={project_document_version.id} className="flex items-center gap-4">
+                                                    <TextLink text={project_document_version.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="text-sm" />
+                                                    <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
+                                                        <Ellipsis className="text-gray-500" size={20} />
+                                                    </Link>
+                                                </div>
+                                            )) : 'No versions available.'
+                                            }
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            )) : 'No documents available.'
+                            }
+                        </Accordion>
+                        </div>
+                    </Card>
+                </>
+            )}
         </DashboardLayout>
     );
 }
