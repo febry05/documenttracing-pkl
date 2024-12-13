@@ -27,6 +27,8 @@ class ProjectDocumentVersion extends Model
         'project_document_id',
     ];
 
+    protected $projectService;
+
     public function __construct(ProjectService $projectService)
     {
         $this->projectService = $projectService;
@@ -49,7 +51,7 @@ class ProjectDocumentVersion extends Model
 
         if ($this->document->is_auto && ($nowDate->gte($deadlineCarbon) )) {
             Log::info("Condition met: Storing new version for document ID: {$this->id}");
-            $this->storeNewVersion();
+            // $this->storeNewVersion();
         } else {
            Log::info("Condition not met. Document is_auto: " . ($this->document->is_auto) . ", Deadline is/later than now: " . ($nowDate->gte($deadlineCarbon)) . ", Deadline (Carbon): " . $deadlineCarbon . ", Sekarang: " . now()) ;
         }
@@ -66,7 +68,7 @@ class ProjectDocumentVersion extends Model
         return 'testing';
     }
 
-    public function storeNewVersion()
+    public function storeNewVersion(Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
      DB::beginTransaction();
         try {
@@ -81,7 +83,7 @@ class ProjectDocumentVersion extends Model
             };
             
 
-            $deadline = $this->projectService->calculateDeadline();
+            $deadline = $this->projectService->calculateDeadline($this->document->deadline_interval);
 
             $this->versions()->create([
                 'version' => $versionName,
