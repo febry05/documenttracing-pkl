@@ -1,4 +1,4 @@
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { Card } from "@/Components/ui/card";
 import { Download, Ellipsis, PenLine, Plus } from "lucide-react";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
@@ -7,9 +7,10 @@ import InfoPair from "@/Components/custom/InfoPair";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/Components/ui/accordion";
 import { IconButton } from "@/Components/custom/IconButton";
 import ProjectDocumentCreateDialog from "./Documents/Components/Create";
-import { Project, ProjectDocument, ProjectDocumentVersion } from "@/types/model";
+import { Auth, Project, ProjectDocument, ProjectDocumentVersion } from "@/types/model";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
+import { can } from "@/lib/utils";
 
 type Priority = {
     key: number,
@@ -24,17 +25,20 @@ interface PageProps {
 }
 
 export default function ProjectShow({ project, projectDocuments, projectDocumentVersions, priorities }: PageProps) {
-    console.log(projectDocuments);
+
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Details"
-                    button={
+                    button={can(userPermissions, "Update Project") && (
                         <Link href={route('projects.edit', project.id)}>
                             <IconButton icon={PenLine} text="Edit Project" variant="modify"/>
                         </Link>
-                    }
+                    )}
                 />
             }
         >
@@ -60,9 +64,9 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                 title="Documents"
                 size="md"
                 breadcrumb={false}
-                button={
+                button={can(userPermissions, "Create Project Document") && (
                     <ProjectDocumentCreateDialog priorities={priorities} projectId={project.id}/>
-                }
+                )}
                 className="mb-4"
             />
 

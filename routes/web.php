@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::middleware(['auth', 'role:Administrator'])->group(function () {
+Route::middleware('auth')->group(function () {
     //Users
     Route::resource('/users', UserController::class);
 

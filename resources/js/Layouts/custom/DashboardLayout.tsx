@@ -15,13 +15,9 @@ import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 import NotificationPanel from "./Components/NotificationPanel";
 import ProfilePanel from "./Components/ProfilePanel";
+import { Auth } from "@/types/model";
 
 type User = {
-    name: string;
-    role: string;
-};
-
-type Auth = {
     name: string;
     role: string;
 };
@@ -96,6 +92,9 @@ export default function DashboardLayout({
             );
         }
     }, [flash]);
+
+
+    console.log(auth.permissions);
 
     return (
         <SidebarProvider>

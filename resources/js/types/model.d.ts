@@ -115,3 +115,9 @@ export type UserPosition = BaseMasterData & {
 
 export type ProjectBusinessType = BaseMasterData;
 // MASTER [END]
+
+export type Auth = {
+    name: string;
+    role: string;
+    permissions: string[];
+};

@@ -21,7 +21,7 @@ class PermissionController extends Controller
     public function store(Request $request){
         $permission = Permission::create(['name' => $request->name]);
         $permission->syncRoles($request->roles);
-        
+
         return redirect()->route('permissions.index');
     }
 }

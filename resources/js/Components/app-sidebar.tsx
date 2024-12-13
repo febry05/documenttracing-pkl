@@ -24,8 +24,10 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/Components/ui/collapsible";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { Auth } from "@/types/model";
+import { can, canAny } from "@/lib/utils";
 
 export function AppSidebar(url: any) {
     const items = [
@@ -35,20 +37,33 @@ export function AppSidebar(url: any) {
             icon: Home,
         },
         {
-            title: "Projects",
-            href: "/projects",
-            icon: Clipboard,
-        },
-        {
             title: "Monitoring",
             href: "/monitoring",
             icon: CalendarIcon,
         },
+    ];
+
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+
+    canAny(userPermissions, ["Create Project", "View Project", "Update Project", "Delete Project"])
+    && items.push(
         {
-            title: "User",
+            title: "Projects",
+            href: "/projects",
+            icon: Clipboard,
+        }
+    );
+
+    can(userPermissions, 'Manage User') && items.push(
+        {
+            title: "Users",
             href: "/users",
             icon: UserRound,
-        },
+        }
+    );
+
+    can(userPermissions, 'Manage Master Data') && items.push(
         {
             title: "Master Data",
             href: "/settings",
@@ -71,8 +86,9 @@ export function AppSidebar(url: any) {
                     href: route("project-business-types.index"),
                 },
             ],
-        },
-    ];
+        }
+    );
+
     return (
         <Sidebar collapsible="icon" className="flex">
             <SidebarHeader className="px-6 border-b">
