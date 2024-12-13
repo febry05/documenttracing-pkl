@@ -14,7 +14,6 @@ class ProjectDocument extends Model
     protected $fillable = [
         'name',
         'priority',
-        // 'base_deadline', // Removed
         'weekly_deadline',
         'monthly_deadline',
         'is_auto',

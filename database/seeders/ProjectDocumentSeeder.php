@@ -16,36 +16,40 @@ class ProjectDocumentSeeder extends Seeder
         ProjectDocument::create([
             'name' => 'BAPP dan Lampirannya Tes',
             'priority' => '3',
-            'deadline_interval' => '7',
+            'deadline_interval' => '2',
             'weekly_deadline' => '3',
             'monthly_deadline' => null,
+            'is_auto' => true,
             'project_id' => 1,
         ]);
 
         ProjectDocument::create([
             'name' => 'Laporan Bulanan',
             'priority' => '3',
-            'deadline_interval' => '30',
+            'deadline_interval' => '3',
             'weekly_deadline' => null,
             'monthly_deadline' => '16',
+            'is_auto' => true,
             'project_id' => 1,
         ]);
 
         ProjectDocument::create([
             'name' => 'Berita Acara Recapitulasi Jumlah Pax',
             'priority' => '3',
-            'deadline_interval' => '7',
+            'deadline_interval' => '2',
             'weekly_deadline' => '5',
             'monthly_deadline' => null,
+            'is_auto' => true,
             'project_id' => 1,
         ]);
 
         ProjectDocument::create([
             'name' => 'SLA',
             'priority' => '2',
-            'deadline_interval' => '30',
+            'deadline_interval' => '3',
             'weekly_deadline' => null,
             'monthly_deadline' => '20',
+            'is_auto' => false,
             'project_id' => 1,
         ]);
     }
