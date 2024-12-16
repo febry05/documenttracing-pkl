@@ -70,7 +70,11 @@ class ProjectDocumentVersion extends Model
             default => throw new InvalidArgumentException('Invalid deadline interval.'),
         };
 
+        
+
         $deadline = $this->calculateDeadline($this->document->deadline_interval);
+
+        Log::debug("Creating new version with name: {$versionName} and deadline: {$deadline}");
 
         $newVersion = new ProjectDocumentVersion([
             'version' => $versionName,

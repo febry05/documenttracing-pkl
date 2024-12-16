@@ -76,7 +76,7 @@ class ProjectDocumentVersionController extends Controller
             1 => $now->format('Ymd'),
             2 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'),
             3 => $now->format('F Y'),
-            4 => $now->format('Y'),
+            4 => 'Testing ',
         };
         
         $deadline = $this->projectService->calculateDeadline($document);
