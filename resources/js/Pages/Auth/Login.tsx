@@ -1,10 +1,9 @@
 import { FormEventHandler, useEffect } from "react";
 import GuestLayout from "@/Layouts/GuestLayout";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/Components/ui/card";
@@ -12,6 +11,8 @@ import { Label } from "@/Components/ui/label";
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import { InputError } from "@/Components/ui/InputError";
+import { Eye, EyeOff } from "lucide-react";
+import TogglePasswordInput from "@/Components/custom/TogglePasswordInput";
 
 export default function Login({
     status,
@@ -46,9 +47,6 @@ export default function Login({
                 <Card className="mx-auto max-w-sm">
                     <CardHeader>
                         <CardTitle className="text-2xl mx-auto font-bold">LOGIN</CardTitle>
-                        {/* <CardDescription>
-                            Enter your email below to login to your account
-                        </CardDescription> */}
                     </CardHeader>
                     <CardContent>
                         {status && (
@@ -75,21 +73,16 @@ export default function Login({
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
-                                    {/* <Link
-                                        href={route("password.request")}
-                                        className="ml-auto inline-block text-sm underline"
-                                    >
-                                        Forgot your password?
-                                    </Link> */}
                                 </div>
-                                <Input
+                                <TogglePasswordInput
                                     id="password"
-                                    type="password"
                                     value={data.password}
                                     onChange={(e) =>
                                         setData("password", e.target.value)
                                     }
-                                    required
+                                    placeholder="Enter your password"
+                                    required={true}
+                                    maxLength={255}
                                 />
                                 <InputError message={errors.password} />
                             </div>

@@ -96,6 +96,7 @@ class HandleInertiaRequests extends Middleware
                 ],
             ],
         ];
+        // dd(session()->all());
 
         return array_merge(parent::share($request), [
             'auth' => Auth::check() ? [

@@ -28,6 +28,7 @@ import { handleNumericInput } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useState } from 'react';
 import { UserRole, UserDivision, UserPosition } from "@/types/model";
+import TogglePasswordInput from "@/Components/custom/TogglePasswordInput";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -147,15 +148,14 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
                                                     </span>
                                                 </FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="password"
+                                                    <TogglePasswordInput
+                                                        id="password"
                                                         placeholder="Enter the user's password"
-                                                        {...field}
+                                                        value={field.value || ""}
+                                                        onChange={field.onChange}
+                                                        required={true}
                                                         minLength={6}
                                                         maxLength={255}
-                                                        value={
-                                                            field.value || ""
-                                                        }
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
