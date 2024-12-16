@@ -3,21 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt";
 import { AppSidebar } from "@/Components/app-sidebar";
 import { ScrollArea } from "@/Components/ui/scroll-area";
-import {
-    CircleCheck,
-    TriangleAlert,
-    X,
-} from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { usePage } from "@inertiajs/react";
-import { Button } from "@/Components/ui/button";
 import { Toaster } from "@/Components/ui/sonner";
 import NotificationPanel from "./Components/NotificationPanel";
 import ProfilePanel from "./Components/ProfilePanel";
 import { Auth } from "@/types/model";
-import { ToastAction } from "@/Components/ui/toast";
-import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
 
 type User = {
@@ -59,25 +51,18 @@ export default function DashboardLayout({
         },
     });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {}
-
     const { url } = usePage();
-
-    // console.log('flash: ' + flash);
-    // const { toast } = useToast()
 
     useEffect(() => {
         if (flash.success) {
             toast.success("Success!", {
-                description:
-                    flash.success,
-                // action: <Button size="sm">Close</Button>,
+                description: flash.success,
+                closeButton: true,
             })
         } else if (flash.error) {
             toast.error("Error!", {
-                description:
-                    flash.error,
-                // action: <Button size="sm">Close</Button>,
+                description: flash.error,
+                closeButton: true,
             })
         }
     }, [flash]);
@@ -113,24 +98,6 @@ export default function DashboardLayout({
                         </Form>
                     </div> */}
 
-                    <div className="ms-auto">
-                        <Button
-                            variant="outline"
-                            onClick={() =>
-                                toast("Event has been created", {
-                                    description:
-                                        "Sunday, December 03, 2023 at 9:00 AM",
-                                    action: {
-                                        label: "Undo",
-                                        onClick: () => console.log("Undo"),
-                                    },
-                                })
-                            }
-                        >
-                            Show Toast
-                        </Button>
-                    </div>
-
                     {/* Notification Panel */}
                     <NotificationPanel notifications={notifications}/>
 
@@ -142,7 +109,7 @@ export default function DashboardLayout({
                         {header}
                     </div>
                     <div className="mb-6">{children}</div>
-                    <Toaster />
+                    <Toaster richColors theme="system" duration={10000}/>
                 </ScrollArea>
             </main>
         </SidebarProvider>
