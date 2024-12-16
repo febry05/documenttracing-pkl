@@ -112,7 +112,7 @@ export default function ProjectDocumentsShow({
                 </div>
             </Card>
 
-            {can(userPermissions, "View Project Document Version Update") && (
+            {can(userPermissions, "View Project Document Version") && (
                 <VersionsSection project={project} projectDocument={projectDocument} projectDocumentVersions={projectDocumentVersions} userPermissions={userPermissions} />
             )}
         </DashboardLayout>
@@ -120,7 +120,6 @@ export default function ProjectDocumentsShow({
 }
 
 function VersionsSection({project, projectDocument, projectDocumentVersions, userPermissions}: {project: Project, projectDocument: ProjectDocument, projectDocumentVersions: ProjectDocumentVersion[], userPermissions: string[]}) {
-
     return(
         <>
             <HeaderNavigation

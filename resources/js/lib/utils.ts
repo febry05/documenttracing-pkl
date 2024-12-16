@@ -28,14 +28,14 @@ export const permission = [
     'Update Document Project',
     'Delete Document Project',
 
-    'Create Project Version',
-    'View Project Version',
-    'Update Document Project Version',
-    'Delete Document Project Version',
+    'Create Project Document Version',
+    'View Project Document Version',
+    'Update Document Project Document Version',
+    'Delete Document Project Document Version',
 
-    'View Update Document Project Version',
-    'Add Update Document Project Version',
-    'Delete Update Document Project Version',
+    'View Update Document Project Document Version',
+    'Add Update Document Project Document Version',
+    'Delete Update Document Project Document Version',
 
     'Manage User',
     'Manage Master Data',

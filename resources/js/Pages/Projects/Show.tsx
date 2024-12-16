@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Card } from "@/Components/ui/card";
-import { Download, Ellipsis, PenLine, Plus } from "lucide-react";
+import { Ellipsis, PenLine } from "lucide-react";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import InfoPair from "@/Components/custom/InfoPair";
@@ -85,15 +85,16 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                                     </AccordionTrigger>
                                     <AccordionContent>
                                         <div className="p-4 pb-0 flex flex-col gap-4">
-                                            {Array.isArray(projectDocument.project_document_versions) && projectDocument.project_document_versions.length > 0 ? projectDocument.project_document_versions.map(project_document_version => (
-                                                <div key={project_document_version.id} className="flex items-center gap-4">
-                                                    <TextLink text={project_document_version.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="text-sm" />
-                                                    <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
-                                                        <Ellipsis className="text-gray-500" size={20} />
-                                                    </Link>
-                                                </div>
-                                            )) : 'No versions available.'
-                                            }
+                                            {can(userPermissions, "View Project Document Version") ? (
+                                                Array.isArray(projectDocument.project_document_versions) && projectDocument.project_document_versions.length > 0 ? projectDocument.project_document_versions.map(project_document_version => (
+                                                    <div key={project_document_version.id} className="flex items-center gap-4">
+                                                        <TextLink text={project_document_version.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="text-sm" />
+                                                        <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
+                                                            <Ellipsis className="text-gray-500" size={20} />
+                                                        </Link>
+                                                    </div>
+                                                )) : 'No versions available.'
+                                            ) : "You don't have permission to view project document versions."}
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>

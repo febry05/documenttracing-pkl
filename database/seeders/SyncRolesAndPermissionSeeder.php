@@ -28,13 +28,13 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Update Project Document',
             'Delete Project Document',
 
-            'Create Project Version',
-            'View Project Version',
+            'Create Project Document Version',
+            'View Project Document Version',
             'Update Project Document Version',
             'Delete Project Document Version',
 
             'View Project Document Version Update',
-            'Add Project Document Version Update',
+            'Create Project Document Version Update',
 
             'Manage User',
             'Manage Master Data',
@@ -59,8 +59,8 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'View Project',
             'Update Project',
 
-            'Create Project Version',
-            'View Project Version',
+            'Create Project Document Version',
+            'View Project Document Version',
             'Update Project Document Version',
             // 'Delete Project Document Version',
 
@@ -69,7 +69,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Update Project Document',
             // 'Delete Project Document',
 
-            'Add Project Document Version Update',
+            'Create Project Document Version Update',
         ]);
         $projectManager = User::where('email', 'projectmanager@example.com')->first();
         // $projectManager->assignRole($projectManagerRole);
@@ -80,7 +80,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
         $guestRole = Role::where('name', 'Guest')->first();
         $guestRole->givePermissionTo([
             'View Project',
-            'View Project Version',
+            'View Project Document Version',
             'View Project Document',
         ]);
         $guest = User::where('email', 'guest@example.com')->first();
