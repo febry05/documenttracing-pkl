@@ -3,17 +3,19 @@ import InfoPair from "@/Components/custom/InfoPair";
 import { Card } from "@/Components/ui/card";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import {
+    Auth,
     Project,
     ProjectDocument,
     ProjectDocumentVersion,
     ProjectDocumentVersionUpdate,
 } from "@/types/model";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import ProjectDocumentVersionUpdateCreateDialog from "./Updates/Components/Create";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
 import ProjectDocumentVersionEditDialog from "./Components/Edit";
 import { Separator } from "@/Components/ui/separator";
+import { can } from "@/lib/utils";
 
 interface PageProps {
     project: Project;
@@ -62,18 +64,21 @@ export default function ProjectDocumentVersionShow({
     projectDocumentVersionUpdates,
     statuses,
 }: PageProps) {
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Document Version Details"
-                    button={
+                    button={can(userPermissions, "Update Project Document Version") && (
                         <ProjectDocumentVersionEditDialog
                             projectId={project.id}
                             projectDocumentId={projectDocument.id}
                             projectDocumentVersion={projectDocumentVersion}
                         />
-                    }
+                    )}
                 />
             }
         >
@@ -165,45 +170,49 @@ export default function ProjectDocumentVersionShow({
                 </div>
             </Card>
 
-            <HeaderNavigation
-                title="Updates"
-                size="md"
-                breadcrumb={false}
-                button={
-                    <ProjectDocumentVersionUpdateCreateDialog
-                        projectId={project.id}
-                        projectDocumentId={projectDocument.id}
-                        projectDocumentVersionId={projectDocumentVersion.id}
-                        statuses={statuses}
-                    />
-                }
-                className="mb-4"
-            />
-
-            <Card className="flex flex-col gap-4 p-8 mb-4">
-                {projectDocumentVersionUpdates.length === 0 && (
-                    <span className="text-sm text-center">
-                        There are no updates yet.
-                    </span>
-                )}
-                {projectDocumentVersionUpdates.map(
-                    (projectDocumentVersionUpdate) => (
-                        <div key={projectDocumentVersionUpdate.id}>
-                            <Update
-                                projectDocumentVersionUpdate={
-                                    projectDocumentVersionUpdate
-                                }
+            {can(userPermissions, "View Project Document Version Update") && (
+                <>
+                    <HeaderNavigation
+                        title="Updates"
+                        size="md"
+                        breadcrumb={false}
+                        button={can(userPermissions, "Create Project Document Version Update") && (
+                            <ProjectDocumentVersionUpdateCreateDialog
+                                projectId={project.id}
+                                projectDocumentId={projectDocument.id}
+                                projectDocumentVersionId={projectDocumentVersion.id}
+                                statuses={statuses}
                             />
-                            {projectDocumentVersionUpdates.indexOf(
-                                projectDocumentVersionUpdate
-                            ) !==
-                                projectDocumentVersionUpdates.length - 1 && (
-                                <Separator className="mt-4"/>
-                            )}
-                        </div>
-                    )
-                )}
-            </Card>
+                        )}
+                        className="mb-4"
+                    />
+
+                    <Card className="flex flex-col gap-4 p-8 mb-4">
+                        {projectDocumentVersionUpdates.length === 0 && (
+                            <span className="text-sm text-center">
+                                No updates available.
+                            </span>
+                        )}
+                        {projectDocumentVersionUpdates.map(
+                            (projectDocumentVersionUpdate) => (
+                                <div key={projectDocumentVersionUpdate.id}>
+                                    <Update
+                                        projectDocumentVersionUpdate={
+                                            projectDocumentVersionUpdate
+                                        }
+                                    />
+                                    {projectDocumentVersionUpdates.indexOf(
+                                        projectDocumentVersionUpdate
+                                    ) !==
+                                        projectDocumentVersionUpdates.length - 1 && (
+                                        <Separator className="mt-4"/>
+                                    )}
+                                </div>
+                            )
+                        )}
+                    </Card>
+                </>
+            )}
         </DashboardLayout>
     );
 }

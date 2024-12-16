@@ -23,19 +23,18 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Update Project',
             'Delete Project',
 
-            'Create Document Project',
-            'View Document Project',
-            'Update Document Project',
-            'Delete Document Project',
+            'Create Project Document',
+            'View Project Document',
+            'Update Project Document',
+            'Delete Project Document',
 
             'Create Project Version',
             'View Project Version',
-            'Update Document Project Version',
-            'Delete Document Project Version',
+            'Update Project Document Version',
+            'Delete Project Document Version',
 
-            'View Update Document Project Version',
-            'Add Update Document Project Version',
-            'Delete Update Document Project Version',
+            'View Project Document Version Update',
+            'Add Project Document Version Update',
 
             'Manage User',
             'Manage Master Data',
@@ -62,15 +61,15 @@ class SyncRolesAndPermissionSeeder extends Seeder
 
             'Create Project Version',
             'View Project Version',
-            'Update Document Project Version',
-            // 'Delete Document Project Version',
+            'Update Project Document Version',
+            // 'Delete Project Document Version',
 
-            'Create Document Project',
-            'View Document Project',
-            'Update Document Project',
-            // 'Delete Document Project',
+            'Create Project Document',
+            'View Project Document',
+            'Update Project Document',
+            // 'Delete Project Document',
 
-            'Add Update Document Project Version',
+            'Add Project Document Version Update',
         ]);
         $projectManager = User::where('email', 'projectmanager@example.com')->first();
         // $projectManager->assignRole($projectManagerRole);
@@ -82,7 +81,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
         $guestRole->givePermissionTo([
             'View Project',
             'View Project Version',
-            'View Document Project',
+            'View Project Document',
         ]);
         $guest = User::where('email', 'guest@example.com')->first();
         $guest->assignRole($guestRole);

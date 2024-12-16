@@ -96,10 +96,12 @@ class HandleInertiaRequests extends Middleware
                 ],
             ],
         ];
+        // dd(session()->all());
 
         return array_merge(parent::share($request), [
             'auth' => Auth::check() ? [
                 'name' => Auth::user()->profile->name,
+                'permissions' => $request->user() ? $request->user()->getAllPermissions()->pluck('name') : [],
                 'role' => ModelsRole::findByName(Auth::user()->getRoleNames()[0])->name,
             ] : [
                 'user' => $request->user(),

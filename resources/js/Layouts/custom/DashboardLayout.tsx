@@ -6,22 +6,21 @@ import { ScrollArea } from "@/Components/ui/scroll-area";
 import {
     CircleCheck,
     TriangleAlert,
+    X,
 } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { usePage } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
 import { Toaster } from "@/Components/ui/sonner";
-import { toast } from "sonner";
 import NotificationPanel from "./Components/NotificationPanel";
 import ProfilePanel from "./Components/ProfilePanel";
+import { Auth } from "@/types/model";
+import { ToastAction } from "@/Components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 type User = {
-    name: string;
-    role: string;
-};
-
-type Auth = {
     name: string;
     role: string;
 };
@@ -64,36 +63,22 @@ export default function DashboardLayout({
 
     const { url } = usePage();
 
+    // console.log('flash: ' + flash);
+    // const { toast } = useToast()
+
     useEffect(() => {
         if (flash.success) {
-            console.log(flash.success);
-            toast(
-                <span className="text-primary flex">
-                    <CircleCheck size={16} className="me-1" />
-                    Success!
-                </span>,
-                {
-                    description: flash.success,
-                    action: {
-                        label: "Close",
-                        onClick: () => {},
-                    },
-                }
-            );
+            toast.success("Success!", {
+                description:
+                    flash.success,
+                // action: <Button size="sm">Close</Button>,
+            })
         } else if (flash.error) {
-            toast(
-                <span className="text-primary flex">
-                    <TriangleAlert size={16} className="me-1" />
-                    Error!
-                </span>,
-                {
-                    description: flash.error,
-                    action: {
-                        label: "Close",
-                        onClick: () => {},
-                    },
-                }
-            );
+            toast.error("Error!", {
+                description:
+                    flash.error,
+                // action: <Button size="sm">Close</Button>,
+            })
         }
     }, [flash]);
 
@@ -102,7 +87,7 @@ export default function DashboardLayout({
             <AppSidebar url={url} />
             <main className="w-full">
                 <nav className="w-full p-3 px-4 flex border-b sticky top-0 z-10 bg-sidebar dark:bg-sidebar">
-                    <SidebarTrigger className="my-auto" />
+                    <SidebarTrigger className="my-auto md:hidden" />
 
                     {/* Search Bar */}
                     {/* <div className="rounded-full bg-white hover:bg-gray-100 flex ms-4 w-72">

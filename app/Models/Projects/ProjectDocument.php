@@ -37,6 +37,16 @@ class ProjectDocument extends Model
         }
     }
 
+    public function getIsAutoTypeNameAttribute()
+    {
+        switch ($this->is_auto) {
+            case 0:
+                return 'Yes';
+            case 1:
+                return 'No';
+        }
+    }
+
     /**
      * Calculate the next deadline based on the interval and current date.
      *

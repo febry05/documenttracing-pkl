@@ -16,6 +16,7 @@ import { Key, Save, Send } from "lucide-react";
 
 import { IconButton } from "@/Components/custom/IconButton";
 import { User } from "@/types/model";
+import TogglePasswordInput from "@/Components/custom/TogglePasswordInput";
 
 const formSchema = z.object({
     password: z.string().min(6).max(255),
@@ -69,10 +70,12 @@ export default function updatePasswordForm({
                                     </span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input
-                                        type="password"
+                                    <TogglePasswordInput
+                                        id="password"
                                         placeholder="Enter your current password"
-                                        {...field}
+                                        value={field.value || ""}
+                                        onChange={field.onChange}
+                                        required={true}
                                         minLength={6}
                                         maxLength={255}
                                     />
@@ -95,10 +98,12 @@ export default function updatePasswordForm({
                                     </span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input
-                                        type="password"
+                                    <TogglePasswordInput
+                                        id="password_new"
                                         placeholder="Enter your new password"
-                                        {...field}
+                                        value={field.value || ""}
+                                        onChange={field.onChange}
+                                        required={true}
                                         minLength={6}
                                         maxLength={255}
                                     />
@@ -121,10 +126,12 @@ export default function updatePasswordForm({
                                     </span>
                                 </FormLabel>
                                 <FormControl>
-                                    <Input
-                                        type="password"
+                                    <TogglePasswordInput
+                                        id="password"
                                         placeholder="Enter your new password again"
-                                        {...field}
+                                        value={field.value || ""}
+                                        onChange={field.onChange}
+                                        required={true}
                                         minLength={6}
                                         maxLength={255}
                                     />

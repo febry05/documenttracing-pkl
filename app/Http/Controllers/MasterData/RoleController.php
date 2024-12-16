@@ -48,9 +48,9 @@ class RoleController extends Controller
             $role->guard_name = 'web';
             $role->description = $validatedData['description'];
             $role->save();
-            
+
             $role->syncPermissions($validatedData['permissions']);
-            
+
             DB::commit();
             // DB::rollBack();
 
@@ -88,20 +88,17 @@ class RoleController extends Controller
                 'permissions' => 'required|array',
             ]);
 
-            $role = Role::findOrFail($id);  
+            $role = Role::findOrFail($id);
             $role->name = $validatedData['name'];
             $role->guard_name = 'web';
             $role->description = $validatedData['description'];
             $role->save();
 
             $role->syncPermissions($validatedData['permissions']);
-            
-            // dd($role);
+
             DB::commit();
-            // DB::rollBack();
 
             session()->flash('success', 'User role "' . $role->name . '" has been updated.');
-            // dd(session()->all());
             return to_route('user-roles.index');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -117,5 +114,5 @@ class RoleController extends Controller
         return redirect()->route('user-roles.index');
     }
 
-    
+
 }

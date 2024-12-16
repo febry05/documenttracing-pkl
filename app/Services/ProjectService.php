@@ -14,11 +14,11 @@ use App\Models\Projects\ProjectDocumentVersionUpdate;
 
 class ProjectService {
     // protected $projectId;
-    
+
     public function __construct(Request $request) {
         $projectId = $request->route('project');
     }
-     
+
     public function getProjects() {
         return Project::with('profile', 'businessType')
             ->select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->get()->map(function ($project) {
@@ -49,7 +49,7 @@ class ProjectService {
                             'priority_name' => $documents->priority_type_name,
                             'due_at' => $documents->deadline,
                         ];
-                    }),  
+                    }),
             ];
         });
     }
@@ -57,13 +57,18 @@ class ProjectService {
     public function getProjectDocuments($projectId) {
         // $projectId = $request->route('project');
         // dd($projectId);
-        return ProjectDocument::with('versions')->where('project_id', $projectId)->get()->map(function ($document) {
+        return ProjectDocument::with(['versions:id,version,document_number', 'project:id,name'])->where('project_id', $projectId)->get()->map(function ($document) {
             return [
                 'id' => $document->id,
                 'name' => $document->name,
                 'weekly_deadline' => $document->weekly_deadline,
                 'monthly_deadline' => $document->monthly_deadline,
                 // 'deadline' => $document->deadline,
+                'is_auto' => $document->is_auto,
+                'is_auto_name' => $document->is_auto_type_name,
+                'priority' => $document->priority,
+                'priority_name' => $document->priority_type_name,
+
                 'project_document_versions' => $document->versions->map(function ($version){
                     return [
                         'id' => $version->id,
@@ -71,8 +76,6 @@ class ProjectService {
                         'document_number' => $version->document_number,
                     ];
                 }),
-                'priority' => $document->priority,
-                'priority_name' => $document->priority_type_name,
             ];
         });
     }
@@ -171,7 +174,7 @@ class ProjectService {
 
         return collect([
             $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
-            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null, 
+            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
             $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
         ])->filter()->implode(' ') ?: 'Today';
     }
@@ -229,5 +232,5 @@ class ProjectService {
             5 => 'Friday',
             default => 'Monday',
         };
-    } 
+    }
 }

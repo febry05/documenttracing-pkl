@@ -71,6 +71,7 @@ export type ProjectDocument = BaseModel & {
     deadline_interval: number;
 
     is_auto: boolean;
+    is_auto_name: boolean;
 
     project_id: string;
     project?: string;
@@ -115,3 +116,9 @@ export type UserPosition = BaseMasterData & {
 
 export type ProjectBusinessType = BaseMasterData;
 // MASTER [END]
+
+export type Auth = {
+    name: string;
+    role: string;
+    permissions: string[];
+};

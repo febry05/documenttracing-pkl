@@ -30,6 +30,7 @@ import { useEffect, useState } from "react";
 import { IconButton } from "@/Components/custom/IconButton";
 import { UserDeleteDialog } from "./Components/Delete";
 import { User, UserDivision, UserPosition, UserRole } from "@/types/model";
+import TogglePasswordInput from "@/Components/custom/TogglePasswordInput";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -158,10 +159,12 @@ export default function UsersEdit({
                                             <FormItem>
                                                 <FormLabel>Password</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        type="password"
+                                                    <TogglePasswordInput
+                                                        id="password"
                                                         placeholder="Enter the user's password"
-                                                        {...field}
+                                                        value={field.value || ""}
+                                                        onChange={field.onChange}
+                                                        required={true}
                                                         minLength={6}
                                                         maxLength={255}
                                                     />
