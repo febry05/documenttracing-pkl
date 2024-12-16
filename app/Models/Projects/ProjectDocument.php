@@ -108,7 +108,7 @@ class ProjectDocument extends Model
 
     public function versions()
     {
-        return $this->hasMany(ProjectDocumentVersion::class);
+        return $this->hasMany(ProjectDocumentVersion::class, 'project_document_id');
     }
 
 
