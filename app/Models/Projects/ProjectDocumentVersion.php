@@ -63,8 +63,8 @@ class ProjectDocumentVersion extends Model
         //now();
         switch ($this->document->deadline_interval) {
             case 1:
-                $versionName = $now->format('Ymd'); // Daily
-                break;
+                $versionName = $now->format('d M Y'); // Daily
+            break;
             case 2:
                 $versionName = 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'); // Weekly
                 break;
@@ -72,7 +72,7 @@ class ProjectDocumentVersion extends Model
                 $versionName = $now->format('F Y'); // Monthly
                 break;
             case 4:
-                $versionName = 'Testing ';
+                $versionName = $now->format('l, jS F Y H:i'); // Detailed timestamp
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');

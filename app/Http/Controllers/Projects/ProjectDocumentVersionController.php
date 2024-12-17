@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Projects;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use App\Models\Projects\Project;
 use App\Services\ProjectService;
 use Illuminate\Support\Facades\DB;
@@ -72,11 +73,21 @@ class ProjectDocumentVersionController extends Controller
                         
             $now = now();
 
-            $versionName = match ($document->deadline_interval) {
-            1 => $now->format('Ymd'),
-            2 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'),
-            3 => $now->format('F Y'),
-            4 => 'Testing ',
+            switch ($document->deadline_interval) {
+            case 1:
+                $versionName = $now->format('d M Y'); // Daily
+            break;
+            case 2:
+                $versionName = 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'); // Weekly
+                break;
+            case 3:
+                $versionName = $now->format('F Y'); // Monthly
+                break;
+            case 4:
+                $versionName = $now->format('l, jS F Y H:i'); // Detailed timestamp
+                break;
+            default:
+                throw new InvalidArgumentException('Invalid deadline interval.');
         };
         
         $deadline = $this->projectService->calculateDeadline($document);

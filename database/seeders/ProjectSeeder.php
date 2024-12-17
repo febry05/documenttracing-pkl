@@ -22,7 +22,7 @@ class ProjectSeeder extends Seeder
             'customer' => 'AP 1',
             'contract_number' => '077/BA/II/2024/APS/BM.BDJ',
             'contract_start' => '2021-01-01',
-            'contract_end' => '2021-12-31',
+            'contract_end' => '2025-01-16',
             'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
             'project_business_type_id' => ProjectBusinessType::where('name', 'Software Development')->first()->id,
         ]);

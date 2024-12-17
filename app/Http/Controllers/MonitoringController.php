@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
+use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
+use Illuminate\Support\Facades\Date;
 
 class MonitoringController extends Controller
 {
@@ -15,21 +17,26 @@ class MonitoringController extends Controller
         $year = $year ?? date('Y');
         $month = $month ?? date('m');
 
-        $mockStats = [
-            'total_documents' => 666,
-            'ongoing_documents' => 69,
-            'pending_documents' => 34,
-            'completed_documents' => 420,
-        ];
-
-        $projects = Project
-            ::with(['documentVersions', 'documentVersions.document', 'documentVersions.updates'])->
-            // Year Filter
-            whereYear('contract_start', '>=', $year)
-            ->whereYear('contract_end', '<=', $year)
-            ->whereMonth('contract_start', '<=', $month)
-            ->whereMonth('contract_end', '>=', $month)
-            // Array Mapping
+        $stats = $this->calculateDocumentStats();
+        
+        $projects = Project::with([
+            'documentVersions'=> function ($query) use ($year, $month) {
+                $query->whereYear('release_date', $year)
+                    ->whereMonth('release_date', $month);
+            },
+            'documentVersions.document',
+            'documentVersions.updates',
+        ])
+            ->whereYear('contract_start', '<=', $year)
+            ->whereYear('contract_end', '>=', $year)
+            ->where(function ($query) use ($month) {
+                $query->whereMonth('contract_start', '<=', $month)
+                      ->orWhereMonth('contract_end', '>=', $month);
+            })
+            ->whereHas('documentVersions', function ($query) use ($year, $month) {
+            $query->whereYear('release_date', $year)
+                ->whereMonth('release_date', $month);
+            })
             ->get()
             ->map(function ($project) {
                 return [
@@ -40,6 +47,7 @@ class MonitoringController extends Controller
                         return [
                             'id' => $documentVersion->id,
                             'project_document_id' => $documentVersion->document->id,
+                            'project_id' => $documentVersion->document->project_id,
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,
@@ -49,14 +57,15 @@ class MonitoringController extends Controller
                             'status' => $documentVersion->updates[0]->status ?? "N/A",
                             'document_link' => $documentVersion->updates[0]->document_link ?? "N/A",
                         ];
-                    })->toArray()
+                    })
                 ];
             });
 
         $availableYears = Project::selectRaw('YEAR(contract_start) as start_year, YEAR(contract_end) as end_year')
             ->get()
             ->flatMap(function ($project) {
-                return range($project->start_year, $project->end_year);
+                $endYear = min($project->end_year, now()->year); // to prevent future years
+            return range($project->start_year, $endYear);
             })
             ->unique()
             ->values()
@@ -65,7 +74,7 @@ class MonitoringController extends Controller
         return Inertia::render('Monitoring/Index', [
             'projects' => $projects,
             'availableYears' => $availableYears,
-            'stats' => $mockStats,
+            'stats' => $stats,
             'selectedYear' => $year,
             'selectedMonth' => $month,
         ]);
@@ -87,5 +96,52 @@ class MonitoringController extends Controller
             $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
             $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
         ])->filter()->implode(' ') ?: 'Today';
+    }
+
+    public function calculateDocumentStats()
+    {
+        // Total documents: count of all records in ProjectDocumentVersion table
+        $total_documents = ProjectDocumentVersion::count();
+
+        $documentVersions = ProjectDocumentVersion::with('updates')->get();
+
+        // Initialize counters
+        $ongoingDocuments = 0;
+        $pendingDocuments = 0;
+        $completedDocuments = 0;
+        $notStartedDocuments = 0;
+
+        foreach ($documentVersions as $version) {
+            $latestUpdate = $version->updates->sortByDesc('created_at')->first();
+
+            if (!$latestUpdate) {
+                // No updates exist: count as Not Started
+                $notStartedDocuments++;
+            } else {
+                // Evaluate based on the status in the latest update
+                switch ($latestUpdate->status) {
+                    case 'Ongoing':
+                        $ongoingDocuments++;
+                        break;
+                    case 'Pending':
+                        $pendingDocuments++;
+                        break;
+                    case 'Completed':
+                        $completedDocuments++;
+                        break;
+                    default:
+                        $notStartedDocuments++;
+                        break;
+                }
+            }
+        }
+
+        return [
+            'total_documents' => $total_documents,
+            'ongoing_documents' => $ongoingDocuments,
+            'pending_documents' => $pendingDocuments,
+            'completed_documents' => $completedDocuments,
+            'not_started_documents' => $notStartedDocuments,
+        ];
     }
 }
