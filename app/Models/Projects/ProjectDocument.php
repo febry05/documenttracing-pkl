@@ -37,17 +37,31 @@ class ProjectDocument extends Model
         }
     }
 
+    
+    public function getDeadlineIntervalNameAttribute()
+    {
+        switch ($this->deadline_interval) {
+            case 1:
+                return 'Daily';
+            case 2:
+                return 'Weekly';
+            case 3:
+                return 'Monthly';
+            case 4:
+                return 'Every Minute';
+        }
+    }
+
     public function getIsAutoTypeNameAttribute()
     {
         switch ($this->is_auto) {
             case 0:
-                return 'Yes';
-            case 1:
                 return 'No';
+            case 1:
+                return 'Yes' . " " . "( " .  $this->getDeadlineIntervalNameAttribute() . " )";
         }
     }
-
-    /**
+                    /**
      * Calculate the next deadline based on the interval and current date.
      *
      * @param int $interval (1: Daily, 2: Weekly, 3: Monthly)
