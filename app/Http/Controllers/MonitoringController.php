@@ -6,9 +6,10 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Date;
 use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
-use Illuminate\Support\Facades\Date;
 
 class MonitoringController extends Controller
 {
@@ -33,16 +34,21 @@ class MonitoringController extends Controller
                 $query->whereMonth('contract_start', '<=', $month)
                       ->orWhereMonth('contract_end', '>=', $month);
             })
-            ->whereHas('documentVersions', function ($query) use ($year, $month) {
-            $query->whereYear('release_date', $year)
-                ->whereMonth('release_date', $month);
-            })
+            // ->whereMonth('contract_start', '<=', $month)
+            // ->whereMonth('contract_end', '>=', $month)
+            // ->where(function ($query) use ($year) {
+            //     $query->whereYear('contract_start', '<=', $year)
+            //           ->orWhereYear('contract_end', '>=', $year);
+            // })
+            // ->whereHas('documentVersions', function ($query) use ($year, $month) {
+            // $query->whereYear('release_date', $year)
+            //     ->whereMonth('release_date', $month);
+            // })
             ->get()
             ->map(function ($project) {
                 return [
                     'id' => $project->id,
                     'name' => $project->name,
-                    // 'person_in_charge' => $project->praofile->name,
                     'documentVersions' => $project->documentVersions->map(function ($documentVersion) use ($project) {
                         return [
                             'id' => $documentVersion->id,
@@ -51,9 +57,8 @@ class MonitoringController extends Controller
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,
-                            'due_date' => $documentVersion->document->deadline,
-                            // 'days_left' => $this->calculateDays($documentVersion->document->deadline),
-                            'days_left' => "8",
+                            'due_date' => $documentVersion->deadline,
+                            'days_left' => $this->calculateDays($documentVersion->deadline),
                             'status' => $documentVersion->updates[0]->status ?? "N/A",
                             'document_link' => $documentVersion->updates[0]->document_link ?? "N/A",
                         ];
@@ -83,29 +88,47 @@ class MonitoringController extends Controller
     protected function calculateDays($dateEnd)
     {
         $now = Carbon::now();
-        $diffInYears = $now->diffInYears($dateEnd);
-        $diffInMonths = $now->copy()->addYears($diffInYears)->diffInMonths($dateEnd);
-        $diffInDays = $now->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($dateEnd);
+        $dateEnd = Carbon::parse($dateEnd);
 
-        $roundedYears = intval($diffInYears);
-        $roundedMonths = intval($diffInMonths);
-        $roundedDays = intval($diffInDays);
+        if ($now->equalTo($dateEnd)) {
+            return 'Today';
+        }
 
-        return collect([
-            $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
-            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
-            $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
-        ])->filter()->implode(' ') ?: 'Today';
+        $isFuture = $now->lessThan($dateEnd); // Check if the date is in the future
+        $diff = $isFuture ? $now->diff($dateEnd) : $dateEnd->diff($now); // Use appropriate diff calculation
+
+        $timeComponents = [
+            'Year' => $diff->y,
+            'Month' => $diff->m,
+            'Day' => $diff->d,
+            'Hour' => $diff->h,
+            'Minute' => $diff->i,
+            'Second' => $diff->s,
+        ];
+
+        $timeString = collect($timeComponents)
+            ->filter(fn($value) => $value > 0) // Remove components with zero value
+            ->map(function ($value, $key) {
+                return "{$value} {$key}" . ($value > 1 ? 's' : '');
+            })
+            ->take(2) // Take the first two non-zero components
+            ->implode(' ');
+
+        // Ensure "Overdue by" doesn't show null
+        return $isFuture
+            ? "{$timeString} Left"
+            : ($timeString ? "Overdue by {$timeString}" : "Overdue");
     }
+
+
+
 
     public function calculateDocumentStats()
     {
-        // Total documents: count of all records in ProjectDocumentVersion table
         $total_documents = ProjectDocumentVersion::count();
 
         $documentVersions = ProjectDocumentVersion::with('updates')->get();
 
-        // Initialize counters
         $ongoingDocuments = 0;
         $pendingDocuments = 0;
         $completedDocuments = 0;
@@ -115,10 +138,8 @@ class MonitoringController extends Controller
             $latestUpdate = $version->updates->sortByDesc('created_at')->first();
 
             if (!$latestUpdate) {
-                // No updates exist: count as Not Started
                 $notStartedDocuments++;
             } else {
-                // Evaluate based on the status in the latest update
                 switch ($latestUpdate->status) {
                     case 'Ongoing':
                         $ongoingDocuments++;

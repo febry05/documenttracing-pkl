@@ -34,7 +34,11 @@ export default function DashboardLayout({
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth, flash, notifications } = usePage<{ auth: Auth; flash: Flash; notifications: Notification[] }>().props;
+    const { auth, flash, notifications } = usePage<{
+        auth: Auth;
+        flash: Flash;
+        notifications: Notification[];
+    }>().props;
 
     const fullName = auth.name.split(" ");
     const middleName = fullName[Math.floor((fullName.length / 2) | 0)];
@@ -58,14 +62,16 @@ export default function DashboardLayout({
             toast.success("Success!", {
                 description: flash.success,
                 closeButton: true,
-            })
+            });
         } else if (flash.error) {
             toast.error("Error!", {
                 description: flash.error,
                 closeButton: true,
-            })
+            });
         }
     }, [flash]);
+
+    console.log(`flash:`, flash);
 
     return (
         <SidebarProvider>
@@ -99,7 +105,7 @@ export default function DashboardLayout({
                     </div> */}
 
                     {/* Notification Panel */}
-                    <NotificationPanel notifications={notifications}/>
+                    <NotificationPanel notifications={notifications} />
 
                     {/* Profile Panel */}
                     <ProfilePanel {...user} />
@@ -109,7 +115,7 @@ export default function DashboardLayout({
                         {header}
                     </div>
                     <div className="mb-6">{children}</div>
-                    <Toaster richColors theme="system" duration={10000}/>
+                    <Toaster richColors theme="system" duration={10000} />
                 </ScrollArea>
             </main>
         </SidebarProvider>

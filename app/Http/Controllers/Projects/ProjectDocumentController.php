@@ -60,7 +60,20 @@ class ProjectDocumentController extends Controller
     {
         DB::beginTransaction();
         try {
-            // dd($request);
+
+            $now = now()->toDateString();
+
+            if (!$project) {
+                return to_route('projects')
+                ->with (['error' => 'Project not found']);
+            }
+            
+            if ($now > $project->contract_end) {
+                DB::rollBack();
+                return to_route('projects.show' , $project)
+                ->with(['error' => 'Contract for ' . $project->name . '" already passed in' . $project->contract_end]);
+            }
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'priority' => 'required|integer|in:1,2,3', // Low, Medium, High
@@ -75,12 +88,10 @@ class ProjectDocumentController extends Controller
 
             $debug = ProjectDocument::create($validated);
             
-            // dd($debug);
-
             DB::commit();
             
-            return redirect()->route('projects.show', $project)
-            ->with('success', 'Document created successfully.');
+            session()->flash('success', 'Document for "' . $project->name . '" created successfully');
+            return to_route('projects.show' , $project);
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);  

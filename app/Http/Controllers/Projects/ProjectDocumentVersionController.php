@@ -11,6 +11,7 @@ use App\Services\ProjectService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Projects\ProjectDocument;
+use League\CommonMark\Node\Block\Document;
 use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentVersionController extends Controller
@@ -58,7 +59,25 @@ class ProjectDocumentVersionController extends Controller
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
         DB::beginTransaction();
-        try { 
+        try {
+
+            $now = now()->toDateString();
+
+            if (!$project) {
+                return to_route('projects')
+                ->with (['error' => 'Project not found']);
+            }
+            
+            if ($now > $project->contract_end) {
+                DB::rollBack();
+                return to_route('projects.documents.show', [
+                    'project' => $project->id,
+                    'document' => $document->id,
+                ])->with ('error', 'When making Document Version for "' . $document->name . '" because Project "' . $project->name . '" ended on ' . $project->contract_end);
+                ;
+            }
+            
+            
 
             $validated = $request->validate([
                 'release_date' => 'nullable|date', // Optional release date

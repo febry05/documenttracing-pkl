@@ -55,7 +55,6 @@ class RoleController extends Controller
             // DB::rollBack();
 
             session()->flash('success', 'User role "' . $role->name . '" has been created.');
-            // dd(session()->all());
             return to_route('user-roles.index');
         } catch (\Exception $e) {
             DB::rollBack();
