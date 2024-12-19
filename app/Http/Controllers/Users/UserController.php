@@ -95,15 +95,15 @@ class UserController extends Controller
 
             DB::commit();
 
-        return redirect()->route('users.index');
+        return to_route('users.index')->with('success', 'User "' . $request->name . '" created successfully.');
         } catch (\Exception $e) {
             dd($e);
             DB::rollBack();
-            session()->flash('flash', [
-                'status' => 'error',
-                'message' => 'Problem occurred when creating user "' . $request->name . '".',
-            ]);
-            return redirect()->route('users.index');
+            // session()->flash('flash', [
+            //     'status' => 'error',
+            //     'message' => 'Problem occurred when creating user "' . $request->name . '".',
+            // ]);
+            return to_route('users.index')->with('error', 'Problem occurred when creating user "' . $request->name . '".');
         }
     }
 
@@ -125,8 +125,6 @@ class UserController extends Controller
             'userRoles' => Role::select('id', 'name')->get(),
             'userDivisions' => UserDivision::select('id', 'name')->get(),
             'userPositions' => UserPosition::select('id', 'name', 'user_division_id')->get(),
-
-
         ]);
     }
 
@@ -168,10 +166,10 @@ class UserController extends Controller
             $user->syncRoles($role->name);
 
             DB::commit();
-            return to_route('users.index');
+            return to_route('users.index')->with('success', 'User "' . $request->name . '" updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'An error occurred while updating the user.']);
+            return to_route('users.index')->with('error', 'Problem occurred when updating user "' . $request->name . '".');
         }
     }
 }

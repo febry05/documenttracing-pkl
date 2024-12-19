@@ -77,10 +77,10 @@ class ProfileController extends Controller
             $request->user()->save();
             DB::commit();
 
-            return to_route('profile.edit');
+            return to_route('profile.edit')->with('success', 'Profile updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('profile.edit');
+            return to_route('profile.edit')->with('error', 'Failed to update profile');
         }
     }
 

@@ -18,6 +18,7 @@ class PasswordController extends Controller
             ]);
 
             DB::commit();
+            return back()->with('success', 'Password updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Failed to update password');
