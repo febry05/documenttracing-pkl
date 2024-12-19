@@ -43,7 +43,7 @@ export default function Edit({
 
                 <Card>
                     <div className="px-8 py-4 border-b">
-                        <div className="col-span-5 leading-9 text-l font-semibold">Update Password</div>
+                        <div className="col-span-5 leading-9 text-l font-semibold">Password Update</div>
                     </div>
                     <UpdatePasswordForm user={user} />
                 </Card>

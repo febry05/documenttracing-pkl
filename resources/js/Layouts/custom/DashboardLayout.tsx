@@ -22,6 +22,8 @@ type Flash = {
     error: string;
 };
 
+type Theme = "dark" | "light" | "system"
+
 const FormSchema = z.object({
     search: z.string().min(2, {
         message: "Search must be at least 4 characters.",
@@ -115,7 +117,7 @@ export default function DashboardLayout({
                         {header}
                     </div>
                     <div className="mb-6">{children}</div>
-                    <Toaster richColors theme="system" duration={10000} />
+                    <Toaster richColors theme={localStorage.getItem("vite-ui-theme") as Theme} duration={10000}/>
                 </ScrollArea>
             </main>
         </SidebarProvider>

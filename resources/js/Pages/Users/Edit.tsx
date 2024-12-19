@@ -164,7 +164,6 @@ export default function UsersEdit({
                                                         placeholder="Enter the user's password"
                                                         value={field.value || ""}
                                                         onChange={field.onChange}
-                                                        required={true}
                                                         minLength={6}
                                                         maxLength={255}
                                                     />

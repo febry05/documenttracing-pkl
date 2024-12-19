@@ -19,7 +19,7 @@ class MonitoringController extends Controller
         $month = $month ?? date('m');
 
         $stats = $this->calculateDocumentStats();
-        
+
         $projects = Project::with([
             'documentVersions'=> function ($query) use ($year, $month) {
                 $query->whereYear('release_date', $year)
@@ -53,7 +53,7 @@ class MonitoringController extends Controller
                         return [
                             'id' => $documentVersion->id,
                             'project_document_id' => $documentVersion->document->id,
-                            'project_id' => $documentVersion->document->project_id,
+                            'project_id' => $project->id,
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,

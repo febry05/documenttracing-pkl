@@ -116,8 +116,9 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
                                         className="cursor-pointer"
-                                        onClick={() => router.visit(route(detailPage, { project: row.original.id, document: row.original.project_document_id, version: row.original.id }))}
-                                    >
+                                        onClick={() => router.visit(route(detailPage, { project: row.original.project_id, document: row.original.project_document_id, version: row.original.id }))}
+                                        // onClick={() => console.log(row.original)}
+                                        >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
                                             {row.depth === 0 && row.getCanExpand() && cell.column.columnDef.header === "Name" ? (

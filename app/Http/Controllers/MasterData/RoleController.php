@@ -52,7 +52,6 @@ class RoleController extends Controller
             $role->syncPermissions($validatedData['permissions']);
 
             DB::commit();
-            // DB::rollBack();
 
             session()->flash('success', 'User role "' . $role->name . '" has been created.');
             return to_route('user-roles.index');

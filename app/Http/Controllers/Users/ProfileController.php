@@ -51,7 +51,6 @@ class ProfileController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        dd($request->all());
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
