@@ -40,6 +40,7 @@ class MonitoringController extends Controller
                         return [
                             'id' => $documentVersion->id,
                             'project_document_id' => $documentVersion->document->id,
+                            'project_id' => $project->id,
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,

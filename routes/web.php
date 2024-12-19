@@ -8,14 +8,15 @@ use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Users\ProfileController;
+use App\Http\Controllers\Users\PasswordController;
 use App\Http\Controllers\MasterData\RoleController;
+use App\Http\Controllers\Projects\UpdateController;
 use App\Http\Controllers\Projects\ProjectController;
 use App\Http\Controllers\MasterData\UserDivisionController;
 use App\Http\Controllers\MasterData\UserPositionController;
 use App\Http\Controllers\Projects\ProjectDocumentController;
 use App\Http\Controllers\MasterData\ProjectBusinessTypeController;
 use App\Http\Controllers\Projects\ProjectDocumentVersionController;
-use App\Http\Controllers\Projects\UpdateController;
 
 Route::middleware('block.root')->group(function () {
     Route::get('/', function () {
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware('auth')->group(function () {
     //Users
     Route::resource('/users', UserController::class);
+    Route::resource('/update-password', PasswordController::class)->only(['update']);
 
     // Projects
     Route::resource('/projects', ProjectController::class);

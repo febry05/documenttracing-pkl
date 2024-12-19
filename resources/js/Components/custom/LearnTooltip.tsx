@@ -5,10 +5,10 @@ export default function LearnTooltip({text, className}: {text: string, className
     return (
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger className={className}>
+                <TooltipTrigger className={"hover:cursor-help " + className} type="button">
                     <Info size={14} className="text-neutral-700"/>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="hover:cusror-normal">
                     { text }
                 </TooltipContent>
             </Tooltip>
