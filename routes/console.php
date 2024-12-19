@@ -30,7 +30,7 @@ Schedule::call(function () {
         if ($projectDocument->versions->count() > 0) {
             foreach ($projectDocument->versions as $documentVersion) {
                 try {
-                    $documentVersion->check_auto();  
+                    $documentVersion->check_auto($projectDocument->project, $projectDocument);  
                 } catch (\Exception $e) {
                     Log::error('Error processing document version: ' . $e->getMessage());
                 }
@@ -39,6 +39,5 @@ Schedule::call(function () {
             Log::warning('No document versions found for project document ID: ' . $projectDocument->id);
         }
     }
-
     Log::info("Documents retrieved for auto-generation: " . now());
 })->everyMinute();

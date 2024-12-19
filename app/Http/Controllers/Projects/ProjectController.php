@@ -19,17 +19,6 @@ use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectController extends Controller
 {
-    protected $projects;
-    protected $projectBusinessTypes;
-    protected $projectManager;
-    protected $projectDocument;
-    protected $projectDocumentVersions;
-    protected $projectService;
-
-    public function __construct(Request $request, ProjectService $projectService)
-    {
-        $this->projectService = $projectService;
-    }
 
     public function index()
     {
@@ -57,7 +46,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
         DB::beginTransaction();
         try {
@@ -79,10 +68,8 @@ class ProjectController extends Controller
 
             DB::commit();
 
-            return redirect()->route('projects.index')->with('flash', [
-                'status' => 'success',
-                'message' => 'Project created successfully',
-            ]);
+            return redirect()->route('projects.index')
+            ->with('success', 'Project '. $request->name .' created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to create project');
@@ -92,9 +79,9 @@ class ProjectController extends Controller
     public function edit($id)
     {
         return Inertia::render('Projects/Edit', [
-            'project' => $this->projects->firstWhere('id', $id),
-            'projectBusinessTypes' => $this->projectBusinessTypes,
-            'projectManagers' => $this->projectManager,
+            'project' => $this->projectService->getProjects($id)->firstWhere('id', $id),
+            'projectBusinessTypes' => $this->projectService->getProjectBusinessTypes(),
+            'projectManagers' => $this->projectService->getProjectManagers(),
         ]);
     }
 
@@ -122,29 +109,13 @@ class ProjectController extends Controller
 
             DB::commit();
 
-            return redirect()->route('projects.show', $id)->with('flash', [
-                'status' => 'success',
-                'message' => 'Project updated successfully',
-            ]);
+            return redirect()->route('projects.show', $id)
+            ->with('success', 'Project "'. $request->name .'" has been updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to update project');
         }
     }
-
-    protected $mockProjects = [
-        [
-            'id' => 1,
-            'code' => 'SRV.JKLT.2020.01',
-            'name' => 'Pengadaan Jasa Pengelolaan Passengger Service Charges On Ticket System (POTS) di Bandar Udara yang dikelola AP1',
-            'business_type_id' => 1,
-            'user_profile_id' => 2,
-            'customer' => 'PT Fast Food Indonesia, Tbk',
-            'contract_number' => 'PJKP-20004 344',
-            'contract_start' => '2020-02-15',
-            'contract_end' => '2025-02-15',
-        ]
-    ];
 
     protected $priorities = [
         [
@@ -160,4 +131,11 @@ class ProjectController extends Controller
             'value' => 'High',
         ],
     ];
+
+    protected $projectService;
+
+    public function __construct(Request $request, ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
 }

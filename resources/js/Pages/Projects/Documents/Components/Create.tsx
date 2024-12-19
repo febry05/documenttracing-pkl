@@ -55,7 +55,6 @@ interface PageProps {
     projectId: number;
 }
 
-
 export const weekdays = [
     { key: 1, value: "Monday" },
     { key: 2, value: "Tuesday" },
@@ -68,7 +67,7 @@ export const deadlineIntervals = [
     { key: 1, value: "Daily" },
     { key: 2, value: "Weekly" },
     { key: 3, value: "Monthy" },
-    { key: 4, value: "30 Seconds" } //Testing purposes,
+    { key: 4, value: "1 Minutes" }, //Testing purposes,
 ];
 
 export default function ProjectDocumentCreateDialog({
@@ -119,7 +118,6 @@ export default function ProjectDocumentCreateDialog({
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         <div className="flex flex-col gap-4">
-
                             <FormField
                                 control={form.control}
                                 name="name"
@@ -204,11 +202,21 @@ export default function ProjectDocumentCreateDialog({
                                         <FormItem>
                                             <FormLabel>
                                                 Weekly Deadline Day
-                                                <span className="text-destructive ms-1">*</span>
+                                                <span className="text-destructive ms-1">
+                                                    *
+                                                </span>
                                             </FormLabel>
                                             <Select
-                                                value={field.value ? String(field.value) : ""}
-                                                onValueChange={(value) => field.onChange(Number(value))}
+                                                value={
+                                                    field.value
+                                                        ? String(field.value)
+                                                        : ""
+                                                }
+                                                onValueChange={(value) =>
+                                                    field.onChange(
+                                                        Number(value)
+                                                    )
+                                                }
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
@@ -217,7 +225,12 @@ export default function ProjectDocumentCreateDialog({
                                                 </FormControl>
                                                 <SelectContent>
                                                     {weekdays.map((weekday) => (
-                                                        <SelectItem key={weekday.key} value={String(weekday.key)}>
+                                                        <SelectItem
+                                                            key={weekday.key}
+                                                            value={String(
+                                                                weekday.key
+                                                            )}
+                                                        >
                                                             {weekday.value}
                                                         </SelectItem>
                                                     ))}
@@ -237,7 +250,9 @@ export default function ProjectDocumentCreateDialog({
                                         <FormItem>
                                             <FormLabel>
                                                 Monthly Deadline Date
-                                                <span className="text-destructive ms-1">*</span>
+                                                <span className="text-destructive ms-1">
+                                                    *
+                                                </span>
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -249,8 +264,16 @@ export default function ProjectDocumentCreateDialog({
                                                     min={1}
                                                     max={31}
                                                     value={field.value || ""}
-                                                    onKeyDown={handleNumericInput}
-                                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                                    onKeyDown={
+                                                        handleNumericInput
+                                                    }
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            Number(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />

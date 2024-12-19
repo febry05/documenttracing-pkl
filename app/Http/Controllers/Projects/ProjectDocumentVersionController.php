@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Projects;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use App\Models\Projects\Project;
 use App\Services\ProjectService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Projects\ProjectDocument;
+use League\CommonMark\Node\Block\Document;
 use App\Models\Projects\ProjectDocumentVersion;
 
 class ProjectDocumentVersionController extends Controller
@@ -57,7 +59,25 @@ class ProjectDocumentVersionController extends Controller
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
         DB::beginTransaction();
-        try { 
+        try {
+
+            $now = now()->toDateString();
+
+            if (!$project) {
+                return to_route('projects')
+                ->with (['error' => 'Project not found']);
+            }
+            
+            if ($now > $project->contract_end) {
+                DB::rollBack();
+                return to_route('projects.documents.show', [
+                    'project' => $project->id,
+                    'document' => $document->id,
+                ])->with ('error', 'When making Document Version for "' . $document->name . '" because Project "' . $project->name . '" ended on ' . $project->contract_end);
+                ;
+            }
+            
+            
 
             $validated = $request->validate([
                 'release_date' => 'nullable|date', // Optional release date
@@ -72,11 +92,21 @@ class ProjectDocumentVersionController extends Controller
                         
             $now = now();
 
-            $versionName = match ($document->deadline_interval) {
-            1 => $now->format('Ymd'),
-            2 => 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'),
-            3 => $now->format('F Y'),
-            4 => $now->format('Y'),
+            switch ($document->deadline_interval) {
+            case 1:
+                $versionName = $now->format('d M Y'); // Daily
+            break;
+            case 2:
+                $versionName = 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'); // Weekly
+                break;
+            case 3:
+                $versionName = $now->format('F Y'); // Monthly
+                break;
+            case 4:
+                $versionName = $now->format('l, jS F Y H:i'); // Detailed timestamp
+                break;
+            default:
+                throw new InvalidArgumentException('Invalid deadline interval.');
         };
         
         $deadline = $this->projectService->calculateDeadline($document);

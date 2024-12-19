@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Date;
+use App\Models\Projects\ProjectDocument;
 use App\Models\Projects\ProjectDocumentVersion;
 
 class MonitoringController extends Controller
@@ -15,27 +18,37 @@ class MonitoringController extends Controller
         $year = $year ?? date('Y');
         $month = $month ?? date('m');
 
-        $mockStats = [
-            'total_documents' => 666,
-            'ongoing_documents' => 69,
-            'pending_documents' => 34,
-            'completed_documents' => 420,
-        ];
+        $stats = $this->calculateDocumentStats();
 
-        $projects = Project
-            ::with(['documentVersions', 'documentVersions.document', 'documentVersions.updates'])->
-            // Year Filter
-            whereYear('contract_start', '>=', $year)
-            ->whereYear('contract_end', '<=', $year)
-            ->whereMonth('contract_start', '<=', $month)
-            ->whereMonth('contract_end', '>=', $month)
-            // Array Mapping
+        $projects = Project::with([
+            'documentVersions'=> function ($query) use ($year, $month) {
+                $query->whereYear('release_date', $year)
+                    ->whereMonth('release_date', $month);
+            },
+            'documentVersions.document',
+            'documentVersions.updates',
+        ])
+            ->whereYear('contract_start', '<=', $year)
+            ->whereYear('contract_end', '>=', $year)
+            ->where(function ($query) use ($month) {
+                $query->whereMonth('contract_start', '<=', $month)
+                      ->orWhereMonth('contract_end', '>=', $month);
+            })
+            // ->whereMonth('contract_start', '<=', $month)
+            // ->whereMonth('contract_end', '>=', $month)
+            // ->where(function ($query) use ($year) {
+            //     $query->whereYear('contract_start', '<=', $year)
+            //           ->orWhereYear('contract_end', '>=', $year);
+            // })
+            // ->whereHas('documentVersions', function ($query) use ($year, $month) {
+            // $query->whereYear('release_date', $year)
+            //     ->whereMonth('release_date', $month);
+            // })
             ->get()
             ->map(function ($project) {
                 return [
                     'id' => $project->id,
                     'name' => $project->name,
-                    // 'person_in_charge' => $project->praofile->name,
                     'documentVersions' => $project->documentVersions->map(function ($documentVersion) use ($project) {
                         return [
                             'id' => $documentVersion->id,
@@ -44,20 +57,20 @@ class MonitoringController extends Controller
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,
-                            'due_date' => $documentVersion->document->deadline,
-                            // 'days_left' => $this->calculateDays($documentVersion->document->deadline),
-                            'days_left' => "8",
+                            'due_date' => $documentVersion->deadline,
+                            'days_left' => $this->calculateDays($documentVersion->deadline),
                             'status' => $documentVersion->updates[0]->status ?? "N/A",
                             'document_link' => $documentVersion->updates[0]->document_link ?? "N/A",
                         ];
-                    })->toArray()
+                    })
                 ];
             });
 
         $availableYears = Project::selectRaw('YEAR(contract_start) as start_year, YEAR(contract_end) as end_year')
             ->get()
             ->flatMap(function ($project) {
-                return range($project->start_year, $project->end_year);
+                $endYear = min($project->end_year, now()->year); // to prevent future years
+            return range($project->start_year, $endYear);
             })
             ->unique()
             ->values()
@@ -66,7 +79,7 @@ class MonitoringController extends Controller
         return Inertia::render('Monitoring/Index', [
             'projects' => $projects,
             'availableYears' => $availableYears,
-            'stats' => $mockStats,
+            'stats' => $stats,
             'selectedYear' => $year,
             'selectedMonth' => $month,
         ]);
@@ -75,18 +88,81 @@ class MonitoringController extends Controller
     protected function calculateDays($dateEnd)
     {
         $now = Carbon::now();
-        $diffInYears = $now->diffInYears($dateEnd);
-        $diffInMonths = $now->copy()->addYears($diffInYears)->diffInMonths($dateEnd);
-        $diffInDays = $now->copy()->addYears($diffInYears)->addMonths($diffInMonths)->diffInDays($dateEnd);
+        $dateEnd = Carbon::parse($dateEnd);
 
-        $roundedYears = intval($diffInYears);
-        $roundedMonths = intval($diffInMonths);
-        $roundedDays = intval($diffInDays);
+        if ($now->equalTo($dateEnd)) {
+            return 'Today';
+        }
 
-        return collect([
-            $roundedYears > 0 ? "{$roundedYears} Year" . ($roundedYears > 1 ? 's' : '') : null,
-            $roundedMonths > 0 ? "{$roundedMonths} Month" . ($roundedMonths > 1 ? 's' : '') : null,
-            $roundedDays > 0 ? "{$roundedDays} Day" . ($roundedDays > 1 ? 's' : '') : null,
-        ])->filter()->implode(' ') ?: 'Today';
+        $isFuture = $now->lessThan($dateEnd); // Check if the date is in the future
+        $diff = $isFuture ? $now->diff($dateEnd) : $dateEnd->diff($now); // Use appropriate diff calculation
+
+        $timeComponents = [
+            'Year' => $diff->y,
+            'Month' => $diff->m,
+            'Day' => $diff->d,
+            'Hour' => $diff->h,
+            'Minute' => $diff->i,
+            'Second' => $diff->s,
+        ];
+
+        $timeString = collect($timeComponents)
+            ->filter(fn($value) => $value > 0) // Remove components with zero value
+            ->map(function ($value, $key) {
+                return "{$value} {$key}" . ($value > 1 ? 's' : '');
+            })
+            ->take(2) // Take the first two non-zero components
+            ->implode(' ');
+
+        // Ensure "Overdue by" doesn't show null
+        return $isFuture
+            ? "{$timeString} Left"
+            : ($timeString ? "Overdue by {$timeString}" : "Overdue");
+    }
+
+
+
+
+    public function calculateDocumentStats()
+    {
+        $total_documents = ProjectDocumentVersion::count();
+
+        $documentVersions = ProjectDocumentVersion::with('updates')->get();
+
+        $ongoingDocuments = 0;
+        $pendingDocuments = 0;
+        $completedDocuments = 0;
+        $notStartedDocuments = 0;
+
+        foreach ($documentVersions as $version) {
+            $latestUpdate = $version->updates->sortByDesc('created_at')->first();
+
+            if (!$latestUpdate) {
+                $notStartedDocuments++;
+            } else {
+                switch ($latestUpdate->status) {
+                    case 'Ongoing':
+                        $ongoingDocuments++;
+                        break;
+                    case 'Pending':
+                        $pendingDocuments++;
+                        break;
+                    case 'Completed':
+                        $completedDocuments++;
+                        break;
+                    default:
+                        $notStartedDocuments++;
+                        break;
+                }
+            }
+        }
+
+        return [
+            'total_documents' => $total_documents,
+            'ongoing_documents' => $ongoingDocuments,
+            'pending_documents' => $pendingDocuments,
+            'completed_documents' => $completedDocuments,
+            'not_started_documents' => $notStartedDocuments,
+        ];
     }
 }

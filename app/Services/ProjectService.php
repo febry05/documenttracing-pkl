@@ -161,7 +161,7 @@ class ProjectService {
         ])->filter()->implode(' ') ?: '0 Days';
     }
 
-    protected function calculateDays($contractEnd)
+    public function calculateDays($contractEnd)
     {
         $now = Carbon::now();
         $diffInYears = $now->diffInYears($contractEnd);
