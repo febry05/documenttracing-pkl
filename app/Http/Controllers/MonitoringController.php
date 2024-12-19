@@ -129,9 +129,9 @@ class MonitoringController extends Controller
 
         $documentVersions = ProjectDocumentVersion::with('updates')->get();
 
-        $ongoingDocuments = 0;
-        $pendingDocuments = 0;
         $completedDocuments = 0;
+        $onProcessDocuments = 0;
+        $pendingDocuments = 0;
         $notStartedDocuments = 0;
 
         foreach ($documentVersions as $version) {
@@ -141,17 +141,17 @@ class MonitoringController extends Controller
                 $notStartedDocuments++;
             } else {
                 switch ($latestUpdate->status) {
-                    case 'Ongoing':
-                        $ongoingDocuments++;
-                        break;
-                    case 'Pending':
-                        $pendingDocuments++;
-                        break;
-                    case 'Completed':
+                    case '1': // Completed
                         $completedDocuments++;
                         break;
+                    case '2': // On Process
+                        $onProcessDocuments++;
+                        break;
+                    case '3': // Pending
+                        $pendingDocuments++;
+                        break;
                     default:
-                        $notStartedDocuments++;
+                        $notStartedDocuments++; // Not Started
                         break;
                 }
             }
@@ -159,7 +159,7 @@ class MonitoringController extends Controller
 
         return [
             'total_documents' => $total_documents,
-            'ongoing_documents' => $ongoingDocuments,
+            'onProcess_documents' => $onProcessDocuments,
             'pending_documents' => $pendingDocuments,
             'completed_documents' => $completedDocuments,
             'not_started_documents' => $notStartedDocuments,

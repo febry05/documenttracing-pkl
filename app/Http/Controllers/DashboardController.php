@@ -11,7 +11,7 @@ class DashboardController extends Controller
     {
         $mockStats = [
             'total_documents' => 666,
-            'ongoing_documents' => 69,
+            'onProcess_documents' => 69,
             'pending_documents' => 34,
             'completed_documents' => 420,
         ];
