@@ -28,22 +28,24 @@ class MonitoringController extends Controller
             'documentVersions.document',
             'documentVersions.updates',
         ])
-            ->whereYear('contract_start', '<=', $year)
-            ->whereYear('contract_end', '>=', $year)
-            ->where(function ($query) use ($month) {
-                $query->whereMonth('contract_start', '<=', $month)
-                      ->orWhereMonth('contract_end', '>=', $month);
+            ->where(function ($query) use ($year, $month) {
+                $query->where(function ($subQuery) use ($year, $month) {
+                    $subQuery->where(function ($startQuery) use ($year, $month) {
+                        $startQuery->whereYear('contract_start', '<', $year)
+                                ->orWhere(function ($startSubQuery) use ($year, $month) {
+                                    $startSubQuery->whereYear('contract_start', '=', $year)
+                                                    ->whereMonth('contract_start', '<=', $month);
+                                });
+                    })
+                    ->where(function ($endQuery) use ($year, $month) {
+                        $endQuery->whereYear('contract_end', '>', $year)
+                                ->orWhere(function ($endSubQuery) use ($year, $month) {
+                                    $endSubQuery->whereYear('contract_end', '=', $year)
+                                                ->whereMonth('contract_end', '>=', $month);
+                                });
+                    });
+                });
             })
-            // ->whereMonth('contract_start', '<=', $month)
-            // ->whereMonth('contract_end', '>=', $month)
-            // ->where(function ($query) use ($year) {
-            //     $query->whereYear('contract_start', '<=', $year)
-            //           ->orWhereYear('contract_end', '>=', $year);
-            // })
-            // ->whereHas('documentVersions', function ($query) use ($year, $month) {
-            // $query->whereYear('release_date', $year)
-            //     ->whereMonth('release_date', $month);
-            // })
             ->get()
             ->map(function ($project) {
                 return [
@@ -70,7 +72,7 @@ class MonitoringController extends Controller
             ->get()
             ->flatMap(function ($project) {
                 $endYear = min($project->end_year, now()->year); // to prevent future years
-            return range($project->start_year, $endYear);
+                    return range($project->start_year, $endYear);
             })
             ->unique()
             ->values()

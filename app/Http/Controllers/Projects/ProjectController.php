@@ -20,10 +20,13 @@ use App\Models\Projects\ProjectDocumentVersion;
 class ProjectController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
+        $projects = $this->projectService->getProjects();
+        // ->paginate(10);
+
         return Inertia::render('Projects/Index', [
-            'projects' => $this->projectService->getProjects(),
+            'projects' => $projects,
             'projectBusinessTypes' => $this->projectService->getProjectBusinessTypes(),
         ]);
     }
