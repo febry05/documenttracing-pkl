@@ -20,33 +20,20 @@ class MonitoringController extends Controller
 
         $stats = $this->calculateDocumentStats();
 
+        $selectedDateStart = Carbon::createFromDate($year, $month, 1)->startOfMonth(); 
+        $selectedDateEnd = Carbon::createFromDate($year, $month, 1)->endOfMonth();   
+
         $projects = Project::with([
-            'documentVersions'=> function ($query) use ($year, $month) {
+            'documentVersions' => function ($query) use ($year, $month) {
                 $query->whereYear('release_date', $year)
                     ->whereMonth('release_date', $month);
             },
             'documentVersions.document',
             'documentVersions.updates',
-        ])
-            ->where(function ($query) use ($year, $month) {
-                $query->where(function ($subQuery) use ($year, $month) {
-                    $subQuery->where(function ($startQuery) use ($year, $month) {
-                        $startQuery->whereYear('contract_start', '<', $year)
-                                ->orWhere(function ($startSubQuery) use ($year, $month) {
-                                    $startSubQuery->whereYear('contract_start', '=', $year)
-                                                    ->whereMonth('contract_start', '<=', $month);
-                                });
-                    })
-                    ->where(function ($endQuery) use ($year, $month) {
-                        $endQuery->whereYear('contract_end', '>', $year)
-                                ->orWhere(function ($endSubQuery) use ($year, $month) {
-                                    $endSubQuery->whereYear('contract_end', '=', $year)
-                                                ->whereMonth('contract_end', '>=', $month);
-                                });
-                    });
-                });
-            })
-            ->get()
+        ])->where(function ($query) use ($selectedDateStart, $selectedDateEnd) {
+            $query->whereDate('contract_start', '<=', $selectedDateEnd) 
+                ->whereDate('contract_end', '>=', $selectedDateStart); 
+        })->get()
             ->map(function ($project) {
                 return [
                     'id' => $project->id,
