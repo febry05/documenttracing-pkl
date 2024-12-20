@@ -73,8 +73,6 @@ export default function DashboardLayout({
         }
     }, [flash]);
 
-    console.log(`flash:`, flash);
-
     return (
         <SidebarProvider>
             <AppSidebar url={url} />

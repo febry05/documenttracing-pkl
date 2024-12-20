@@ -68,7 +68,9 @@ export type ProjectDocument = BaseModel & {
 
     monthly_deadline: number;
     weekly_deadline: number;
+
     deadline_interval: number;
+    deadline_interval_name: string;
 
     is_auto: boolean;
     is_auto_name: boolean;
@@ -85,6 +87,7 @@ export type ProjectDocumentVersion = BaseModel & {
     document_number: string;
     release_date: Date;
     file_name: string;
+    deadline: Date;
 
     project_document_version_updates?: ProjectDocumentVersionUpdate[];
 

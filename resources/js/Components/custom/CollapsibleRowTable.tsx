@@ -45,9 +45,6 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         }
     });
 
-    console.log(data);
-    console.log(table.getState().columnFilters);
-
     return (
         <div>
             {/* Filters [START] */}
@@ -93,7 +90,6 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
             </div>
             {/* Filters [END] */}
 
-
             {/* Table [START] */}
             <div className="rounded-md border">
                 <Table className="table-fixed">
@@ -111,33 +107,42 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                (row.depth > 0 || row.depth > 0) ? (
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                        className="cursor-pointer"
-                                        onClick={() => router.visit(route(detailPage, { project: row.original.project_id, document: row.original.project_document_id, version: row.original.id }))}
-                                        // onClick={() => console.log(row.original)}
+                                (row.depth > 0) ? (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}
+                                            className="cursor-pointer"
+                                            onClick={() => router.visit(route(detailPage, { project: row.original.project_id, document: row.original.project_document_id, version: row.original.id }))}
+                                            // onClick={() => console.log(row.getParentRow())}
+                                            // onClick={() => console.log()}
                                         >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
-                                            {row.depth === 0 && row.getCanExpand() && cell.column.columnDef.header === "Name" ? (
-                                                <>
-                                                    <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
-                                                </>
-                                            ) : (
-                                                flexRender(cell.column.columnDef.cell, cell.getContext())
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                    </TableRow>
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
+                                                    {row.depth === 0 && row.getCanExpand() && cell.column.columnDef.header === "Name" ? (
+                                                        <>
+                                                            <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
+                                                        </>
+                                                    ) : (
+                                                        flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    // ) : (
+                                    //     <TableRow>
+                                    //             <TableCell colSpan={columns.length} className="h-16 text-center text-muted-foreground">
+                                    //             No document versions available.
+                                    //         </TableCell>
+                                    //     </TableRow>
+                                    // )
+
                                     ) : (
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
                                         className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background" : ""}
                                         {...row.depth === 0 &&{
-                                            onClick: row.getToggleExpandedHandler(),
+                                            onClick: () => {row.getToggleExpandedHandler(); console.log(row.getLeafRows())},
                                             style: { cursor: 'pointer' },
                                         }}
                                     >
@@ -158,7 +163,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                         ) : (
                         <TableRow>
                             <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No data yet.
+                                No data available.
                             </TableCell>
                         </TableRow>
                     )}

@@ -15,23 +15,6 @@ interface PageProps {
 }
 
 export default function UsersIndex({ users, positions, roles }: PageProps) {
-    console.log(positions, roles);
-    // Output of console.log(positions, roles):
-    // [
-    //   {
-    //     "value": "Cyber Security",
-    //     "label": "Cyber Security"
-    //   },
-    //   {
-    //     "value": "Payment Roll",
-    //     "label": "Payment Roll"
-    //   },
-    //   {
-    //     "value": "Head of General Affair",
-    //     "label": "Head of General Affair"
-    //   }
-    // ]
-
     const filters = [
         {
             columnId: "role",
@@ -50,55 +33,6 @@ export default function UsersIndex({ users, positions, roles }: PageProps) {
             ]
         },
     ];
-
-    console.log(filters);
-    // Output of console.log(filters):
-    // [
-    //     {
-    //       "columnId": "role",
-    //       "label": "Role",
-    //       "options": [
-    //         {
-    //           "value": "all",
-    //           "label": "All Roles"
-    //         },
-    //         {
-    //           "value": "Administrator",
-    //           "label": "Administrator"
-    //         },
-    //         {
-    //           "value": "Guest",
-    //           "label": "Guest"
-    //         },
-    //         {
-    //           "value": "Project Manager",
-    //           "label": "Project Manager"
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       "columnId": "position",
-    //       "label": "Position",
-    //       "options": [
-    //         {
-    //           "value": "all",
-    //           "label": "All Positions"
-    //         },
-    //         {
-    //           "value": "Cyber Security",
-    //           "label": "Cyber Security"
-    //         },
-    //         {
-    //           "value": "Payment Roll",
-    //           "label": "Payment Roll"
-    //         },
-    //         {
-    //           "value": "Head of General Affair",
-    //           "label": "Head of General Affair"
-    //         }
-    //       ]
-    //     }
-    //   ]
 
     return (
         <DashboardLayout

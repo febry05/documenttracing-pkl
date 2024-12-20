@@ -1,5 +1,6 @@
 "use client"
 
+import PriorityBadge from "@/Components/custom/PriorityBadge"
 import { Badge } from "@/Components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
 
@@ -79,26 +80,17 @@ export const columns: ColumnDef<Project>[] = [
         accessorKey: "priority",
         header: "Priority",
         cell: ({ row }) => {
-            const priorityValue = row.getValue<string>("priority");
-            if (priorityValue != undefined) {
-                let variant;
-                if (priorityValue === 'High') {
-                    variant = 'destructive';
-                } else if (priorityValue === 'Medium') {
-                    variant = '';
-                } else {
-                    variant = 'secondary';
-                }
-                return (
-                    <div className="w-full flex">
-                        <div className="mx-auto">
-                            <Badge variant={variant as "destructive" | "secondary" | "default" | "outline" | undefined} className={priorityValue === 'Medium' ? 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background' : ''}>
-                                {priorityValue}
-                            </Badge>
+            return (
+                <>
+                    {row.getValue<string>("priority") &&
+                        <div className="w-full flex">
+                            <div className="mx-auto">
+                                <PriorityBadge priority={row.getValue<string>("priority")} />
+                            </div>
                         </div>
-                    </div>
-                );
-            }
+                    }
+                </>
+            );
         },
     }
 ]

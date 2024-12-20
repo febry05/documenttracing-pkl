@@ -69,6 +69,9 @@ class ProjectService {
                 'priority' => $document->priority,
                 'priority_name' => $document->priority_type_name,
 
+                'deadline_interval' => $document->deadline_interval,
+                'deadline_interval_name' => $document->getDeadlineIntervalNameAttribute(),
+
                 'project_document_versions' => $document->versions->map(function ($version){
                     return [
                         'id' => $version->id,
@@ -91,7 +94,7 @@ class ProjectService {
                 'document_number' => $projectDocumentVersion->document_number,
                 'deadline' => $projectDocumentVersion->deadline,
                 'project_document_id' => $projectDocumentVersion->project_document_id,
-                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates[0]->document_link : 'N/A',
+                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->document_link : 'N/A',
                 'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id,

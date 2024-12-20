@@ -11,6 +11,7 @@ import { Auth, Project, ProjectDocument, ProjectDocumentVersion } from "@/types/
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
 import { can } from "@/lib/utils";
+import Countdown from "@/Components/custom/Countdown";
 
 type Priority = {
     key: number,
@@ -54,7 +55,7 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                     <InfoPair label="Contract Number" value={project.contract_number} />
                     <InfoPair label="Duration" value={project.duration} />
                     <InfoPair label="Type" value={project.type} />
-                    <InfoPair label="Days Left" value={project.days_left ? project.days_left.toString() : ""} />
+                    <InfoPair label="Time Remaining" value={<Countdown targetDate={project.contract_end} />} />
                     <InfoPair label="Customer" value={project.customer} />
                     <InfoPair label="Person in Charge" value={project.person_in_charge} />
                 </div>

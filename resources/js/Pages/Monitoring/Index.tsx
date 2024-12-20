@@ -7,6 +7,7 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { DateSelectForm } from "./Components/DateSelectForm";
 import { columns } from "./columns";
 import CollapsibleRowTable from "@/Components/custom/CollapsibleRowTable";
+import { Head } from "@inertiajs/react";
 
 export type ProjectMonitoring = {
     id: number
@@ -40,6 +41,17 @@ export default function MonitoringIndex({ stats, projects, availableYears, selec
 
     const filters: ColumnFilterConfig[] = [
         {
+            columnId: "status",
+            label: "Status",
+            options: [
+                { value: "all", label: "All Status" },
+                { value: "Completed", label: "Completed" },
+                { value: "On Process", label: "On Process" },
+                { value: "Pending", label: "Pending" },
+                { value: "Not Started", label: "Not Started" },
+            ]
+        },
+        {
             columnId: "priority",
             label: "Priority",
             options: [
@@ -51,13 +63,13 @@ export default function MonitoringIndex({ stats, projects, availableYears, selec
         },
         {
             columnId: "days_left",
-            label: "Days left",
+            label: "Time Remaining",
             compare: "<",
             options: [
-                { value: "all", label: "All Remaining Days" },
-                { value: "11", label: "Next 10 Days" },
-                { value: "8", label: "Next 7 Days" },
-                { value: "4", label: "Next 3 Days" },
+                { value: "all", label: "All Time" },
+                { value: "11", label: "10 Days Left" },
+                { value: "8", label: "7 Days Left" },
+                { value: "4", label: "3 Days Left" },
             ]
         },
     ];
@@ -73,7 +85,8 @@ export default function MonitoringIndex({ stats, projects, availableYears, selec
                 />
             }
         >
-            {/* <Head title="Dashboard" /> */}
+            <Head title="Monitoring" />
+
             <div className="flex flex-col gap-4 md:gap-4">
                 <div className="grid grid-cols-4 gap-4 md:gap-4">
                     <InfoCard title={stats.total_documents.toString()} caption="Total Documents" icon={FileBarChart}/>
