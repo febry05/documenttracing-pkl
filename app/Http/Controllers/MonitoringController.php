@@ -20,31 +20,20 @@ class MonitoringController extends Controller
 
         $stats = $this->calculateDocumentStats();
 
+        $selectedDateStart = Carbon::createFromDate($year, $month, 1)->startOfMonth(); 
+        $selectedDateEnd = Carbon::createFromDate($year, $month, 1)->endOfMonth();   
+
         $projects = Project::with([
-            'documentVersions'=> function ($query) use ($year, $month) {
+            'documentVersions' => function ($query) use ($year, $month) {
                 $query->whereYear('release_date', $year)
                     ->whereMonth('release_date', $month);
             },
             'documentVersions.document',
             'documentVersions.updates',
-        ])
-            ->whereYear('contract_start', '<=', $year)
-            ->whereYear('contract_end', '>=', $year)
-            ->where(function ($query) use ($month) {
-                $query->whereMonth('contract_start', '<=', $month)
-                      ->orWhereMonth('contract_end', '>=', $month);
-            })
-            // ->whereMonth('contract_start', '<=', $month)
-            // ->whereMonth('contract_end', '>=', $month)
-            // ->where(function ($query) use ($year) {
-            //     $query->whereYear('contract_start', '<=', $year)
-            //           ->orWhereYear('contract_end', '>=', $year);
-            // })
-            // ->whereHas('documentVersions', function ($query) use ($year, $month) {
-            // $query->whereYear('release_date', $year)
-            //     ->whereMonth('release_date', $month);
-            // })
-            ->get()
+        ])->where(function ($query) use ($selectedDateStart, $selectedDateEnd) {
+            $query->whereDate('contract_start', '<=', $selectedDateEnd) 
+                ->whereDate('contract_end', '>=', $selectedDateStart); 
+        })->get()
             ->map(function ($project) {
                 return [
                     'id' => $project->id,
@@ -72,7 +61,7 @@ class MonitoringController extends Controller
             ->get()
             ->flatMap(function ($project) {
                 $endYear = min($project->end_year, now()->year); // to prevent future years
-            return range($project->start_year, $endYear);
+                    return range($project->start_year, $endYear);
             })
             ->unique()
             ->values()
@@ -131,9 +120,9 @@ class MonitoringController extends Controller
 
         $documentVersions = ProjectDocumentVersion::with('updates')->get();
 
-        $ongoingDocuments = 0;
-        $pendingDocuments = 0;
         $completedDocuments = 0;
+        $onProcessDocuments = 0;
+        $pendingDocuments = 0;
         $notStartedDocuments = 0;
 
         foreach ($documentVersions as $version) {
@@ -143,17 +132,17 @@ class MonitoringController extends Controller
                 $notStartedDocuments++;
             } else {
                 switch ($latestUpdate->status) {
-                    case 'Ongoing':
-                        $ongoingDocuments++;
-                        break;
-                    case 'Pending':
-                        $pendingDocuments++;
-                        break;
-                    case 'Completed':
+                    case '1': // Completed
                         $completedDocuments++;
                         break;
+                    case '2': // On Process
+                        $onProcessDocuments++;
+                        break;
+                    case '3': // Pending
+                        $pendingDocuments++;
+                        break;
                     default:
-                        $notStartedDocuments++;
+                        $notStartedDocuments++; // Not Started
                         break;
                 }
             }
@@ -161,7 +150,7 @@ class MonitoringController extends Controller
 
         return [
             'total_documents' => $total_documents,
-            'ongoing_documents' => $ongoingDocuments,
+            'onProcess_documents' => $onProcessDocuments,
             'pending_documents' => $pendingDocuments,
             'completed_documents' => $completedDocuments,
             'not_started_documents' => $notStartedDocuments,
