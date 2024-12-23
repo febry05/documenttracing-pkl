@@ -44,7 +44,7 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         Role::firstOrCreate([
             'name' => 'Project Manager',
-            'description' => 'Can Handle Project where he’s have. And only can see other Project if here doesn’t added in the project',
+        'description' => 'Can Handle Project where he’s have. And only can see other Project if here doesn’t added in the project',
         ]);
 
         Role::firstOrCreate([

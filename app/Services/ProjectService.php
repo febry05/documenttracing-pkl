@@ -131,9 +131,7 @@ class ProjectService {
     }
 
     public function getProjectManagers(){
-        return User::with('profile')->whereHas('roles', function ($query) {
-            $query->where('name', 'Project Manager');
-        })->get()->map(function ($user) {
+        return User::with('profile')->permission('Handle Owned Project')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->profile->name,

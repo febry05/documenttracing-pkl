@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('weekly_deadline')->nullable(); // 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday
             $table->unsignedTinyInteger('monthly_deadline')->nullable(); // 1-31
             $table->boolean('is_auto')->default(false);
-            // Bazı durumlarda belgeye özel bir son tarih belirlenebilir. Bu durumda bu alan kullanılır. Goes hard
 
             // Q: Bagaimana jika tanggal yang sama di bulan depan merupakan tanggal merah?
             // A: Jika tanggal yang sama di bulan depan merupakan tanggal merah, maka tanggal terdekat selanjutnya yang bukan tanggal merah.
