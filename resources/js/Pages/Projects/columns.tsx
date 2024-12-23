@@ -1,5 +1,6 @@
 "use client"
 
+import Countdown from "@/Components/custom/Countdown"
 import { Project } from "@/types/model"
 import { ColumnDef } from "@tanstack/react-table"
 
@@ -33,7 +34,16 @@ export const columns: ColumnDef<Project>[] = [
         header: "Contract End",
     },
     {
-        accessorKey: "days_left",
-        header: "Days Left",
+        accessorKey: "contract_end",
+        header: "Time Remaining",
+        cell: ({ getValue }) => (
+            <div className="w-full flex">
+                <div className="mx-auto">
+                    {getValue() && (
+                        <Countdown targetDate={getValue() as string | Date} />
+                    )}
+                </div>
+            </div>
+        ),
     },
 ]

@@ -67,7 +67,7 @@ class ProjectDocumentController extends Controller
                 return to_route('projects')
                 ->with (['error' => 'Project not found']);
             }
-            
+
             if ($now > $project->contract_end) {
                 DB::rollBack();
                 return to_route('projects.show' , $project)
@@ -82,19 +82,19 @@ class ProjectDocumentController extends Controller
                 'deadline_interval' => 'required|integer|in:1,2,3,4',
                 'is_auto' => 'required|boolean',
                 // 'project_id' => $project->id,
-                
+
             ]);
             $validated['project_id'] = $project->id;
 
             $debug = ProjectDocument::create($validated);
-            
+
             DB::commit();
-            
+
             session()->flash('success', 'Document for "' . $project->name . '" created successfully');
             return to_route('projects.show' , $project);
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);  
+            dd($e);
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
         }
     }
@@ -102,7 +102,7 @@ class ProjectDocumentController extends Controller
     public function update($id, Request $request, Project $project , ProjectDocumentService $projectDocumentService)
     {
         DB::beginTransaction();
-        try 
+        try
         {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
@@ -114,7 +114,7 @@ class ProjectDocumentController extends Controller
             ]);
 
         $validated['project_id'] = $project->id;
-                
+
         $projectDocument = ProjectDocument::findOrFail($id);
         $projectDocument->update($validated);
 

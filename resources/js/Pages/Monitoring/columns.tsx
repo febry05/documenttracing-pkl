@@ -1,9 +1,12 @@
 "use client"
 
+import Countdown from "@/Components/custom/Countdown"; // Ensure Countdown component accepts targetDate and separateLines props
+import PriorityBadge from "@/Components/custom/PriorityBadge";
 import { Badge } from "@/Components/ui/badge"
 import { Button } from "@/Components/ui/button";
 import { ColumnDef } from "@tanstack/react-table"
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -65,26 +68,17 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         accessorKey: "priority",
         header: "Priority",
         cell: ({ row }) => {
-            const priorityValue = row.getValue<string>("priority");
-            if (priorityValue != undefined) {
-                let variant;
-                if (priorityValue === 'High') {
-                    variant = 'destructive';
-                } else if (priorityValue === 'Medium') {
-                    variant = '';
-                } else {
-                    variant = 'secondary';
-                }
-                return (
-                    <div className="w-full flex">
-                        <div className="mx-auto">
-                            <Badge variant={variant as "destructive" | "secondary" | "default" | "outline" | undefined} className={priorityValue === 'Medium' ? 'bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background' : ''}>
-                                {priorityValue}
-                            </Badge>
+            return (
+                <>
+                    {row.getValue<string>("priority") &&
+                        <div className="w-full flex">
+                            <div className="mx-auto">
+                                <PriorityBadge priority={row.getValue<string>("priority")} />
+                            </div>
                         </div>
-                    </div>
-                );
-            }
+                    }
+                </>
+            );
         },
         size: 25,
         minSize: 25,
@@ -101,7 +95,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
     },
     {
         accessorKey: "days_left",
-        header: "Days Left",
+        header: "Time Remaining",
         filterFn: (row, columnId, filterValue) => {
             // If the filterValue is empty (i.e., "all" is selected), return true for all rows
             if (!filterValue) {
@@ -111,21 +105,39 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
             const { compare, filterValue: value } = filterValue;
 
             // Ensure we are working with numbers for comparison
-            const rowValue = parseFloat(row.getValue(columnId));
+            const rowValue = new Date(row.getValue(columnId)).getTime();
+            const now = new Date().getTime();
+            const daysLeft = Math.max(0, Math.floor((rowValue - now) / (1000 * 60 * 60 * 24)));
             const filterNum = parseFloat(value);
 
-            // If row value or filter value is not a valid number, skip this row
-            if (isNaN(rowValue) || isNaN(filterNum)) {
+            if (isNaN(daysLeft) || isNaN(filterNum)) {
                 return false;
             }
 
-            // Handle comparison
-            if (compare === '<') return rowValue < filterNum;
-            if (compare === '>') return rowValue > filterNum;
+            if (compare === '<') return daysLeft < filterNum;
+            if (compare === '>') return daysLeft > filterNum;
 
-            // Default equality comparison if no compare operator is found
-            return rowValue === filterNum;
+            console.log(daysLeft);
+
+            return daysLeft === filterNum;
         },
+        cell: ({ getValue }) => (
+            <div className="w-full flex">
+                <div className="mx-auto">
+                    {getValue() && (
+                        <Countdown targetDate={getValue() as string | Date} separateLines={true} />
+                    )}
+                </div>
+            </div>
+        ),
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
+        enableResizing: false,
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
         cell: ({ getValue }) => (
             <div className="w-full flex">
                 <div className="mx-auto">

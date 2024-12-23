@@ -10,7 +10,7 @@ import {
 } from "@/Components/ui/accordion";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
-import { Download, PenLine, SquareArrowOutUpRight } from "lucide-react";
+import { Download } from "lucide-react";
 import ProjectDocumentVersionCreateDialog from "./Versions/Components/Create";
 import {
     Auth,
@@ -18,11 +18,11 @@ import {
     ProjectDocument,
     ProjectDocumentVersion,
 } from "@/types/model";
-import { Badge } from "@/Components/ui/badge";
 import { format } from "date-fns";
 import TextLink from "@/Components/custom/TextLink";
 import ProjectDocumentEditDialog from "./Components/Edit";
 import { can } from "@/lib/utils";
+import PriorityBadge from "@/Components/custom/PriorityBadge";
 
 interface PageProps {
     project: Project;
@@ -37,22 +37,10 @@ export default function ProjectDocumentsShow({
     projectDocumentVersions,
     priorities,
 }: PageProps) {
-    const priorityValue = projectDocument.priority;
-    type Variant = "default" | "secondary" | "destructive" | "outline";
-    let variant: Variant;
-    let priority: "High" | "Medium" | "Low";
-    if (priorityValue === 3) {
-        variant = "destructive";
-        priority = "High";
-    } else if (priorityValue === 2) {
-        priority = "Medium";
-    } else {
-        variant = "secondary";
-        priority = "Low";
-    }
-
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
+
+    console.log(projectDocumentVersions);
 
     return (
         <DashboardLayout
@@ -72,30 +60,20 @@ export default function ProjectDocumentsShow({
             <Head title="Projects" />
 
             <Card className="flex-auto mb-4">
+                <div className="px-8 py-4 border-b">
+                    <div className="col-span-5 leading-9 text-l font-semibold">{projectDocument.name}</div>
+                </div>
                 <div className="grid md:grid-cols-2 gap-8 p-8">
-                    <InfoPair label="Name" value={projectDocument.name} />
                     <InfoPair
                         label="Priority"
                         value={
-                            <Badge
-                                variant={variant}
-                                className={
-                                    priority === "Medium" &&
-                                    "bg-yellow-300 hover:bg-yellow-400 text-foreground dark:text-background"
-                                }
-                            >
-                                {priority}
-                            </Badge>
+                            <PriorityBadge priority={projectDocument.priority_name} />
                         }
                     />
-                    <InfoPair
+                    {/* <InfoPair
                         label="Deadline Interval"
-                        value={
-                            "Every " +
-                            projectDocument.deadline_interval +
-                            " Days"
-                        }
-                    />
+                        value={projectDocument.deadline_interval_name}
+                    /> */}
                     <InfoPair
                         label="From Project"
                         value={

@@ -46,10 +46,12 @@ class MonitoringController extends Controller
                             'name' => $documentVersion->document->name,
                             'person_in_charge' => $project->profile->name,
                             'priority' => $documentVersion->document->priority_type_name,
-                            'due_date' => $documentVersion->deadline,
-                            'days_left' => $this->calculateDays($documentVersion->deadline),
-                            'status' => $documentVersion->updates[0]->status ?? "N/A",
-                            'document_link' => $documentVersion->updates[0]->document_link ?? "N/A",
+                            'due_date' => Carbon::parse($documentVersion->deadline)->toDateString(),
+                            'days_left' => $documentVersion->deadline,
+                            // 'days_left' => $this->calculateDays($documentVersion->deadline),
+                            // 'status' => $documentVersion->updates->latest()->status ?? "N/A",
+                            'status' => $documentVersion->updates->last()->status_type_name ?? "N/A",
+                            'document_link' => $documentVersion->updates->last()->document_link ?? "N/A",
                         ];
                     })
                 ];

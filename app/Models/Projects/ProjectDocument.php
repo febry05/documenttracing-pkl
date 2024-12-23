@@ -37,7 +37,7 @@ class ProjectDocument extends Model
         }
     }
 
-    
+
     public function getDeadlineIntervalNameAttribute()
     {
         switch ($this->deadline_interval) {
@@ -58,7 +58,7 @@ class ProjectDocument extends Model
             case 0:
                 return 'No';
             case 1:
-                return 'Yes' . " " . "( " .  $this->getDeadlineIntervalNameAttribute() . " )";
+                return 'Yes (' .  $this->getDeadlineIntervalNameAttribute() . ')';
         }
     }
                     /**

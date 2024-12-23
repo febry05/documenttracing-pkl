@@ -16,6 +16,8 @@ import TextLink from "@/Components/custom/TextLink";
 import ProjectDocumentVersionEditDialog from "./Components/Edit";
 import { Separator } from "@/Components/ui/separator";
 import { can } from "@/lib/utils";
+import Countdown from "@/Components/custom/Countdown";
+import PriorityBadge from "@/Components/custom/PriorityBadge";
 
 interface PageProps {
     project: Project;
@@ -117,7 +119,9 @@ export default function ProjectDocumentVersionShow({
                     />
                     <InfoPair
                         label="Priority"
-                        value={projectDocument.priority_name}
+                        value={
+                            <PriorityBadge priority={projectDocument.priority_name} />
+                        }
                     />
                     <InfoPair
                         label="Deadline"
@@ -138,13 +142,9 @@ export default function ProjectDocumentVersionShow({
                         }
                     />
                     <InfoPair
-                        label="Days Remaining"
+                        label="Time Remaining"
                         value={
-                            Math.ceil(
-                                (new Date(projectDocument.deadline).getTime() -
-                                    new Date().getTime()) /
-                                    (1000 * 60 * 60 * 24)
-                            ) + " Days Left"
+                            <Countdown targetDate={projectDocumentVersion.deadline}/>
                         }
                     />
                     <InfoPair

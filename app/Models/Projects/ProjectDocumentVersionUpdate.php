@@ -16,8 +16,6 @@ class ProjectDocumentVersionUpdate extends Model
     const Pending = 3; // High priority
     const Not_Started = 4; // High priority
 
-
-
     public function getStatusTypeNameAttribute()
     {
         switch ($this->status) {
