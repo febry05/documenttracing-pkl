@@ -43,40 +43,34 @@ Route::middleware('auth')->group(function () {
     Route::resource('/users', UserController::class);
     Route::resource('/update-password', PasswordController::class)->only(['update']);
 
-    // // Projects // Define a helper function for standardized resource routes
-    // function resourceWithPublicIndex($basePath, $controller, $name, $middleware) {
-    //     Route::get($basePath, [$controller, 'index'])->name("{$name}.index"); // Set public for index route
-    //     Route::resource($basePath, $controller)->except(['index'])->middleware($middleware); // Middleware-protected resource routes excluding index
-    // }
-    // //Define routes for projects
-    // // resourceWithPublicIndex('/projects', ProjectController::class, 'projects', 'can_handle_project');
-
-    // Route::middleware('can_handle_project')->group(function () {
-    //     resourceWithPublicIndex('/projects', ProjectController::class, 'projects', 'can_handle_project');
-    //     // resourceWithPublicIndex('/{project}/documents', ProjectDocumentController::class, 'documents', 'can_handle_project');
-    //     Route::prefix('/projects')->name('projects.')->group(function () {
-    //         resourceWithPublicIndex('/{project}/documents', ProjectDocumentController::class, 'documents', 'can_handle_project');
-    //         Route::name('documents.')->group(function () {
-    //             resourceWithPublicIndex('/{project}/documents/{document}/versions', ProjectDocumentVersionController::class, 'versions', 'can_handle_project');
-    //             Route::name('versions.')->group(function () {
-    //                 resourceWithPublicIndex('/{project}/documents/{document}/versions/{version}/updates', UpdateController::class, 'updates', 'can_handle_project');
-    //             });
-    //         });
-    //     });
-    // });
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
+    Route::get('/projects/{id}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
+    Route::get('/projects/{id}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
+    Route::get('/projects/{id}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
+    Route::get('/projects/{id}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
 
     Route::middleware('can_handle_project')->group(function () {
-        Route::resource('/projects', ProjectController::class);
-        // Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-        // Route::resource('/projects', ProjectController::class)
-        //     ->except(['index','show'])
-        //     ->middleware('can_handle_project');
+        // Project resource routes (except index and show)
+        Route::resource('/projects', ProjectController::class)
+            ->except(['index', 'show']);
+
+        // Document-related routes
         Route::prefix('/projects')->name('projects.')->group(function () {
-            Route::resource('/{project}/documents', ProjectDocumentController::class);
-            Route::name('documents.')->group(function () {
-                Route::resource('/{project}/documents/{document}/versions', ProjectDocumentVersionController::class);
-                Route::name('versions.')->group(function () {
-                    Route::resource('/{project}/documents/{document}/versions/{version}/updates', UpdateController::class);
+            Route::resource('/{project}/documents', ProjectDocumentController::class)
+                ->except(['index'])
+                ->middleware('can_handle_project');
+
+            // Version-related routes
+            Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
+                Route::resource('/versions', ProjectDocumentVersionController::class)
+                    ->except(['index'])
+                    ->middleware('can_handle_project');
+
+                // Update-related routes
+                Route::prefix('/versions/{version}')->name('versions.')->group(function () {
+                    Route::resource('/updates', UpdateController::class)
+                        ->middleware('can_handle_project');
                 });
             });
         });
@@ -84,12 +78,14 @@ Route::middleware('auth')->group(function () {
     
 
     //Master Data
-    Route::prefix('/master')->group(function () {
-        Route::resource('/user-roles', RoleController::class);
-        Route::resource('/user-permissions', PermissionController::class);
-        Route::resource('/user-positions', UserPositionController::class);
-        Route::resource('/user-divisions', UserDivisionController::class);
-        Route::resource('/project-business-types', ProjectBusinessTypeController::class);
+    Route::middleware('check_admin')->group(function () {
+        Route::prefix('/master')->group(function () {
+            Route::resource('/user-roles', RoleController::class);
+            Route::resource('/user-permissions', PermissionController::class);
+            Route::resource('/user-positions', UserPositionController::class);
+            Route::resource('/user-divisions', UserDivisionController::class);
+            Route::resource('/project-business-types', ProjectBusinessTypeController::class);
+        });
     });
 });
 

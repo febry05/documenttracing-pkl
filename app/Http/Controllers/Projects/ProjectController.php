@@ -36,6 +36,7 @@ class ProjectController extends Controller
             'projectDocuments' => $this->projectService->getProjectDocuments($id),
             'projectDocumentVersions' => $this->projectService->getProjectDocumentVersions(),
             'priorities' => $this->priorities,
+            // dd($this->projectService->getProjectDocumentVersions($id)),
         ]);
     }
 
@@ -43,7 +44,7 @@ class ProjectController extends Controller
     {
         return Inertia::render('Projects/Create', [
             'projectBusinessTypes' => $this->projectService->getProjectBusinessTypes(),
-        'projectManagers' => $this->projectService->getProjectManagers(),
+            'projectManagers' => $this->projectService->getProjectManagers(),
         ]);
     }
 

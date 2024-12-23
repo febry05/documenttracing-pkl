@@ -84,8 +84,6 @@ class ProjectService {
     }
 
     public function getProjectDocumentVersions() {
-        // $projectDocumentVersionA = ProjectDocumentVersion::with('updates')->first();
-        // dd($projectDocumentVersionA);
         return ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
             return [
                 'id' => $projectDocumentVersion->id,
