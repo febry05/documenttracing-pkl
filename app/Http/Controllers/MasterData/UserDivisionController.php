@@ -31,48 +31,60 @@ class UserDivisionController extends Controller
     public function store(Request $request){
         DB::beginTransaction();
         try {
-            $request->validate([
+            $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
-             ]);
-
-        UserDivision::create($request->only('name', 'description'));
-
-            DB::commit();
-         } catch (Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'An error occurred while saving the user division.']);
-        }
-
-        return Inertia::render('Master/UserDivisions/Index');
-
-    }
-
-    public function update($id, Request $request){
-        DB::beginTransaction();
-        try {
-            $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
             ]);
 
-            $userDivision = UserDivision::find($id);
+            $userDivision = new UserDivision();
             $userDivision->name = $validatedData['name'];
             $userDivision->description = $validatedData['description'];
             $userDivision->save();
 
             DB::commit();
+            return redirect()->route('user-divisions.index')
+            ->with('success', 'Division "'. $userDivision->name .'" has been created');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'An error occurred while creating the user division: ' . $e->getMessage()]);
+        }
+    }
+
+    public function update($id, Request $request){
+        DB::beginTransaction();
+        try {
+            $userDivision = UserDivision::find($id);
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+
+            $userDivision->name = $validatedData['name'];
+            $userDivision->description = $validatedData['description'];
+            $userDivision->save();
+
+            DB::commit();
+            return redirect()->route('user-divisions.index')
+            ->with('success', 'Division "'. $userDivision->name .'" has been updated');
         } catch (Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'An error occurred while updating the user division.']);
         }
-
-        return redirect()->route('user-divisions.index')->with('message', 'User Division updated successfully');
     }
 
     public function destroy($id){
-        UserDivision::findOrFail($id)->delete();
+        DB::beginTransaction();
+        try {
+            $userDivision = UserDivision::find($id);
+            $userDivision->delete();
 
-        return redirect()->route('user-divisions.index')->with('message', 'User Division deleted successfully');
+            DB::commit();
+            
+            return redirect()->route('user-divisions.index')
+            ->with('success', 'Division "'. $userDivision->name .'" has been deleted successfully');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'An error occurred while deleting the user division: ' . $e->getMessage()]);
+        }
     }
 }

@@ -44,11 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('/update-password', PasswordController::class)->only(['update']);
 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
-    Route::get('/projects/{id}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
-    Route::get('/projects/{id}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
-    Route::get('/projects/{id}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
-    Route::get('/projects/{id}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+    Route::get('/projects/{project}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
+    Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
+    Route::get('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
+    Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
 
     Route::middleware('can_handle_project')->group(function () {
         // Project resource routes (except index and show)

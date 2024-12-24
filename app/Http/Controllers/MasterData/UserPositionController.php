@@ -63,7 +63,8 @@ class UserPositionController extends Controller
             $userPosition->save();
 
             DB::commit();
-            return redirect()->route('user-positions.index')->with('success', 'User position created successfully.');
+            return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' created successfully.');
+            
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to create user position.']);
@@ -72,28 +73,39 @@ class UserPositionController extends Controller
     }
 
     public function update($id,Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'user_division_id' => 'required|integer',
-        ]);
+        DB::beginTransaction();
+        try {
+            $userPosition = UserPosition::find($id);
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'user_division_id' => 'required|integer',
+            ]);
 
-        $userPosition = UserPosition::find($id);
-        $userPosition->name = $request->input('name');
-        $userPosition->description = $request->input('description');
-        $userPosition->user_division_id = $request->input('user_division_id');
-        // dd($userPosition);
-        $userPosition->save();
+            $userPosition->name = $request->input('name');
+            $userPosition->description = $request->input('description');
+            $userPosition->user_division_id = $request->input('user_division_id');
+            $userPosition->save();
 
-        return Inertia::render('Master/UserPositions/Index',);
-        // return redirect()->route('userpositions.index')->with('success', 'User position updated successfully.');
+            DB::commit();
+            return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' updated successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Failed to update user position.']);
+        }
     }
 
     public function destroy($id){
-        $userPosition = UserPosition::find($id);
-        $userPosition->delete();
+        DB::beginTransaction();
+        try {
+            $userPosition = UserPosition::find($id);
+            $userPosition->delete();
 
-        return Inertia::render('Master/UserPositions/Index',);
-        // return redirect()->route('userpositions.index')->with('success', 'User position deleted successfully.');
+            DB::commit();
+            return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' deleted successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Failed to delete user position.']);
+        }
     }
 }

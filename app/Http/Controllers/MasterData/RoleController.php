@@ -53,8 +53,8 @@ class RoleController extends Controller
 
             DB::commit();
 
-            session()->flash('success', 'User role "' . $role->name . '" has been created.');
-            return to_route('user-roles.index');
+            return redirect()->route('user-roles.index')
+            ->with('success', 'Role "'. $role->name .'" has been created');
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'There was an error creating the role: ' . $e->getMessage());
@@ -96,8 +96,8 @@ class RoleController extends Controller
 
             DB::commit();
 
-            session()->flash('success', 'User role "' . $role->name . '" has been updated.');
-            return to_route('user-roles.index');
+            return redirect()->route('user-roles.index')
+            ->with('success', 'Role "'. $role->name .'" has been updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'There was an error updating the role: ' . $e->getMessage());
@@ -107,9 +107,18 @@ class RoleController extends Controller
 
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
-        return redirect()->route('user-roles.index');
+        DB::beginTransaction();
+        try {
+            $role = Role::findOrFail($id);
+            $role->delete();
+            DB::commit();
+            return redirect()->route('user-roles.index')
+            ->with('success', 'Role "'. $role->name .'" has been deleted successfully'); //not working 
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('error', 'There was an error deleting the role: ' . $e->getMessage());
+            return redirect()->back();
+        }
     }
 
 

@@ -46,12 +46,8 @@ class ProjectBusinessTypeController extends Controller
             ]);
 
             DB::commit();
-            return Inertia::render('Master/ProjectBusinessTypes/Index')->with([
-                'flash' => [
-                    'status' => 'success',
-                    'message' => 'Project Business Type created successfully'
-                ],
-            ]);
+            return redirect()->route('project-business-types.index')
+            ->with('success', 'Project BUsiness Type "'. $request->name .'" has been created');
             // return redirect()->route('project-business-types.index')
         } catch (\Exception $e) {
             DB::rollBack();
@@ -72,16 +68,27 @@ class ProjectBusinessTypeController extends Controller
             $businessType->name = $validatedData['name'];
             $businessType->description = $validatedData['description'];
 
-            DB::commit();        
-            return Inertia::render('Master/ProjectBusinessTypes/Index');
+            DB::commit();
+            return redirect()->route('project-business-types.index')
+            ->with('success', 'Project BUsiness Type "'. $request->name .'" has been updated');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         }
-        
+    }
 
-        // dd($validatedData);
-        // $businessType->save();
+    public function destroy($id){
+        DB::beginTransaction();
+        try {
+            $businessType = ProjectBusinessType::find($id);
+            $businessType->delete();
 
+            DB::commit();
+            return redirect()->route('project-business-types.index')
+            ->with('success', 'Project Business Type "'. $businessType->name .'" has been deleted');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

@@ -127,4 +127,21 @@ class ProjectDocumentController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
         }
     }
+
+    public function destroy($id, Project $project)
+    {
+        DB::beginTransaction();
+        try {
+            $projectDocument = ProjectDocument::findOrFail($id);
+            $projectDocument->delete();
+
+            DB::commit();
+
+            return redirect()->route('projects.show', $project)
+                ->with('success', 'Document deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the document: ' . $e->getMessage()]);
+        }
+    }
 }

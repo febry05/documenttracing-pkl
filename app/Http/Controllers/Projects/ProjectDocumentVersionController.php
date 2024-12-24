@@ -46,7 +46,6 @@ class ProjectDocumentVersionController extends Controller
     }
 
     public function show($projectId, $projectDocumentId, $projectDocumentVersionId) {
-        // dd($this->projectService->getProjectDocuments($projectId)->firstWhere('id', $projectDocumentId));
         return Inertia::render('Projects/Documents/Versions/Show', [
             'project' => $this->projectService->getProjects($projectId)->firstWhere('id', $projectId),
             'projectDocument' => $this->projectService->getProjectDocuments($projectId)->firstWhere('id', $projectDocumentId),
@@ -139,6 +138,85 @@ class ProjectDocumentVersionController extends Controller
             DB::rollBack();
             dd($e);
             return redirect()->back()->with('error', 'Failed to create version');
+        }
+    }
+
+    public function update(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
+    {
+        DB::beginTransaction();
+        try {
+            $validated = $request->validate([
+                'release_date' => 'nullable|date', // Optional release date
+                'document_number' => 'required|string',
+            ]);
+
+            $documentNumber = $validated['document_number'];
+
+            $releaseDate = $validated['release_date']
+                ? now()->create($validated['release_date'])
+                : null;
+
+            $now = now();
+
+            switch ($document->deadline_interval) {
+                case 1:
+                    $versionName = $now->format('d M Y'); // Daily
+                    break;
+                case 2:
+                    $versionName = 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'); // Weekly
+                    break;
+                case 3:
+                    $versionName = $now->format('F Y'); // Monthly
+                    break;
+                case 4:
+                    $versionName = $now->format('l, jS F Y H:i'); // Detailed timestamp
+                    break;
+                default:
+                    throw new InvalidArgumentException('Invalid deadline interval.');
+            };
+
+            $deadline = $this->projectService->calculateDeadline($document);
+
+            $version->update([
+                'version' => $versionName,
+                'document_number' => $documentNumber,
+                'release_date' => $releaseDate->toDateTimeString(),
+                'deadline' => $deadline->toDateTimeString(),
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('projects.documents.show', [
+                'project' => $project->id,
+                'document' => $document->id,
+            ])
+                ->with('success', $releaseDate
+                    ? "Version {$version->version} updated successfully with release date {$releaseDate->format('Y-m-d')}."
+                    : "Version {$version->version} updated successfully and will be automated.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+            return redirect()->back()->with('error', 'Failed to update version');
+        }
+    }
+
+    public function destroy(Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
+    {
+        DB::beginTransaction();
+        try {
+            $version->delete();
+
+            DB::commit();
+
+            return redirect()->route('projects.documents.show', [
+                'project' => $project->id,
+                'document' => $document->id,
+            ])
+                ->with('success', "Version {$version->version} deleted successfully.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+            return redirect()->back()->with('error', 'Failed to delete version');
         }
     }
 }

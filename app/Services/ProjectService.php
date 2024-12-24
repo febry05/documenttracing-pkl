@@ -19,6 +19,8 @@ class ProjectService {
         $projectId = $request->route('project');
     }
 
+    
+
     public function getProjects() {
         return Project::with('profile', 'businessType')
             ->select('id', 'name', 'code', 'customer', 'contract_number', 'contract_start', 'contract_end', 'user_profile_id', 'project_business_type_id')->get()->map(function ($project) {

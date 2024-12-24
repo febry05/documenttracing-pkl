@@ -119,6 +119,23 @@ class ProjectController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
+            $project = Project::findOrFail($id);
+            $project->delete();
+
+            DB::commit();
+
+            return redirect()->route('projects.index')
+            ->with('success', 'Project "'. $project->name .'" has been deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to delete project');
+        }
+    }
+
     protected $priorities = [
         [
             'key' => 1,
