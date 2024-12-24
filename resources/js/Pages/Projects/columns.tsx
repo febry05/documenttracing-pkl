@@ -36,11 +36,11 @@ export const columns: ColumnDef<Project>[] = [
     {
         accessorKey: "contract_end",
         header: "Time Remaining",
-        cell: ({ getValue }) => (
+        cell: ({ getValue, row }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
                     {getValue() && (
-                        <Countdown targetDate={getValue() as string | Date} />
+                        <Countdown startDate={row.original.contract_start} endDate={getValue() as string | Date} />
                     )}
                 </div>
             </div>

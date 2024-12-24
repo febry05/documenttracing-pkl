@@ -20,8 +20,8 @@ class MonitoringController extends Controller
 
         $stats = $this->calculateDocumentStats();
 
-        $selectedDateStart = Carbon::createFromDate($year, $month, 1)->startOfMonth(); 
-        $selectedDateEnd = Carbon::createFromDate($year, $month, 1)->endOfMonth();   
+        $selectedDateStart = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $selectedDateEnd = Carbon::createFromDate($year, $month, 1)->endOfMonth();
 
         $projects = Project::with([
             'documentVersions' => function ($query) use ($year, $month) {
@@ -31,8 +31,8 @@ class MonitoringController extends Controller
             'documentVersions.document',
             'documentVersions.updates',
         ])->where(function ($query) use ($selectedDateStart, $selectedDateEnd) {
-            $query->whereDate('contract_start', '<=', $selectedDateEnd) 
-                ->whereDate('contract_end', '>=', $selectedDateStart); 
+            $query->whereDate('contract_start', '<=', $selectedDateEnd)
+                ->whereDate('contract_end', '>=', $selectedDateStart);
         })->get()
             ->map(function ($project) {
                 return [
@@ -48,6 +48,7 @@ class MonitoringController extends Controller
                             'priority' => $documentVersion->document->priority_type_name,
                             'due_date' => Carbon::parse($documentVersion->deadline)->toDateString(),
                             'days_left' => $documentVersion->deadline,
+                            'release_date' => $documentVersion->release_date,
                             // 'days_left' => $this->calculateDays($documentVersion->deadline),
                             // 'status' => $documentVersion->updates->latest()->status ?? "N/A",
                             'status' => $documentVersion->updates->last()->status_type_name ?? "N/A",

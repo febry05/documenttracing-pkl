@@ -1,13 +1,29 @@
 import { useEffect, useState } from "react";
 
 interface CountdownProps {
-    targetDate: string | Date;
+    startDate?: string | Date;
+    endDate: string | Date;
+    notStartedText?: string;
+    endText?: string;
     separateLines?: boolean;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ targetDate, separateLines = false }: CountdownProps) => {
+const Countdown: React.FC<CountdownProps> = (
+        {
+            startDate,
+            endDate,
+            notStartedText = 'Contract hasn\'t started',
+            endText = 'Contract ended',
+            separateLines = false
+        }
+    : CountdownProps) => {
+
+    if (startDate && (+new Date(startDate) > +new Date())) {
+        return (<span className="italic text-muted-foreground">{ notStartedText }</span>);
+    }
+
     const calculateTimeLeft = () => {
-        const difference = +new Date(targetDate) - +new Date();
+        const difference = +new Date(endDate) - +new Date();
         let timeLeft: { days?: number; hours?: number; minutes?: number; seconds?: number } = {};
         if (difference > 0) {
             timeLeft = {
@@ -30,34 +46,36 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate, separateLines = false
 
     const timerComponents = [];
 
-    if (timeLeft.days) {
-        timerComponents.push(
-            <span key="days">
-                {timeLeft.days} Days {separateLines && <br />} {timeLeft.hours} Hours
-            </span>
-        );
-    } else if (timeLeft.hours) {
-        timerComponents.push(
-            <span key="hours">
-                {timeLeft.hours} Hours {separateLines && <br />} {timeLeft.minutes} Minutes
-            </span>
-        );
-    } else if (timeLeft.minutes) {
-        timerComponents.push(
-            <span key="minutes">
-                {timeLeft.minutes} Minutes {separateLines && <br />} {timeLeft.seconds} Seconds
-            </span>
-        );
-    } else {
-        timerComponents.push(
-            <span key="seconds">
-                {timeLeft.seconds} seconds
-            </span>
-        );
+    if (timeLeft.days || timeLeft.hours || timeLeft.minutes || timeLeft.seconds) {
+        if (timeLeft.days) {
+            timerComponents.push(
+                <span key="days">
+                    {timeLeft.days} Days {separateLines && <br />} {timeLeft.hours} Hours
+                </span>
+            );
+        } else if (timeLeft.hours) {
+            timerComponents.push(
+                <span key="hours">
+                    {timeLeft.hours} Hours {separateLines && <br />} {timeLeft.minutes} Minutes
+                </span>
+            );
+        } else if (timeLeft.minutes) {
+            timerComponents.push(
+                <span key="minutes">
+                    {timeLeft.minutes} Minutes {separateLines && <br />} {timeLeft.seconds} Seconds
+                </span>
+            );
+        } else {
+            timerComponents.push(
+                <span key="seconds">
+                    {timeLeft.seconds} seconds
+                </span>
+            );
+        }
     }
 
     return (
-        timerComponents.length ? timerComponents : "Time's up!"
+        timerComponents.length ? timerComponents : (<span className="italic text-muted-foreground">{ endText }</span>)
     );
 };
 

@@ -1,6 +1,6 @@
 "use client"
 
-import Countdown from "@/Components/custom/Countdown"; // Ensure Countdown component accepts targetDate and separateLines props
+import Countdown from "@/Components/custom/Countdown"; // Ensure Countdown component accepts endDate and separateLines props
 import PriorityBadge from "@/Components/custom/PriorityBadge";
 import { Badge } from "@/Components/ui/badge"
 import { Button } from "@/Components/ui/button";
@@ -20,14 +20,11 @@ export type ProjectMonitoring = {
         person_in_charge: string
         priority: "High" | "Medium" | "Low"
         due_date: string
+        release_date: string
         status: string
         document_link: string
     }[]
 }[];
-
-// Next:
-// ~1. Parent row coloring~
-// 2. Expand animation
 
 export const columns: ColumnDef<ProjectMonitoring>[] = [
     {
@@ -121,11 +118,11 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
 
             return daysLeft === filterNum;
         },
-        cell: ({ getValue }) => (
+        cell: ({ row, getValue }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
                     {getValue() && (
-                        <Countdown targetDate={getValue() as string | Date} separateLines={true} />
+                        <Countdown startDate={row.original.release_date} endDate={getValue() as string | Date} separateLines={true} />
                     )}
                 </div>
             </div>

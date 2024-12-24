@@ -35,6 +35,7 @@ import { Button } from "@/Components/ui/button";
 import { handleNumericInput } from "@/lib/utils";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 import { Switch } from "@/Components/ui/switch";
+import React from "react";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),
@@ -63,9 +64,12 @@ export default function ProjectDocumentVersionCreateDialog({
         },
     });
 
+    const [open, setOpen] = React.useState(false)
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(
+            setOpen(false);
+            router.post(
                 route("projects.documents.versions.store", [
                     projectId,
                     projectDocumentId,
@@ -78,7 +82,7 @@ export default function ProjectDocumentVersionCreateDialog({
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="w-fit">
                     <Plus className="me-2" size={18} />

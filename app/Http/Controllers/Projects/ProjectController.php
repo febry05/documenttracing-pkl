@@ -107,7 +107,7 @@ class ProjectController extends Controller
             $validatedData['contract_end'] = Carbon::parse($validatedData['contract_end'])->format('Y-m-d H:i:s');
 
             $project = Project::findOrFail($id);
-            
+
             $project->update($validatedData);
 
             DB::commit();

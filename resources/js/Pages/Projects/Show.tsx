@@ -55,7 +55,7 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                     <InfoPair label="Contract Number" value={project.contract_number} />
                     <InfoPair label="Duration" value={project.duration} />
                     <InfoPair label="Type" value={project.type} />
-                    <InfoPair label="Time Remaining" value={<Countdown targetDate={project.contract_end} />} />
+                    <InfoPair label="Time Remaining" value={<Countdown startDate={project.contract_start} endDate={project.contract_end} />} />
                     <InfoPair label="Customer" value={project.customer} />
                     <InfoPair label="Person in Charge" value={project.person_in_charge} />
                 </div>
