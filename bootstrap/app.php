@@ -20,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'block.root' => App\Http\Middleware\BlockRootMiddleware::class,
+            'can_handle_project' => App\Http\Middleware\EnsureUserCanHandleProject::class,
+            'check_admin' => App\Http\Middleware\CheckAdmin::class,
         ]);
         //
     })

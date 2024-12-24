@@ -23,7 +23,6 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $projects = $this->projectService->getProjects();
-        // ->paginate(10);
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
@@ -32,12 +31,12 @@ class ProjectController extends Controller
     }
 
     public function show($id, ProjectService $projectService, Request $request){
-        // $projectId = $request->route('project');
         return Inertia::render('Projects/Show', [
             'project' => $this->projectService->getProjects()->firstWhere('id', $id),
             'projectDocuments' => $this->projectService->getProjectDocuments($id),
             'projectDocumentVersions' => $this->projectService->getProjectDocumentVersions(),
             'priorities' => $this->priorities,
+            // dd($this->projectService->getProjectDocumentVersions($id)),
         ]);
     }
 

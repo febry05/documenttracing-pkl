@@ -23,6 +23,8 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Update Project',
             'Delete Project',
 
+            'Handle Owned Project',
+
             'Create Project Document',
             'View Project Document',
             'Update Project Document',
@@ -63,6 +65,8 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'View Project Document Version',
             'Update Project Document Version',
             // 'Delete Project Document Version',
+
+            'Handle Owned Project',
 
             'Create Project Document',
             'View Project Document',

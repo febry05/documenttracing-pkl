@@ -84,8 +84,6 @@ class ProjectService {
     }
 
     public function getProjectDocumentVersions() {
-        // $projectDocumentVersionA = ProjectDocumentVersion::with('updates')->first();
-        // dd($projectDocumentVersionA);
         return ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
             return [
                 'id' => $projectDocumentVersion->id,
@@ -134,9 +132,7 @@ class ProjectService {
     }
 
     public function getProjectManagers(){
-        return User::with('profile')->whereHas('roles', function ($query) {
-            $query->where('name', 'Project Manager');
-        })->get()->map(function ($user) {
+        return User::with('profile')->permission('Handle Owned Project')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->profile->name,
