@@ -30,6 +30,8 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
 
+    console.log(projectDocuments);
+
     return (
         <DashboardLayout
             header={
@@ -87,10 +89,10 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                                     <AccordionContent>
                                         <div className="p-4 pb-0 flex flex-col gap-4">
                                             {can(userPermissions, "View Project Document Version") ? (
-                                                Array.isArray(projectDocument.project_document_versions) && projectDocument.project_document_versions.length > 0 ? projectDocument.project_document_versions.map(project_document_version => (
-                                                    <div key={project_document_version.id} className="flex items-center gap-4">
-                                                        <TextLink text={project_document_version.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="text-sm" />
-                                                        <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, project_document_version.id])} className="ms-auto">
+                                                projectDocument.project_document_versions.length > 0 ? projectDocument.project_document_versions.map((projectDocumentVersion) => (
+                                                    <div key={projectDocumentVersion.id} className="flex items-center gap-4">
+                                                        <TextLink text={projectDocumentVersion.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, projectDocumentVersion.id])} className="text-sm" />
+                                                        <Link href={route('projects.documents.versions.show', [project.id, projectDocument.id, projectDocumentVersion.id])} className="ms-auto">
                                                             <Ellipsis className="text-gray-500" size={20} />
                                                         </Link>
                                                     </div>

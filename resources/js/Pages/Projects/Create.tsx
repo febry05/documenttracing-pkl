@@ -76,7 +76,7 @@ export default function ProjectCreate({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("projects.store"), values);
+            router.post(route("projects.store"), values);
         } catch (error) {
             console.error("Submission error:", error);
         }

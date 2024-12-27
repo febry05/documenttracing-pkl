@@ -19,7 +19,7 @@ export function ProjectDocumentDeleteDialog({ projectId, projectDocument }: Page
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('projects.documents.destroy', [projectId, projectDocument.id]), {
+            router.delete(route('projects.documents.destroy', [projectId, projectDocument.id]), {
                 onFinish: () => {
                     setIsOpen(false);
                     router.visit(route('projects.documents.show', ), { only: ['userDivisions', 'userPositions'] });

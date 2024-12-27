@@ -19,7 +19,7 @@ class ProjectService {
         $projectId = $request->route('project');
     }
 
-    
+
 
     public function getProjects() {
         return Project::with('profile', 'businessType')
@@ -59,7 +59,7 @@ class ProjectService {
     public function getProjectDocuments($projectId) {
         // $projectId = $request->route('project');
         // dd($projectId);
-        return ProjectDocument::with(['versions:id,version,document_number', 'project:id,name'])->where('project_id', $projectId)->get()->map(function ($document) {
+        return ProjectDocument::with(['versions:id,version,document_number,project_document_id', 'project:id,name'])->where('project_id', $projectId)->get()->map(function ($document) {
             return [
                 'id' => $document->id,
                 'name' => $document->name,

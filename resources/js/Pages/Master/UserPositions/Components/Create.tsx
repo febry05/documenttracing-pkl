@@ -37,7 +37,7 @@ export default function UserPositionCreateDialog({ userDivisions }: PageProps) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('user-positions.store'), values, {
+            router.post(route('user-positions.store'), values, {
                 onFinish: () => {
                     setIsOpen(false);
                     router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });

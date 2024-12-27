@@ -29,7 +29,7 @@ export default function UserDivisionCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            Inertia.post(route('user-divisions.store'), values, {
+            router.post(route('user-divisions.store'), values, {
                 preserveScroll: true, // Keeps scroll position but reloads data
                 onFinish: () => {
                     setIsOpen(false);

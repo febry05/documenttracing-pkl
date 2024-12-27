@@ -18,7 +18,7 @@ export function UserDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user.destroy', data.id), {
+            router.delete(route('user.destroy', data.id), {
                 onFinish: () => {
                     setIsOpen(false);
                     router.visit(route('user.index'), { only: ['users', 'positions', 'roles'] });

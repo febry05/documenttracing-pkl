@@ -29,11 +29,11 @@ class EnsureUserCanHandleProject
 
     public function handle(Request $request, Closure $next): Response
     {
-        
+
 
         $user = User::find(Auth::user()->id);
-        
-        $projectId = $request->route('project'); 
+
+        $projectId = $request->route('project');
         $project = Project::with('documents.versions.updates')->findOrFail($projectId);
 
         // dd($user, $project);

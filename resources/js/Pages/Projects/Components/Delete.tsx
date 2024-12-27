@@ -18,6 +18,7 @@ export function ProjectDeleteDialog({ project }: PageProps) {
 
     async function onSubmit() {
         try {
+            setIsOpen(false);
             router.delete(route("projects.destroy", project.id));
         } catch (error) {
             console.error("Submission error:", error);
