@@ -115,7 +115,7 @@ export default function DashboardLayout({
                         {header}
                     </div>
                     <div className="mb-6">{children}</div>
-                    <Toaster richColors theme={localStorage.getItem("vite-ui-theme") as Theme} duration={10000}/>
+                    <Toaster richColors theme={localStorage.getItem("vite-ui-theme") as Theme || 'system'} duration={10000}/>
                 </ScrollArea>
             </main>
         </SidebarProvider>

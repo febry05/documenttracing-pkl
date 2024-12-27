@@ -75,7 +75,7 @@ export default function UsersEdit({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route("users.update", user.id), values);
+            router.put(route("users.update", user.id), values);
         } catch (error) {
             console.error("Submission error:", error);
         }

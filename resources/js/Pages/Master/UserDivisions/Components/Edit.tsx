@@ -33,12 +33,7 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route('user-divisions.update', data.id), values, {
-                onFinish: () => {
-                    closeDialog();
-                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
-                },
-            });
+            router.put(route('user-divisions.update', data.id), values);
         } catch (error) {
             console.error('Submission error:', error);
         }
@@ -46,9 +41,9 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
 
     return (
         <div className="flex flex-col gap-4">
-            <Form {...form}>
-                <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
+                <Form {...form}>
+                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="name"
@@ -84,17 +79,19 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
                                 </FormItem>
                             )}
                         />
-
-                        <div className="flex flex-row-reverse gap-4">
-                            <Button type="submit">
-                                <Save className="me-2" size={18} />
-                                Save
-                            </Button>
-                            <UserDivisionDeleteDialog data={data} />
-                        </div>
-                    </div>
-                </form>
-            </Form>
+                    </form>
+                </Form>
+                <div className="flex flex-row-reverse gap-4">
+                    <Button
+                        type="submit"
+                        onClick={form.handleSubmit(onSubmit)}
+                        >
+                        <Save className="me-2" size={18} />
+                        Save
+                    </Button>
+                    <UserDivisionDeleteDialog data={data} />
+                </div>
+            </div>
         </div>
     );
 }

@@ -35,6 +35,7 @@ import {
 import { Button } from "@/Components/ui/button";
 import { handleNumericInput } from "@/lib/utils";
 import { Switch } from "@/Components/ui/switch";
+import React from "react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -86,19 +87,19 @@ export default function ProjectDocumentCreateDialog({
         },
     });
 
+    const [open, setOpen] = React.useState(false)
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(
-                route("projects.documents.store", projectId),
-                values
-            );
+            setOpen(false);
+            router.post(route("projects.documents.store", projectId), values);
         } catch (error) {
             console.error("Submission error:", error);
         }
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {/* <IconButton text="Create Document" icon={Plus} className="w-fit"/> */}
                 <Button className="w-fit">

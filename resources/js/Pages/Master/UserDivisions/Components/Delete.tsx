@@ -18,12 +18,7 @@ export function UserDivisionDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-divisions.destroy', data.id), {
-                onFinish: () => {
-                    setIsOpen(false);
-                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
-                },
-            });
+            router.delete(route('user-divisions.destroy', data.id));
         } catch (error) {
             console.error('Submission error:', error);
         }

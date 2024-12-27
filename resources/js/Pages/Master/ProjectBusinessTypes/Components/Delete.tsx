@@ -18,12 +18,7 @@ export function ProjectBusinessTypeDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('project-business-types.destroy', data.id), {
-                onFinish: () => {
-                    setIsOpen(false);
-                    router.visit(route('project-business-types.index'), { only: ['projectBusinessTypes'] });
-                },
-            });
+            router.delete(route('project-business-types.destroy', data.id));
         } catch (error) {
             console.error('Submission error:', error);
         }

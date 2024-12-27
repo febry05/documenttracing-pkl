@@ -29,7 +29,7 @@ export default function ProjectBusinessTypeCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.post(route('project-business-types.store'), values, {
+            await router.post(route('project-business-types.store'), values, {
                 onFinish: () => {
                     setIsOpen(false);
                     router.visit(route('project-business-types.index'), { only: ['projectBusinessTypes'] });

@@ -93,13 +93,13 @@ export default function ProjectEdit({
             <Head title="Edit Project" />
 
             <Card className="p-8">
-                <Form {...form}>
-                    <form
-                        action=""
-                        method="POST"
-                        onSubmit={form.handleSubmit(onSubmit)}
-                    >
-                        <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8">
+                    <Form {...form}>
+                        <form
+                            action=""
+                            method="POST"
+                            onSubmit={form.handleSubmit(onSubmit)}
+                        >
                             {/* Project info [START] */}
                             <div className="flex flex-col gap-2">
                                 <span className="font-bold text-sm">
@@ -385,18 +385,18 @@ export default function ProjectEdit({
                                 </div>
                                 {/* Dates Info [END] */}
                             </div>
-
-                            <div className="flex flex-row-reverse gap-4">
-                                <IconButton
-                                    type="submit"
-                                    icon={Save}
-                                    text="Save"
-                                />
-                                <ProjectDeleteDialog project={project} />
-                            </div>
-                        </div>
-                    </form>
-                </Form>
+                        </form>
+                    </Form>
+                    <div className="flex flex-row-reverse gap-4">
+                        <IconButton
+                            type="submit"
+                            icon={Save}
+                            text="Save"
+                            onClick={form.handleSubmit(onSubmit)}
+                        />
+                        <ProjectDeleteDialog project={project} />
+                    </div>
+                </div>
             </Card>
         </DashboardLayout>
     );

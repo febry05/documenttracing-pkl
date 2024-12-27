@@ -12,14 +12,13 @@ class ProjectBusinessTypeController extends Controller
 {
     public function index()
     {
-        $BusinessType = ProjectBusinessType::select('name','description')->get()->map(function ($business) {
+        $BusinessType = ProjectBusinessType::select('id', 'name','description')->get()->map(function ($business) {
             return [
                 'id' => $business->id,
                 'name' => $business->name,
                 'description' => $business->description,
             ];
         });
-
 
         return Inertia::render('Master/ProjectBusinessTypes/Index', [
             'projectBusinessTypes' => $BusinessType,
@@ -47,7 +46,7 @@ class ProjectBusinessTypeController extends Controller
 
             DB::commit();
             return redirect()->route('project-business-types.index')
-            ->with('success', 'Project BUsiness Type "'. $request->name .'" has been created');
+            ->with('success', 'Project Business Type "'. $request->name .'" has been created');
             // return redirect()->route('project-business-types.index')
         } catch (\Exception $e) {
             DB::rollBack();
@@ -63,14 +62,15 @@ class ProjectBusinessTypeController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
             ]);
-            
+
             $businessType = ProjectBusinessType::find($id);
             $businessType->name = $validatedData['name'];
             $businessType->description = $validatedData['description'];
+            $businessType->save();
 
             DB::commit();
             return redirect()->route('project-business-types.index')
-            ->with('success', 'Project BUsiness Type "'. $request->name .'" has been updated');
+            ->with('success', 'Project Business Type "'. $request->name .'" has been updated');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());

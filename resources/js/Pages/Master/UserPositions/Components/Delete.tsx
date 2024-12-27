@@ -1,4 +1,3 @@
-import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "react-hook-form";
 import { FormDialog } from "@/Components/custom/FormDialog";
 import { Button } from "@/Components/ui/button";
@@ -18,12 +17,9 @@ export function UserPositionDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
-            await Inertia.delete(route('user-positions.destroy', data.id), {
-                onFinish: () => {
-                    setIsOpen(false);
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
-                },
-            });
+            setIsOpen(false);
+            // router.get(route('profile.edit'))
+            router.delete(route('user-positions.destroy', data.id));
         } catch (error) {
             console.error('Submission error:', error);
         }

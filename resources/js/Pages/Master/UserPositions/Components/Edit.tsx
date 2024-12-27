@@ -4,7 +4,6 @@ import { Input } from "@/Components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { Save } from "lucide-react";
@@ -37,9 +36,8 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await Inertia.put(route('user-positions.update', data.id), values, {
+            router.put(route('user-positions.update', data.id), values, {
                 onFinish: () => {
-                    closeDialog();
                     router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
                 },
             });
@@ -50,9 +48,9 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
 
     return (
         <div className="flex flex-col gap-4">
-            <Form {...form}>
-                <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
+                <Form {...form}>
+                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="name"
@@ -116,17 +114,20 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
                                 </FormItem>
                             )}
                         />
+                    </form>
+                </Form>
 
-                        <div className="flex flex-row-reverse gap-4">
-                            <Button type="submit">
-                                <Save className="me-2" size={18} />
-                                Save
-                            </Button>
-                            <UserPositionDeleteDialog data={data} />
-                        </div>
-                    </div>
-                </form>
-            </Form>
+                <div className="flex flex-row-reverse gap-4">
+                    <Button
+                        type="submit"
+                        onClick={form.handleSubmit(onSubmit)}
+                    >
+                        <Save className="me-2" size={18} />
+                        Save
+                    </Button>
+                    <UserPositionDeleteDialog data={data} />
+                </div>
+            </div>
         </div>
     );
 }

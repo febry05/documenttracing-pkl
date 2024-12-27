@@ -30,6 +30,7 @@ class UserPositionController extends Controller
                 'name' => $position->name,
                 'description' => $position->description,
                 'division' => $position->division->name ?? 'N/A',
+                'user_division_id' => $position->user_division_id ?? 'N/A',
             ];
         });
 
@@ -64,7 +65,7 @@ class UserPositionController extends Controller
 
             DB::commit();
             return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' created successfully.');
-            
+
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to create user position.']);
