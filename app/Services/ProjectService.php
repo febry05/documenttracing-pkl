@@ -7,19 +7,42 @@ use Grei\TanggalMerah;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Models\Projects\Project;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Projects\ProjectDocument;
 use App\Models\MasterData\ProjectBusinessType;
 use App\Models\Projects\ProjectDocumentVersion;
 use App\Models\Projects\ProjectDocumentVersionUpdate;
 
 class ProjectService {
-    // protected $projectId;
 
     public function __construct(Request $request) {
         $projectId = $request->route('project');
     }
 
-    
+    public function getDashboard(){
+         $user = User::find(Auth::user()->id); 
+
+         return Project::with(['documents.versions', 'profile'])
+        ->whereHas('profile', function ($query) use ($user) {
+            $query->where('user_id', $user->id); // Ensure the project is assigned to the user
+        })
+        ->select('id', 'name') 
+        ->get()
+        ->map(function ($project) {
+            return $project->documents->map(function ($document) use ($project) {
+                $latestVersion = $document->versions->sortByDesc('deadline')->first(); 
+                return [
+                    'id' => $document->id,
+                    'document' => $document->name,
+                    'project' => $project->name,
+                    'due_date' => $latestVersion ? $latestVersion->deadline : 'No Deadline',
+                    'days_left' => $latestVersion ? $this->calculateDays($latestVersion->deadline) : 'N/A','days_left' => $latestVersion ? $this->calculateDays($latestVersion->deadline) : 'No Deadline',
+                    'priority' => $document->priority_type_name,
+                ];
+            });
+        })
+        ->flatten(1);
+    }
 
     public function getProjects() {
         return Project::with('profile', 'businessType')

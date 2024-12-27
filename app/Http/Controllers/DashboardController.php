@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Services\ProjectService;
 
 class DashboardController extends Controller
 {
+    protected $projectService;
+
+    public function __construct(Request $request, ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
+
     public function index()
     {
         $mockStats = [
@@ -48,7 +56,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Dashboard', [
             'stats' => $mockStats,
-            'documents' => $mockDocuments,
+            'documents' => $this->projectService->getDashboard(),
         ]);
     }
 }
