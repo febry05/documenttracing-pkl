@@ -19,28 +19,35 @@ class ProjectService {
         $projectId = $request->route('project');
     }
 
-    public function getDashboard(){
-         $user = User::find(Auth::user()->id); 
+    public function getDashboard()
+    {
+        $user = User::find(Auth::user()->id);
 
-         return Project::with(['documents.versions', 'profile'])
-        ->whereHas('profile', function ($query) use ($user) {
-            $query->where('user_id', $user->id); // Ensure the project is assigned to the user
-        })
-        ->select('id', 'name') 
-        ->get()
-        ->map(function ($project) {
-            return $project->documents->map(function ($document) use ($project) {
-                $latestVersion = $document->versions->sortByDesc('deadline')->first(); 
-                return [
-                    'id' => $document->id,
-                    'document' => $document->name,
-                    'project' => $project->name,
-                    'due_date' => $latestVersion ? $latestVersion->deadline : 'No Deadline',
-                    'days_left' => $latestVersion ? $this->calculateDays($latestVersion->deadline) : 'N/A','days_left' => $latestVersion ? $this->calculateDays($latestVersion->deadline) : 'No Deadline',
-                    'priority' => $document->priority_type_name,
-                ];
-            });
-        })
+        return Project::with(['documents.versions', 'profile'])
+            ->whereHas('profile', function ($query) use ($user) {
+                $query->where('user_id', $user->id); // Ensure the project is assigned to the user
+            })
+            ->select('id', 'name')
+            ->get()
+            ->map(function ($project) {
+                return $project->documents->flatMap(function ($document) use ($project) {
+                    return $document->versions
+                        ->filter(function ($version) {
+                            return $version->deadline && $version->deadline >= now()->subDays(30);
+                        })
+                        ->map(function ($version) use ($document, $project) {
+                            return [
+                                'id' => $version->id,
+                                'name' => $version->version,
+                                'document' => $document->name,
+                                'project' => $project->name,
+                                'due_date' => $version->deadline ?? 'No Deadline',
+                                'days_left' => $version->deadline ? $this->calculateDays($version->deadline) : 'N/A',
+                                'priority' => $document->priority_type_name,
+                            ];
+                        });
+                });
+            })
         ->flatten(1);
     }
 
@@ -257,4 +264,45 @@ class ProjectService {
             default => 'Monday',
         };
     }
+
+    public function getNotifications()
+{
+    $user = Auth::user(); // Get the authenticated user
+
+    // Fetch projects and related data for the user
+    $projects = Project::with(['documents.versions'])
+        ->whereHas('profile', function ($query) use ($user) {
+            $query->where('user_id', $user->id); // Only fetch projects assigned to the user
+        })
+        ->get();
+
+    // Build notifications array
+    $notifications = $projects->flatMap(function ($project) {
+        return $project->documents->flatMap(function ($document) use ($project) {
+            return $document->versions->map(function ($version) use ($document, $project) {
+
+                return [
+                    'project' => [
+                        'id' => $project->id,
+                        'name' => $project->name,
+                        'projectDocument' => [
+                            'id' => $document->id,
+                            'name' => $document->name,
+                            // 'daysLeft' => $document->version->deadline,
+                            'priority' => $document->priority_type_name,
+                            'projectDocumentVersion' => [
+                                'id' => $version->id,
+                                'daysLeft' => $version->deadline
+                            ],
+                        ],
+                    ],
+                ];
+            });
+        });
+    });
+
+    return $notifications->values()->toArray(); // Return as array
+}
+
+
 }

@@ -5,9 +5,10 @@ namespace App\Http\Middleware;
 use Inertia\Inertia;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
+use App\Services\ProjectService;
 use Illuminate\Support\Facades\Auth;
-use League\CommonMark\Util\PrioritizedList;
 use Spatie\Permission\Contracts\Role;
+use League\CommonMark\Util\PrioritizedList;
 use Spatie\Permission\Models\Role as ModelsRole;
 
 class HandleInertiaRequests extends Middleware
@@ -18,6 +19,8 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
+    protected $projectService;
+
 
     /**
      * Determine the current asset version.
@@ -27,6 +30,10 @@ class HandleInertiaRequests extends Middleware
         return parent::version($request);
     }
 
+    public function __construct(ProjectService $projectService){
+        $this->projectService = $projectService;
+    }
+
     /**
      * Define the props that are shared by default.
      *
@@ -34,6 +41,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        
         $notifications = [
             [
                 'project' => [
@@ -106,7 +114,7 @@ class HandleInertiaRequests extends Middleware
             ] : [
                 'user' => $request->user(),
             ],
-            'notifications' => $notifications,
+            'notifications' => $this->projectService->getNotifications(),
             'flash' => [
                 'success' => session()->get('success'),
                 'error' => session()->get('error'),

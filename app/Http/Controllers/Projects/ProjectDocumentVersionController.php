@@ -204,6 +204,10 @@ class ProjectDocumentVersionController extends Controller
     {
         DB::beginTransaction();
         try {
+            $version->updates()->each(function ($update) {
+                $update->delete();
+            });
+
             $version->delete();
 
             DB::commit();
@@ -211,12 +215,10 @@ class ProjectDocumentVersionController extends Controller
             return redirect()->route('projects.documents.show', [
                 'project' => $project->id,
                 'document' => $document->id,
-            ])
-                ->with('success', "Version {$version->version} deleted successfully.");
+            ])->with('success', "Version {$version->version} deleted successfully.");
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
-            return redirect()->back()->with('error', 'Failed to delete version');
+            return redirect()->back()->withErrors(['error' => 'Failed to delete version: ' . $e->getMessage()]);
         }
-    }
+    }   
 }

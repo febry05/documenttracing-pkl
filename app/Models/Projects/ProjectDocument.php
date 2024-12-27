@@ -21,6 +21,17 @@ class ProjectDocument extends Model
         'project_id',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($document) {
+            $document->versions()->each(function ($version) {
+                $version->delete();
+            });
+        });
+    }
+
     const Low = 1; // Low priority
     const Medium = 2; // Medium priority
     const High = 3; // High priority

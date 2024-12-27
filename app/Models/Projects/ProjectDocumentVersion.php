@@ -28,6 +28,17 @@ class ProjectDocumentVersion extends Model
         'project_document_id',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($version) {
+            $version->updates()->each(function ($update) {
+                $update->delete();
+            });
+        });
+    }
+
     // protected $projectService;
 
     // public function __construct(ProjectService $projectService)
@@ -76,9 +87,7 @@ class ProjectDocumentVersion extends Model
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');
-        }
-
-        
+        } 
 
         $deadline = $this->calculateDeadline($this->document->deadline_interval);
 

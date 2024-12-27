@@ -53,10 +53,10 @@ class EnsureUserCanHandleProject
             Log::error('User '. $user->name . 'does not have the "Handle Owned Project" permission');
         }
 
-        // if ($project->user_profile_id !== ($user->id)) {
-        //     Log::error('User ID does not match project user ID', ['user_id' => $user->id, 'project_user_id' => $project->user_id]);
-        //     abort(403, 'Unauthorized action. Ensure the user is assigned to the project');
-        // }
+        if ($project->user_profile_id !== ($user->id)) {
+            Log::error('User ID does not match project user ID', ['user_id' => $user->id, 'project_user_id' => $project->user_id]);
+            abort(403, 'Unauthorized action. Ensure the user is assigned to the project');
+        }
 
         return $next($request);
     }

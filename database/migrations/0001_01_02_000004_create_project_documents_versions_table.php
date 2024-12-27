@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('release_date');  //Release date of the document for knowing this version for which document
             $table->dateTime('deadline');
             $table->boolean('is_generated')->default(false); // Flag to know if this version already generated or not
-            $table->foreignId('project_document_id')->constrained();
+            $table->foreignId('project_document_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

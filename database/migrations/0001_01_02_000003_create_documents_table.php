@@ -25,7 +25,7 @@ return new class extends Migration
 
             // Q: Apa jadinya jika bulan depan tidak memiliki tanggal 29, 30, atau 31?
             // A: Jika month_deadline adalah 31, dan bu lan depan hanya memiliki 30 hari, maka tanggal jatuh pada tanggal terakhir bulan tersebut.
-            $table->foreignId('project_id')->default(0);
+            $table->foreignId('project_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

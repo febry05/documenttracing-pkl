@@ -29,5 +29,28 @@ class ProjectDocumentVersionSeeder extends Seeder
         //     'project_document_id' => 1,
         // ]);
 
+        ProjectDocumentVersion::create([
+            'version' => 'January 2024',
+            'document_number' => '3234238798324',
+            'release_date' => '2024-01-15',
+            'deadline' => '2024-12-31 00:00:00',
+            'project_document_id' => 4,
+        ]);
+
+        ProjectDocumentVersion::create([
+            'version' => 'January 2024',
+            'document_number' => '3234238798324',
+            'release_date' => '2025-01-15',
+            'deadline' => '2025-01-31 00:00:00',
+            'project_document_id' => 4,
+        ]);
+
+        ProjectDocumentVersion::create([
+            'version' => 'January 2024',
+            'document_number' => '3234238798324',
+            'release_date' => '2024-01-15',
+            'deadline' => '2024-01-31 00:00:00',
+            'project_document_id' => 4,
+        ]);
     }
 }

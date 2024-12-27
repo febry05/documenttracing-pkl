@@ -132,7 +132,15 @@ class ProjectDocumentController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Find the document by ID
             $projectDocument = ProjectDocument::findOrFail($id);
+
+            // Delete all associated versions (cascading updates deletion if set in DB)
+            $projectDocument->versions()->each(function ($version) {
+                $version->delete(); // Will trigger cascading deletion for updates if defined
+            });
+
+            // Delete the document itself
             $projectDocument->delete();
 
             DB::commit();

@@ -40,7 +40,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware('auth')->group(function () {
     //Users
-    Route::resource('/users', UserController::class);
     Route::resource('/update-password', PasswordController::class)->only(['update']);
 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -84,6 +83,7 @@ Route::middleware('auth')->group(function () {
     //Master Data
     Route::middleware('check_admin')->group(function () {
         Route::prefix('/master')->group(function () {
+            Route::resource('/users', UserController::class);
             Route::resource('/user-roles', RoleController::class);
             Route::resource('/user-permissions', PermissionController::class);
             Route::resource('/user-positions', UserPositionController::class);

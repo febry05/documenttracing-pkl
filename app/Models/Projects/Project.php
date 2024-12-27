@@ -24,6 +24,17 @@ class Project extends Model
 
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($project) {
+            $project->documents()->each(function ($document) {
+                $document->delete();
+            });
+        });
+    }
+
     //name(s) is HasMany
 
     public function profile()
