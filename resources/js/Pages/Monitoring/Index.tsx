@@ -75,6 +75,7 @@ export default function MonitoringIndex({
                 { value: "11", label: "10 Days Left" },
                 { value: "8", label: "7 Days Left" },
                 { value: "4", label: "3 Days Left" },
+                { value: "1", label: "Reached Time Limit" },
             ]
         },
     ];

@@ -180,7 +180,7 @@ function VersionsSection({project, projectDocument, projectDocumentVersions, use
                                 </div>
                             </AccordionContent>
                         </AccordionItem>
-                    )) : 'No versions available.'}
+                    )) : <span className="italic text-muted-foreground">No versions available.</span> }
                 </Accordion>
             </Card>
         </>

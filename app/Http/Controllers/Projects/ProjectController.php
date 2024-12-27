@@ -24,9 +24,20 @@ class ProjectController extends Controller
     {
         $projects = $this->projectService->getProjects();
 
+        $pics = User::all()->reject(function ($user, $key) {
+            return $user->can('Handle Owned Project');
+        })->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->profile->name,
+
+            ];
+        });
+
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
             'projectBusinessTypes' => $this->projectService->getProjectBusinessTypes(),
+            'pics' => $pics,
         ]);
     }
 

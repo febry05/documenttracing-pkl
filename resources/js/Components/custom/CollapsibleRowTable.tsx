@@ -32,12 +32,17 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         getSubRows: (row) => row.documentVersions,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
-        getRowCanExpand: () => true,
+        getRowCanExpand: (row) => row.documentVersions && row.documentVersions.length > 0,
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
         filterFromLeafRows: true,
         initialState: {
-            expanded: true,
+            expanded: data.reduce((acc, row, index) => {
+                if (row.documentVersions && row.documentVersions.length > 0) {
+                    acc[index] = true;
+                }
+                return acc;
+            }, {}),
         },
         state: {
             columnFilters,
@@ -108,65 +113,80 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 (row.depth > 0) ? (
-                                        <TableRow
-                                            key={row.id}
-                                            data-state={row.getIsSelected() && "selected"}
-                                            className="cursor-pointer"
-                                            onClick={() => router.visit(route(detailPage, { project: row.original.project_id, document: row.original.project_document_id, version: row.original.id }))}
-                                            // onClick={() => console.log(row.getParentRow())}
-                                            // onClick={() => console.log()}
-                                        >
-                                            {row.getVisibleCells().map((cell) => (
-                                                <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
-                                                    {row.depth === 0 && row.getCanExpand() && cell.column.columnDef.header === "Name" ? (
-                                                        <>
-                                                            <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
-                                                        </>
-                                                    ) : (
-                                                        flexRender(cell.column.columnDef.cell, cell.getContext())
-                                                    )}
+                                    <TooltipProvider key={row.id}>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <TableRow
+                                                    key={row.id}
+                                                    data-state={row.getIsSelected() && "selected"}
+                                                    className="cursor-pointer"
+                                                    onClick={() => router.visit(route(detailPage, { project: row.original.project_id, document: row.original.project_document_id, version: row.original.id }))}
+                                                >
+                                                    {row.getVisibleCells().map((cell) => (
+                                                        <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
+                                                            {row.depth === 0 && cell.column.columnDef.header === "Name" ? (
+                                                                <>
+                                                                    <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
+                                                                </>
+                                                            ) : (
+                                                                flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                            )}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                            <p>Click to view details</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                ) : (
+                                    <React.Fragment key={row.id}>
+                                        <TooltipProvider key={row.id}>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <TableRow
+                                                        key={row.id}
+                                                        data-state={row.getIsSelected() && "selected"}
+                                                        className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background" : ""}
+                                                        onClick={() => row.toggleExpanded()}
+                                                        style={{ cursor: 'pointer' }}
+                                                    >
+                                                        {row.getVisibleCells().map((cell) => (
+                                                            <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
+                                                                {row.depth === 0 && cell.column.columnDef.header === "Name" ? (
+                                                                    <>
+                                                                        <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
+                                                                    </>
+                                                                ) : (
+                                                                    flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                                )}
+                                                            </TableCell>
+                                                        ))}
+                                                    </TableRow>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                <p>Click to expand</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                        {row.getIsExpanded() && (!row.original.documentVersions || row.original.documentVersions.length === 0) && (
+                                            <TableRow key={`${row.id}-no-versions`}>
+                                                <TableCell colSpan={table.getAllColumns().length} className="text-center py-6 italic text-muted-foreground">
+                                                    No document versions available.
                                                 </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    // ) : (
-                                    //     <TableRow>
-                                    //             <TableCell colSpan={columns.length} className="h-16 text-center text-muted-foreground">
-                                    //             No document versions available.
-                                    //         </TableCell>
-                                    //     </TableRow>
-                                    // )
-
-                                    ) : (
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                        className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background" : ""}
-                                        {...row.depth === 0 &&{
-                                            onClick: () => {row.getToggleExpandedHandler(); console.log(row.getLeafRows())},
-                                            style: { cursor: 'pointer' },
-                                        }}
-                                    >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
-                                            {row.depth === 0 && row.getCanExpand() && cell.column.columnDef.header === "Name" ? (
-                                                <>
-                                                    <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
-                                                </>
-                                            ) : (
-                                                flexRender(cell.column.columnDef.cell, cell.getContext())
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                    </TableRow>
+                                            </TableRow>
+                                        )}
+                                    </React.Fragment>
                                 )
                             ))
                         ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No data available.
-                            </TableCell>
-                        </TableRow>
-                    )}
+                            <TableRow>
+                                <TableCell colSpan={table.getAllColumns().length} className="text-center py-2">
+                                    No data available.
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>

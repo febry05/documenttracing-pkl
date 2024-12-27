@@ -187,8 +187,8 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No data yet.
+                <TableCell colSpan={columns.length} className="h-24 text-center italic text-muted-foreground">
+                  No data available.
                 </TableCell>
               </TableRow>
             )}

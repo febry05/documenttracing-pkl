@@ -20,23 +20,23 @@ class ProjectService {
     }
 
     public function getDashboard(){
-         $user = User::find(Auth::user()->id); 
+         $user = User::find(Auth::user()->id);
 
          return Project::with(['documents.versions', 'profile'])
         ->whereHas('profile', function ($query) use ($user) {
             $query->where('user_id', $user->id); // Ensure the project is assigned to the user
         })
-        ->select('id', 'name') 
+        ->select('id', 'name')
         ->get()
         ->map(function ($project) {
             return $project->documents->map(function ($document) use ($project) {
-                $latestVersion = $document->versions->sortByDesc('deadline')->first(); 
+                $latestVersion = $document->versions->sortByDesc('deadline')->first();
                 return [
                     'id' => $document->id,
                     'document' => $document->name,
                     'project' => $project->name,
-                    'due_date' => $latestVersion ? $latestVersion->deadline : 'No Deadline',
-                    'days_left' => $latestVersion ? $this->calculateDays($latestVersion->deadline) : 'N/A','days_left' => $latestVersion ? $this->calculateDays($latestVersion->deadline) : 'No Deadline',
+                    'due_date' => $latestVersion ? Carbon::parse($latestVersion->deadline)->toDateString() : 'N/A',
+                    'days_left' => $latestVersion ? Carbon::parse($latestVersion->deadline)->toDateString() : 'No Deadline',
                     'priority' => $document->priority_type_name,
                 ];
             });

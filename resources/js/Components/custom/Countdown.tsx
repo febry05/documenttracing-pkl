@@ -47,7 +47,24 @@ const Countdown: React.FC<CountdownProps> = (
     const timerComponents = [];
 
     if (timeLeft.days || timeLeft.hours || timeLeft.minutes || timeLeft.seconds) {
-        if (timeLeft.days) {
+        if (timeLeft.days >= 365) {
+            const years = Math.floor(timeLeft.days / 365);
+            const months = Math.floor(timeLeft.days / 30 - (years * 12));
+            const remainingDays = timeLeft.days % 365;
+            timerComponents.push(
+                <span key="years">
+                    {years} Years {separateLines && <br />} {months} Months
+                </span>
+            );
+        } else if (timeLeft.days >= 30) {
+            const months = Math.floor(timeLeft.days / 30);
+            const remainingDays = timeLeft.days % 30;
+            timerComponents.push(
+                <span key="months">
+                    {months} Months {separateLines && <br />} {remainingDays} Days
+                </span>
+            );
+        } else if (timeLeft.days) {
             timerComponents.push(
                 <span key="days">
                     {timeLeft.days} Days {separateLines && <br />} {timeLeft.hours} Hours
@@ -68,7 +85,7 @@ const Countdown: React.FC<CountdownProps> = (
         } else {
             timerComponents.push(
                 <span key="seconds">
-                    {timeLeft.seconds} seconds
+                    {timeLeft.seconds} Seconds
                 </span>
             );
         }
