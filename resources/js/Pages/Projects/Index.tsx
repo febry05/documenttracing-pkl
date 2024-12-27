@@ -7,16 +7,18 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Button } from "@/Components/ui/button";
 import { can } from "@/lib/utils";
-import { Auth, Project } from "@/types/model";
+import { Auth, Project, User } from "@/types/model";
 
 interface PageProps {
     projects: Project[];
     projectBusinessTypes: FilterOption[];
+    pics: User[];
 }
 
 export default function ProjectsIndex({
     projects,
     projectBusinessTypes,
+    pics,
 }: PageProps) {
     const filters = [
         {
@@ -27,10 +29,20 @@ export default function ProjectsIndex({
                 ...projectBusinessTypes,
             ],
         },
+        {
+            columnId: "person_in_charge",
+            label: "Person in Charge",
+            options: [
+                { value: "all", label: "All PIC" },
+                ...projectBusinessTypes,
+            ],
+        },
     ];
 
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
+
+    console.log(pics);
 
     return (
         <DashboardLayout

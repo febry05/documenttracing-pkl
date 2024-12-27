@@ -5,8 +5,8 @@ import PriorityBadge from "@/Components/custom/PriorityBadge";
 import { Badge } from "@/Components/ui/badge"
 import { Button } from "@/Components/ui/button";
 import { ColumnDef } from "@tanstack/react-table"
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { ChevronDown, ChevronLeft } from "lucide-react";
+import React from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -107,14 +107,14 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
             const daysLeft = Math.max(0, Math.floor((rowValue - now) / (1000 * 60 * 60 * 24)));
             const filterNum = parseFloat(value);
 
-            if (isNaN(daysLeft) || isNaN(filterNum)) {
+            console.log(filterNum);
+
+            if (isNaN(daysLeft) || isNaN(filterNum) || ((filterNum > 1) && (daysLeft === 0))) {
                 return false;
             }
 
             if (compare === '<') return daysLeft < filterNum;
             if (compare === '>') return daysLeft > filterNum;
-
-            console.log(daysLeft);
 
             return daysLeft === filterNum;
         },
@@ -122,8 +122,9 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
             <div className="w-full flex">
                 <div className="mx-auto">
                     {getValue() && (
-                        <Countdown startDate={row.original.release_date} endDate={getValue() as string | Date} separateLines={true} />
+                        <Countdown startDate={row.original.release_date} endDate={getValue() as string | Date} separateLines={true} endText="Time Limit Reached" />
                     )}
+                    {/* 22 */}
                 </div>
             </div>
         ),
@@ -153,7 +154,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         cell: ({ row, getValue }) => (
             <div>
                 <div className="flex">
-                    {row.getCanExpand() && row.depth === 0 ? (
+                    {row.depth === 0 ? (
                         <div className="ms-auto">
                             {row.getIsExpanded() ? <ChevronLeft size={16} /> : <ChevronDown size={16} />}
                         </div>

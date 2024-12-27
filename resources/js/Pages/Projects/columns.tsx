@@ -22,6 +22,11 @@ export const columns: ColumnDef<Project>[] = [
         header: "Type",
     },
     {
+        accessorKey: "person_in_charge",
+        header: "Person In Charge",
+        enableHiding: true,
+    },
+    {
         accessorKey: "customer",
         header: "Customer",
     },

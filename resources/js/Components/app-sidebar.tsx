@@ -15,6 +15,7 @@ import {
     CalendarIcon,
     ChevronsUpDown,
     Clipboard,
+    Gauge,
     Home,
     KeyRound,
     UserRound,
@@ -39,11 +40,6 @@ export function AppSidebar(url: any) {
 
     const items: SidebarItem[] = [
         {
-            title: "Home",
-            href: "/dashboard",
-            icon: Home,
-        },
-        {
             title: "Monitoring",
             href: "/monitoring",
             icon: CalendarIcon,
@@ -52,6 +48,14 @@ export function AppSidebar(url: any) {
 
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
+
+    can(userPermissions, 'Handle Owned Project') && items.unshift(
+        {
+            title: "Overview",
+            href: "/dashboard",
+            icon: Gauge,
+        }
+    );
 
     canAny(userPermissions, ["Create Project", "View Project", "Update Project", "Delete Project"])
     && items.push(

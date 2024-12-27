@@ -1,5 +1,6 @@
 "use client"
 
+import Countdown from "@/Components/custom/Countdown"
 import PriorityBadge from "@/Components/custom/PriorityBadge"
 import { Badge } from "@/Components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
@@ -30,16 +31,19 @@ export const columns: ColumnDef<Project>[] = [
         header: "Project",
     },
     {
-        accessorKey: "pic",
-        header: "PIC",
-    },
-    {
         accessorKey: "due_date",
         header: "Due Date",
+        cell: ({ getValue }) => (
+            <div className="w-full flex">
+                <div className="mx-auto">
+                    {getValue() == 'N/A' ? <span className="text-muted-foreground italic">No Deadline</span> : getValue() as React.ReactNode}
+                </div>
+            </div>
+        ),
     },
     {
         accessorKey: "days_left",
-        header: "Days Left",
+        header: "Time Remaining",
         filterFn: (row, columnId, filterValue) => {
             // If the filterValue is empty (i.e., "all" is selected), return true for all rows
             if (!filterValue) {
@@ -49,25 +53,26 @@ export const columns: ColumnDef<Project>[] = [
             const { compare, filterValue: value } = filterValue;
 
             // Ensure we are working with numbers for comparison
-            const rowValue = parseFloat(row.getValue(columnId));
+            const rowValue = new Date(row.getValue(columnId)).getTime();
+            const now = new Date().getTime();
+            const daysLeft = Math.max(0, Math.floor((rowValue - now) / (1000 * 60 * 60 * 24)));
             const filterNum = parseFloat(value);
 
-            // If row value or filter value is not a valid number, skip this row
-            if (isNaN(rowValue) || isNaN(filterNum)) {
+            if (isNaN(daysLeft) || isNaN(filterNum) || ((filterNum > 1) && (daysLeft === 0))) {
                 return false;
             }
 
-            // Handle comparison
-            if (compare === '<') return rowValue < filterNum;
-            if (compare === '>') return rowValue > filterNum;
+            if (compare === '<') return daysLeft < filterNum;
+            if (compare === '>') return daysLeft > filterNum;
 
-            // Default equality comparison if no compare operator is found
-            return rowValue === filterNum;
+            return daysLeft === filterNum;
         },
-        cell: ({ getValue }) => (
+        cell: ({ row, getValue }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
-                    {getValue() as React.ReactNode}
+                    {getValue() && (
+                        <Countdown startDate={row.original.release_date} endDate={getValue() as string | Date} separateLines={true} endText="Time limit reached" />
+                    )}
                 </div>
             </div>
         ),

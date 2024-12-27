@@ -37,6 +37,7 @@ export default function Dashboard({ stats, documents }: PageProps) {
                 { value: "11", label: "Next 10 Days" },
                 { value: "8", label: "Next 7 Days" },
                 { value: "4", label: "Next 3 Days" },
+                { value: "1", label: "Reached Time Limit" },
             ],
         },
     ];
@@ -45,7 +46,7 @@ export default function Dashboard({ stats, documents }: PageProps) {
         <DashboardLayout
             header={
                 <span className="font-semibold text-xl leading-tight">
-                    Overview - Last 30 Days
+                    Overview - This Month
                 </span>
             }
         >

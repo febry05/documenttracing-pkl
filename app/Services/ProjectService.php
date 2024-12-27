@@ -41,8 +41,8 @@ class ProjectService {
                                 'name' => $version->version,
                                 'document' => $document->name,
                                 'project' => $project->name,
-                                'due_date' => $version->deadline ?? 'No Deadline',
-                                'days_left' => $version->deadline ? $this->calculateDays($version->deadline) : 'N/A',
+                                'due_date' => $version->deadline ? Carbon::parse($version->deadline)->toDateString() : 'N/A',
+                                'days_left' => $version->deadline ? Carbon::parse($version->deadline)->toDateString() : 'N/A',
                                 'priority' => $document->priority_type_name,
                             ];
                         });

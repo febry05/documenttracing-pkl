@@ -96,12 +96,12 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                                                             <Ellipsis className="text-gray-500" size={20} />
                                                         </Link>
                                                     </div>
-                                                )) : 'No versions available.'
-                                            ) : "You don't have permission to view project document versions."}
+                                                )) : <span className="italic text-muted-foreground">No versions available.</span>
+                                            ) : <span className="italic text-muted-foreground">You don't have permission to view project document versions.</span> }
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
-                            )) : 'No documents available.'
+                            )) : <span className="italic text-muted-foreground">No documents available.</span>
                             }
                         </Accordion>
                         </div>
