@@ -39,7 +39,6 @@ export default function DashboardLayout({
     const { auth, flash, notifications } = usePage<{
         auth: Auth;
         flash: Flash;
-        notifications: Notification[];
     }>().props;
 
     const fullName = auth.name.split(" ");
@@ -78,34 +77,15 @@ export default function DashboardLayout({
             <AppSidebar url={url} />
             <main className="w-full">
                 <nav className="w-full p-3 px-4 flex border-b sticky top-0 z-10 bg-sidebar dark:bg-sidebar">
+                    {/* Sidebar Trigger */}
                     <SidebarTrigger className="my-auto md:hidden" />
 
-                    {/* Search Bar */}
-                    {/* <div className="rounded-full bg-white hover:bg-gray-100 flex ms-4 w-72">
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)}>
-                                <FormField
-                                control={form.control}
-                                name="search"
-                                render={({ field }) => (
-                                    <FormItem className="flex">
-                                        <FormControl>
-                                            <Input className="rounded-full border-0 shadow-none h-13" placeholder="Search anything..." {...field} />
-                                        </FormControl>
-                                        <Button className="rounded-full h-13 w-13" type="submit" size="icon">
-                                            <Search/>
-                                        </Button>
-                                    </FormItem>
-                                )}
-                                />
-
-                                <FormMessage />
-                            </form>
-                        </Form>
-                    </div> */}
+                    <span className="ms-auto" />
 
                     {/* Notification Panel */}
-                    <NotificationPanel notifications={notifications} />
+                    {auth.permissions.includes("Handle Owned Project") && (
+                        <NotificationPanel notifications={auth.notifications} />
+                    )}
 
                     {/* Profile Panel */}
                     <ProfilePanel {...user} />

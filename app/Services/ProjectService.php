@@ -292,7 +292,8 @@ class ProjectService {
                             'priority' => $document->priority_type_name,
                             'projectDocumentVersion' => [
                                 'id' => $version->id,
-                                'daysLeft' => $version->deadline
+                                // 'daysLeft' => $version->deadline
+                                'deadline' => $version->deadline
                             ],
                         ],
                     ],

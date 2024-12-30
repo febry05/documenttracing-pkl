@@ -17,7 +17,7 @@ export default function ProfilePanel(user: User) {
                     <Button
                         variant="secondary"
                         size="icon"
-                        className="shadow-none rounded-full w-fit h-12 hidden md:block"
+                        className="shadow-none rounded-full w-fit h-12 hidden md:block min-w-32"
                     >
                         <div className="my-auto px-6 flex flex-col pe-6 text-left">
                             <span className="text-xs">

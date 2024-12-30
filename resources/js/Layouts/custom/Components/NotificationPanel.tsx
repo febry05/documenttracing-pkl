@@ -1,8 +1,10 @@
 import { Popover, PopoverTrigger, PopoverContent } from "@/Components/ui/popover";
 import { Button } from "@/Components/ui/button";
 import { Link } from "@inertiajs/react";
-import { Bell } from "lucide-react";
+import { File, Bell, AlarmClock, Clipboard } from "lucide-react";
 import { Notification } from "@/types/index";
+import Countdown from "@/Components/custom/Countdown";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Components/ui/tooltip";
 
 function NotificationItem({data}: {data: Notification}) {
     let priorityColor;
@@ -18,29 +20,45 @@ function NotificationItem({data}: {data: Notification}) {
     }
 
     return(
-        <Link href={route('projects.documents.versions.show', [data.project.id, data.project.projectDocument.id, data.project.projectDocument.projectDocumentVersion.id])}>
-        <Button
-            className={"flex flex-col justify-start w-full h-fit " + priorityColor}
-            variant="ghost"
-        >
-            <div className="text-sm font-semibold w-full text-left">
-                {data.project.projectDocument.name}
-            </div>
-            <div className="text-sm font-normal w-full text-left text-wrap">
-                {data.project.name}
-            </div>
-            <div className="text-xs w-full text-left text-gray-500 dark:text-gray-400">
-                {data.project.projectDocument.daysLeft} Days Left
-            </div>
-        </Button>
-    </Link>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger type="button" asChild>
+                    <Link href={route('projects.documents.versions.show', [data.project.id, data.project.projectDocument.id, data.project.projectDocument.projectDocumentVersion.id])}>
+                        <Button
+                            className={"flex flex-col justify-start w-full h-fit " + priorityColor}
+                            variant="ghost"
+                        >
+                            <div className="text-sm font-semibold w-full text-left flex mb-2">
+                                <File size={16} className="me-2"/>
+                                <span className="my-auto">{data.project.projectDocument.name}</span>
+                            </div>
+                            <div className="text-sm font-normal w-full text-left text-wrap flex mb-2">
+                                <Clipboard size={16} className="me-2"/>
+                                <span className="w-fit">
+                                    {data.project.name}
+                                </span>
+                            </div>
+                            <div className="w-full text-left  flex">
+                                <AlarmClock size={16} className="me-2"/>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    <Countdown endDate={data.project.projectDocument.projectDocumentVersion.deadline} endText="Time limit reached"/>
+                                </span>
+                            </div>
+                        </Button>
+                    </Link>
+                </TooltipTrigger>
+                <TooltipContent className="hover:cursor-normal">
+                    Click to view
+                </TooltipContent>
+                </Tooltip>
+        </TooltipProvider>
     );
 }
 
 export default function NotificationPanel({notifications}: {notifications: Notification[]}) {
     return(
         <Popover>
-            <PopoverTrigger className="ms-auto" asChild>
+            <PopoverTrigger asChild>
                 <Button
                     variant="secondary"
                     size="icon"
@@ -55,9 +73,12 @@ export default function NotificationPanel({notifications}: {notifications: Notif
                         <div className="text-sm text-center font-semibold">Notifications</div>
                     </div>
                     <div className="flex flex-col p-4 gap-4">
-                    {notifications.map((notification) => (
+                    {
+                        notifications.length > 0 ? notifications.map((notification) => (
                         <NotificationItem key={notification.project.id} data={notification}/>
-                    ))}
+                        ))
+                        : (<span className="text-muted-foreground italic text-center">No notifications.</span>)
+                    }
 
                     </div>
                 </div>

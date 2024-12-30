@@ -1,3 +1,5 @@
+import { Notification } from '@/types/index';
+
 type BaseModel = {
     id: number;
     created_at: Date;
@@ -124,4 +126,5 @@ export type Auth = {
     name: string;
     role: string;
     permissions: string[];
+    notifications: Notification[];
 };

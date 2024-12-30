@@ -46,6 +46,7 @@ export type Notification = {
             priority: "High" | "Medium" | "Low",
             projectDocumentVersion: {
                 id: number,
+                deadline: string | Date,
             }
         }
     },

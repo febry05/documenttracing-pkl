@@ -8,7 +8,7 @@ export default function LearnTooltip({text, className}: {text: string, className
                 <TooltipTrigger className={"hover:cursor-help " + className} type="button">
                     <Info size={14} className="text-neutral-700"/>
                 </TooltipTrigger>
-                <TooltipContent className="hover:cusror-normal">
+                <TooltipContent className="hover:cursor-normal">
                     { text }
                 </TooltipContent>
             </Tooltip>
