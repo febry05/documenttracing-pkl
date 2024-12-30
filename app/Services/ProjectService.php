@@ -294,6 +294,7 @@ class ProjectService {
                                 'id' => $version->id,
                                 // 'daysLeft' => $version->deadline
                                 'deadline' => $version->deadline
+                                // tambah status
                             ],
                         ],
                     ],

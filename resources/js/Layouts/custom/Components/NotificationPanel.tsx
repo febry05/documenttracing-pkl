@@ -28,16 +28,25 @@ function NotificationItem({data}: {data: Notification}) {
                             className={"flex flex-col justify-start w-full h-fit " + priorityColor}
                             variant="ghost"
                         >
-                            <div className="text-sm font-semibold w-full text-left flex mb-2">
+                            <div className="text-sm w-full text-left flex mb-2">
                                 <File size={16} className="me-2"/>
-                                <span className="my-auto">{data.project.projectDocument.name}</span>
-                            </div>
-                            <div className="text-sm font-normal w-full text-left text-wrap flex mb-2">
-                                <Clipboard size={16} className="me-2"/>
-                                <span className="w-fit">
+                                <span className="my-auto text-wrap w-fit">
+                                    <span className="font-bold">
+                                        {data.project.projectDocument.name}
+                                    </span>
+                                    {/* <span className="font-light"></span> */}
+                                    {' '} on project {' '}
+                                    <span className="font-semibold">
                                     {data.project.name}
+                                    </span>
                                 </span>
                             </div>
+                            {/* <div className="text-xs font-normal w-full text-left text-wrap flex mb-2">
+                                <Clipboard size={16} className="me-2"/>
+                                <span className="w-fit line-clamp-3">
+                                    {data.project.name}
+                                </span>
+                            </div> */}
                             <div className="w-full text-left  flex">
                                 <AlarmClock size={16} className="me-2"/>
                                 <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -67,7 +76,7 @@ export default function NotificationPanel({notifications}: {notifications: Notif
                     <Bell size={20} />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="p-0">
+            <PopoverContent className="p-0 md:w-[28rem] w-screen">
                 <div className="flex flex-col">
                     <div className="border p-4 px-8">
                         <div className="text-sm text-center font-semibold">Notifications</div>
