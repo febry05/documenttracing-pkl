@@ -76,6 +76,11 @@ export const columns: ColumnDef<Project>[] = [
                 </div>
             </div>
         ),
+        sortingFn: (rowA, rowB, getValue) => {
+            const timeLeftA = new Date(rowA.original.days_left).getTime() - Date.now();
+            const timeLeftB = new Date(rowB.original.days_left).getTime() - Date.now();
+            return timeLeftA - timeLeftB;
+        },
         size: 50,
         minSize: 50,
         maxSize: 50,

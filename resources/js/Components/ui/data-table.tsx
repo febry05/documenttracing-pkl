@@ -9,7 +9,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-//   getPaginationRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
@@ -28,6 +28,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Components/ui/tooltip"
 import { router } from "@inertiajs/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/dialog"
+import { Button } from "./button"
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, MoveDown, MoveUp } from "lucide-react"
 
 export interface FilterOption {
   value: string;
@@ -58,18 +60,23 @@ export function DataTable<TData, TValue>({
   detailDialog,
   renderDialogContent,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [globalFilter, setGlobalFilter] = React.useState<string>("")
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
-  const [selectedRowData, setSelectedRowData] = React.useState<TData | null>(null)
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = React.useState<TData | null>(null);
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0, //initial page index
+    //default page size, loaded from localStorage or fallback to 10
+    pageSize: Number(localStorage.getItem('tablePageSize')) || 10,
+  });
 
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    // // getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -77,6 +84,12 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       globalFilter,
+    },
+    initialState: {
+        pagination: {
+            pageIndex: 0, //custom initial page index
+            pageSize: Number(localStorage.getItem('tablePageSize')) || 10, //custom default page size
+        },
     },
   })
 
@@ -144,8 +157,36 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
+                  {header.isPlaceholder ? null : (
+                    <div className="flex items-center w-full text-black font-semibold">
+                        <div
+                            className={
+                            header.column.getCanSort()
+                                ? "flex items-center gap-1 cursor-pointer select-none w-full"
+                                : ""
+                            }
+                            onClick={header.column.getToggleSortingHandler()}
+                        >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {header.column.getCanSort() && (
+                            <div className="w-4 text-neutral-300 ms-auto">
+                                {header.column.getIsSorted() === "asc" ? (
+                                <div className="flex flex-col">
+                                    <ChevronUp size={14} className="text-black"/>
+                                </div>
+                            ) : header.column.getIsSorted() === "desc" ? (
+                                <div className="flex flex-col">
+                                    <ChevronDown size={14} className="text-black"/>
+                                </div>
+                                ) : (
+                                <ChevronsUpDown size={14}/>
+                                )}
+                            </div>
+                            )}
+                        </div>
+                    </div>
+                  )}
+                </TableHead>
                 ))}
               </TableRow>
             ))}
@@ -195,14 +236,75 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{detailDialog}</DialogTitle>
-          </DialogHeader>
-          {selectedRowData && renderDialogContent && renderDialogContent(selectedRowData)}
-        </DialogContent>
-      </Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{detailDialog}</DialogTitle>
+                    </DialogHeader>
+                    {selectedRowData && renderDialogContent && renderDialogContent(selectedRowData)}
+                </DialogContent>
+        </Dialog>
+        <div className="flex gap-2 mt-4 text-sm">
+
+            <div className="flex gap-2 items-center">
+                <span>Showing {' '}</span>
+                <Select onValueChange={
+                        (value) => {
+                            table.setPageSize(Number(value));
+                            localStorage.setItem('tablePageSize', value);
+                        }
+                    }>
+                    <SelectTrigger className="h-8">
+                        <SelectValue placeholder={table.getState().pagination.pageSize.toString()}/>
+                    </SelectTrigger>
+                    <SelectContent>
+                        {[10, 20, 30, 40, 50].map(pageSize => (
+                            <SelectItem key={pageSize} value={pageSize.toString()}>{pageSize}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <span>{' '} entries</span>
+            </div>
+
+            <div className="flex ms-auto gap-2 items-center">
+                <Button
+                    onClick={() => table.firstPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    size="xs"
+                    >
+                    <ChevronFirst size={16}/>
+                </Button>
+                <Button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    size="xs"
+                    >
+                    <ChevronLeft size={16}/>
+                </Button>
+
+                <div className="mx-2">
+                    Page {' '}
+                    <Input type="number" placeholder="Page Index" value={table.getState().pagination.pageIndex + 1} className="w-14 inline-block h-8" onChange={(e) => table.setPageIndex(Number(e.target.value) - 1)} />
+                    {' '} of {' '}
+                    <span className="">{table.getPageCount()}</span>
+                </div>
+
+                <Button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    size="xs"
+                    >
+                    <ChevronRight size={16}/>
+                </Button>
+                <Button
+                    onClick={() => table.lastPage()}
+                    disabled={!table.getCanNextPage()}
+                    size="xs"
+                    >
+                    <ChevronLast size={16}/>
+                </Button>
+            </div>
+        </div>
     </div>
   )
 }

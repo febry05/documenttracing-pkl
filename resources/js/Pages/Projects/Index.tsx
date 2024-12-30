@@ -34,15 +34,13 @@ export default function ProjectsIndex({
             label: "Person in Charge",
             options: [
                 { value: "all", label: "All PIC" },
-                ...projectBusinessTypes,
+                ...pics,
             ],
         },
     ];
 
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
-
-    console.log(pics);
 
     return (
         <DashboardLayout

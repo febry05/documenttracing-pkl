@@ -24,15 +24,14 @@ class ProjectController extends Controller
     {
         $projects = $this->projectService->getProjects();
 
-        $pics = User::all()->reject(function ($user, $key) {
+        $pics = User::all()->filter(function ($user) {
             return $user->can('Handle Owned Project');
         })->map(function ($user) {
             return [
-                'id' => $user->id,
-                'name' => $user->profile->name,
-
+            'value' => $user->profile->name,
+            'label' => $user->profile->name,
             ];
-        });
+        })->values()->toArray();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
@@ -135,9 +134,9 @@ class ProjectController extends Controller
         DB::beginTransaction();
         try {
             $project = Project::findOrFail($id);
-            
+
             $project->documents()->each(function ($document) {
-                $document->delete(); 
+                $document->delete();
             });
 
             $project->delete();

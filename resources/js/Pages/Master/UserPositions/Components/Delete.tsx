@@ -9,31 +9,33 @@ import { UserPosition } from "@/types/model";
 
 interface PageProps {
     data: UserPosition,
+    closeDialog: () => void;
 }
 
-export function UserPositionDeleteDialog({data}: PageProps) {
+export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            setIsOpen(false);
-            // router.get(route('profile.edit'))
-            router.delete(route('user-positions.destroy', data.id));
+            router.delete(route('user-positions.destroy', data.id), {
+                onFinish: () => {
+                    setIsOpen(false);
+                    closeDialog(); // Close both dialogs
+                }
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }
     }
 
-    return(
+    return (
         <FormDialog open={isOpen} onOpenChange={setIsOpen}
-            trigger={
-                {
-                    text: "Delete",
-                    icon: Trash2,
-                    variant: "destructive"
-                }
-            }
+            trigger={{
+                text: "Delete",
+                icon: Trash2,
+                variant: "destructive"
+            }}
             title="Delete User Position"
             description={
                 <span>
@@ -41,7 +43,7 @@ export function UserPositionDeleteDialog({data}: PageProps) {
                     <strong>{data.name}</strong>
                     "?
                 </span>
-                }
+            }
             footer={
                 <Form {...form}>
                     <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
@@ -50,5 +52,5 @@ export function UserPositionDeleteDialog({data}: PageProps) {
                 </Form>
             }
         />
-    )
+    );
 }

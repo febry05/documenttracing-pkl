@@ -10,15 +10,25 @@ import { UserDivision } from "@/types/model";
 
 interface PageProps {
     data: UserDivision,
+    closeDialog?: () => void;
 }
 
-export function UserDivisionDeleteDialog({data}: PageProps) {
+export function UserDivisionDeleteDialog({data, closeDialog}: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            router.delete(route('user-divisions.destroy', data.id));
+            router.delete(route('user-divisions.destroy', data.id), {
+                preserveScroll: true, // Keeps scroll position but reloads data
+                onFinish: () => {
+                    setIsOpen(false);
+                    if (closeDialog) {
+                        closeDialog(); // This will close both dialogs
+                    }
+                    form.reset();
+                }
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }

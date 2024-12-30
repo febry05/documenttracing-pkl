@@ -33,7 +33,6 @@ export default function UserDivisionCreateDialog() {
                 preserveScroll: true, // Keeps scroll position but reloads data
                 onFinish: () => {
                     setIsOpen(false);
-                    router.visit(route('user-divisions.index'), { only: ['userDivisions'] });
                 }, // Closes the dialog on success
             });
         } catch (error) {

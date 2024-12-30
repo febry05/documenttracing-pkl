@@ -336,7 +336,13 @@ export default function ProjectDocumentCreateDialog({
                                             <FormLabel className="flex gap-2">
                                                 Generate Automatically
                                                 <LearnTooltip
-                                                    text="Automatically generate the next document version when the current document version deadline ends."
+                                                    text={
+                                                        <>
+                                                            Automatically generate the next document version when the current document version deadline ends.
+                                                            <br/>
+                                                            <span className="font-bold text-destructive">This cannot be changed later when editing the document properties.</span>
+                                                        </>
+                                                    }
                                                     className="my-auto"
                                                 />
                                             </FormLabel>

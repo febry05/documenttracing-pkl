@@ -32,23 +32,30 @@ export const columns: ColumnDef<Project>[] = [
     },
     {
         accessorKey: "contract_start",
+        sortingFn: 'datetime',
         header: "Contract Start",
     },
     {
         accessorKey: "contract_end",
+        sortingFn: 'datetime',
         header: "Contract End",
     },
     {
-        accessorKey: "contract_end",
+        accessorKey: "time_remaining",
         header: "Time Remaining",
-        cell: ({ getValue, row }) => (
+        cell: ({ row }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
-                    {getValue() && (
-                        <Countdown startDate={row.original.contract_start} endDate={getValue() as string | Date} />
+                    {row.original.contract_end && (
+                        <Countdown startDate={row.original.contract_start} endDate={row.original.contract_end} />
                     )}
                 </div>
             </div>
         ),
+        sortingFn: (rowA, rowB) => {
+            const timeLeftA = new Date(rowA.original.contract_end).getTime() - Date.now();
+            const timeLeftB = new Date(rowB.original.contract_end).getTime() - Date.now();
+            return timeLeftA - timeLeftB;
+        }
     },
 ]

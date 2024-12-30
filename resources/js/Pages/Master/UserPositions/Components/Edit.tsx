@@ -1,6 +1,5 @@
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -38,6 +37,7 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
         try {
             router.put(route('user-positions.update', data.id), values, {
                 onFinish: () => {
+                    closeDialog();
                     router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
                 },
             });
@@ -125,7 +125,7 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
                         <Save className="me-2" size={18} />
                         Save
                     </Button>
-                    <UserPositionDeleteDialog data={data} />
+                    <UserPositionDeleteDialog data={data} closeDialog={closeDialog} />
                 </div>
             </div>
         </div>
