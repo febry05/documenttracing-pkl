@@ -1,7 +1,7 @@
 "use client"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
-import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 import TextLink from './TextLink';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip';
 import { router } from '@inertiajs/react';
@@ -9,6 +9,8 @@ import React from 'react';
 import { ColumnFilterConfig } from '../ui/data-table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Input } from '../ui/input';
+import { ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp } from 'lucide-react';
+import { Button } from '../ui/button';
 
 type Column = {
     accessorKey: string;
@@ -25,6 +27,12 @@ interface DataTableProps<TData extends { id: number }, TValue> {
 export default function CollapsibleRowTable({columns, data, filters = [], detailPage}: DataTableProps<any, any>) {
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = React.useState<string>("");
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [pagination, setPagination] = React.useState({
+        pageIndex: 0, //initial page index
+        //default page size, loaded from localStorage or fallback to 10
+        pageSize: Number(localStorage.getItem('tablePageSize')) || 10,
+    });
 
     const table = useReactTable({
         data,
@@ -35,7 +43,13 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         getRowCanExpand: (row) => row.documentVersions && row.documentVersions.length > 0,
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
         filterFromLeafRows: true,
+        state: {
+            sorting,
+            columnFilters,
+            globalFilter,
+        },
         initialState: {
             expanded: data.reduce((acc, row, index) => {
                 if (row.documentVersions && row.documentVersions.length > 0) {
@@ -43,11 +57,11 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                 }
                 return acc;
             }, {}),
+            pagination: {
+                pageIndex: 0, //custom initial page index
+                pageSize: Number(localStorage.getItem('tablePageSize')) || 10, //custom default page size
+            },
         },
-        state: {
-            columnFilters,
-            globalFilter,
-        }
     });
 
     return (
@@ -103,7 +117,38 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
                                 <TableHead key={header.id} style={{ width: header.column.getSize() }}>
-                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                    {header.isPlaceholder
+                                        ? null
+                                        : (
+                                            <div className="flex items-center w-full text-black font-semibold">
+                                                <div
+                                                    className={
+                                                    header.column.getCanSort()
+                                                        ? "flex items-center gap-1 cursor-pointer select-none w-full"
+                                                        : ""
+                                                    }
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                >
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {header.column.getCanSort() && (
+                                                        <div className="w-4 text-neutral-300 ms-auto">
+                                                            {header.column.getIsSorted() === "asc" ? (
+                                                            <div className="flex flex-col">
+                                                                <ChevronUp size={14} className="text-black"/>
+                                                            </div>
+                                                        ) : header.column.getIsSorted() === "desc" ? (
+                                                            <div className="flex flex-col">
+                                                                <ChevronDown size={14} className="text-black"/>
+                                                            </div>
+                                                            ) : (
+                                                            <ChevronsUpDown size={14}/>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    }
                                 </TableHead>
                             ))}
                         </TableRow>
@@ -148,7 +193,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                                     <TableRow
                                                         key={row.id}
                                                         data-state={row.getIsSelected() && "selected"}
-                                                        className={row.depth === 0 ? "bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background" : ""}
+                                                        className={row.depth === 0 ? " bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background rounded-md" : ""}
                                                         onClick={() => row.toggleExpanded()}
                                                         style={{ cursor: 'pointer' }}
                                                     >
@@ -190,6 +235,70 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                     </TableBody>
                 </Table>
             </div>
+            {/* Table [END] */}
+
+            {/* Pagination [START] */}
+            <div className="flex gap-2 mt-4 text-sm">
+                <div className="flex gap-2 items-center">
+                    <span>Showing {' '}</span>
+                    <Select onValueChange={
+                            (value) => {
+                                table.setPageSize(Number(value));
+                                localStorage.setItem('tablePageSize', value);
+                            }
+                        }>
+                        <SelectTrigger className="h-8">
+                            <SelectValue placeholder={table.getState().pagination.pageSize.toString()}/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {[10, 20, 30, 40, 50].map(pageSize => (
+                                <SelectItem key={pageSize} value={pageSize.toString()}>{pageSize}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <span>{' '} entries</span>
+                </div>
+
+                <div className="flex ms-auto gap-2 items-center">
+                    <Button
+                        onClick={() => table.firstPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        size="xs"
+                        >
+                        <ChevronFirst size={16}/>
+                    </Button>
+                    <Button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        size="xs"
+                        >
+                        <ChevronLeft size={16}/>
+                    </Button>
+
+                    <div className="mx-2">
+                        Page {' '}
+                        <Input type="number" placeholder="Page Index" value={table.getState().pagination.pageIndex + 1} className="w-14 inline-block h-8" onChange={(e) => table.setPageIndex(Number(e.target.value) - 1)} />
+                        {' '} of {' '}
+                        <span className="">{table.getPageCount()}</span>
+                    </div>
+
+                    <Button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        size="xs"
+                        >
+                        <ChevronRight size={16}/>
+                    </Button>
+                    <Button
+                        onClick={() => table.lastPage()}
+                        disabled={!table.getCanNextPage()}
+                        size="xs"
+                        >
+                        <ChevronLast size={16}/>
+                    </Button>
+                </div>
+            </div>
+            {/* Pagination [END] */}
         </div>
     );
 };

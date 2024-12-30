@@ -33,7 +33,14 @@ export default function ProjectBusinessTypeEditDialog({ data, closeDialog }: Pag
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.put(route('project-business-types.update', data.id), values);
+            router.put(route('project-business-types.update', data.id), values, {
+                    preserveScroll: true,
+                    onFinish: () => {
+                        form.reset();
+                        closeDialog();
+                    }
+                }
+            );
         } catch (error) {
             console.error('Submission error:', error);
         }
@@ -89,7 +96,7 @@ export default function ProjectBusinessTypeEditDialog({ data, closeDialog }: Pag
                         <Save className="me-2" size={18} />
                         Save
                     </Button>
-                    <ProjectBusinessTypeDeleteDialog data={data} />
+                    <ProjectBusinessTypeDeleteDialog data={data} closeDialog={closeDialog} />
                 </div>
             </div>
         </div>

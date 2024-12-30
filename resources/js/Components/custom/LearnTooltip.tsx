@@ -2,7 +2,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Comp
 import { Info } from "lucide-react";
 import { ReactElement } from "react";
 
-export default function LearnTooltip({text, className}: {text: string | ReactElement, className: string}) {
+export default function LearnTooltip({text, className}: {text: string | ReactElement, className?: string}) {
     return (
         <TooltipProvider>
             <Tooltip>

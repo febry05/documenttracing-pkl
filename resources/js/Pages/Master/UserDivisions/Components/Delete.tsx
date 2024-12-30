@@ -1,4 +1,3 @@
-import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "react-hook-form";
 import { FormDialog } from "@/Components/custom/FormDialog";
 import { Button } from "@/Components/ui/button";
@@ -20,13 +19,11 @@ export function UserDivisionDeleteDialog({data, closeDialog}: PageProps) {
     async function onSubmit() {
         try {
             router.delete(route('user-divisions.destroy', data.id), {
-                preserveScroll: true, // Keeps scroll position but reloads data
+                preserveScroll: true,
                 onFinish: () => {
-                    setIsOpen(false);
-                    if (closeDialog) {
-                        closeDialog(); // This will close both dialogs
-                    }
                     form.reset();
+                    closeDialog();
+                    setIsOpen(false);
                 }
             });
         } catch (error) {

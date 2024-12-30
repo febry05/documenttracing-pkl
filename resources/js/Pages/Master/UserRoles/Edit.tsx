@@ -22,6 +22,8 @@ import { UserRoleDeleteDialog } from "./Components/Delete";
 import { IconButton } from "@/Components/custom/IconButton";
 import { Save } from "lucide-react";
 import { UserRole } from "@/types/model";
+import { permissionGroups } from "@/lib/utils";
+import LearnTooltip from "@/Components/custom/LearnTooltip";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -135,42 +137,53 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
                                 <div className="mb-4">
                                     <FormLabel className="text-base">Role Permissions</FormLabel>
                                     <FormDescription>
-                                        Select the permissionss you want this role assigned to.
+                                        Select the permissions you want this role assigned to.
                                     </FormDescription>
                                 </div>
 
                                 {/* Checkboxes */}
-                                <div className="grid grid-cols-4 grid-flow-row gap-4">
-                                    {permissions.map((permission) => (
-                                        <FormField
-                                        key={permission.id}
-                                        control={form.control}
-                                        name="permissions"
-                                        render={({ field }) => {
-                                            return (
-                                            <FormItem
-                                                key={permission.id}
-                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                            >
-                                                <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value?.includes(permission.name)}
-                                                        onCheckedChange={(checked) => {
-                                                            const updatedPermissions = checked
-                                                                ? [...field.value, permission.name]
-                                                                : field.value.filter((value) => value !== permission.name);
-                                                            field.onChange(updatedPermissions);
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                                <FormLabel className="text-sm font-normal">
-                                                    {permission.name}
-                                                </FormLabel>
-                                            </FormItem>
-                                            )
-                                        }}
-                                        />
-                                    ))}
+                                <div className="grid md:grid-cols-3 gap-4">
+                                    {Object.values(permissionGroups).map((group) => (
+                                            <div key={group.name} className="text-sm">
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-sm">{group.name}</span>
+                                                        {group.description && <LearnTooltip text={description} />}
+
+                                                    </div>
+                                                    {
+                                                        group.permissions.map((permission) => (
+                                                            <FormField
+                                                                key={permission.name}
+                                                                control={form.control}
+                                                                name="permissions"
+                                                                render={({ field }) => (
+                                                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                                                        <FormControl>
+                                                                            <Checkbox
+                                                                                checked={field.value?.includes(permission.name)}
+                                                                                onCheckedChange={(checked) => {
+                                                                                return checked
+                                                                                    ? field.onChange([...field.value, permission.name])
+                                                                                    : field.onChange(
+                                                                                        field.value.filter((value) => value !== permission.name)
+                                                                                    );
+                                                                                }}
+                                                                            />
+                                                                        </FormControl>
+                                                                        <FormLabel className="text-sm flex gap-2 item-center hover:cursor-pointer">
+                                                                            {permission.name}
+                                                                            {permission.description && <LearnTooltip text={permission.description} />}
+                                                                        </FormLabel>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                        ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                                 <FormMessage />
                             </FormItem>

@@ -19,6 +19,8 @@ import {
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Checkbox } from "@/Components/ui/checkbox";
+import LearnTooltip from "@/Components/custom/LearnTooltip";
+import { permissionGroups } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -47,11 +49,24 @@ export default function UserRoleCreate({ permissions }: PageProps) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("user-roles.store"), values);
+            router.post(route("user-roles.store"), values);
         } catch (error) {
             console.error("Submission error:", error);
         }
     }
+
+    // const objectMap = (obj, fn) =>
+    //     Object.fromEntries(
+    //         Object.entries(obj).map(
+    //         ([k, v], i) => [k, fn(v, k, i)]
+    //     )
+    // )
+
+    // objectMap(permissionGroups, (group) => {
+    //     console.log('group', group);
+    // });
+
+    // Object.values(permissionGroups).map((group) => (console.log('group', group)));
 
     return (
         <DashboardLayout
@@ -130,48 +145,57 @@ export default function UserRoleCreate({ permissions }: PageProps) {
                                 <div className="mb-4">
                                     <FormLabel className="text-base">Role Permissions</FormLabel>
                                     <FormDescription>
-                                        Select the permissionss you want this role assigned to.
+                                        Select the permissions you want this role assigned to.
                                     </FormDescription>
                                 </div>
 
-
-
                                 {/* Checkboxes */}
-                                <div className="grid grid-cols-4 grid-flow-row gap-4">
-                                    {permissions.map((permission) => (
-                                        <FormField
-                                        key={permission.id}
-                                        control={form.control}
-                                        name="permissions"
-                                        render={({ field }) => {
-                                            return (
-                                            <FormItem
-                                                key={permission.id}
-                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                            >
-                                                <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value?.includes(permission.name)}
-                                                        onCheckedChange={(checked) => {
-                                                        return checked
-                                                            ? field.onChange([...field.value, permission.name]) // Ensure permission.id is a string
-                                                            : field.onChange(
-                                                                field.value.filter((value) => value !== permission.name)
-                                                            );
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                                <FormLabel className="text-sm font-normal">
-                                                    {permission.name}
-                                                </FormLabel>
-                                            </FormItem>
-                                            )
-                                        }}
-                                        />
-                                    ))}
+                                <div className="grid md:grid-cols-3 gap-4">
+                                    {Object.values(permissionGroups).map((group) => (
+                                            <div key={group.name} className="text-sm">
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-sm">{group.name}</span>
+                                                        {group.description && <LearnTooltip text={description} />}
+
+                                                    </div>
+                                                    {
+                                                        group.permissions.map((permission) => (
+                                                            <FormField
+                                                                key={permission.name}
+                                                                control={form.control}
+                                                                name="permissions"
+                                                                render={({ field }) => (
+                                                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                                                        <FormControl>
+                                                                            <Checkbox
+                                                                                checked={field.value?.includes(permission.name)}
+                                                                                onCheckedChange={(checked) => {
+                                                                                return checked
+                                                                                    ? field.onChange([...field.value, permission.name])
+                                                                                    : field.onChange(
+                                                                                        field.value.filter((value) => value !== permission.name)
+                                                                                    );
+                                                                                }}
+                                                                            />
+                                                                        </FormControl>
+                                                                        <FormLabel className="text-sm flex gap-2 item-center hover:cursor-pointer">
+                                                                            {permission.name}
+                                                                            {permission.description && <LearnTooltip text={permission.description} />}
+                                                                        </FormLabel>
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                        ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                                 <FormMessage />
                             </FormItem>
+
 
                             <Button type="submit">Save</Button>
 

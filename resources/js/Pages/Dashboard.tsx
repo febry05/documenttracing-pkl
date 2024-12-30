@@ -52,7 +52,7 @@ export default function Dashboard({ stats, documents }: PageProps) {
         >
             <Head title="Dashboard" />
             <div className="flex flex-col gap-4 md:gap-4">
-                <div className="grid grid-cols-4 gap-4 md:gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <InfoCard
                         title={stats.total_documents.toString()}
                         caption="Total Documents"

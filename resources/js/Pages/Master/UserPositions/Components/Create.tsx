@@ -6,7 +6,6 @@ import { Plus } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
@@ -38,9 +37,10 @@ export default function UserPositionCreateDialog({ userDivisions }: PageProps) {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             router.post(route('user-positions.store'), values, {
+                preserveScroll: true,
                 onFinish: () => {
+                    form.reset();
                     setIsOpen(false);
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
                 },
             });
         } catch (error) {

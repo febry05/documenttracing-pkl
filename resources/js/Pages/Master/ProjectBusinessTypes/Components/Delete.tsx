@@ -10,15 +10,21 @@ import { ProjectBusinessType } from "@/types/model";
 
 interface PageProps {
     data: ProjectBusinessType,
+    closeDialog: () => void,
 }
 
-export function ProjectBusinessTypeDeleteDialog({data}: PageProps) {
+export function ProjectBusinessTypeDeleteDialog({ data, closeDialog }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            router.delete(route('project-business-types.destroy', data.id));
+            router.delete(route('project-business-types.destroy', data.id), {
+                onFinish: () => {
+                    setIsOpen(false);
+                    closeDialog();
+                }
+            });
         } catch (error) {
             console.error('Submission error:', error);
         }

@@ -29,10 +29,11 @@ export default function ProjectBusinessTypeCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route('project-business-types.store'), values, {
+            router.post(route('project-business-types.store'), values, {
+                preserveScroll: true,
                 onFinish: () => {
+                    form.reset();
                     setIsOpen(false);
-                    router.visit(route('project-business-types.index'), { only: ['projectBusinessTypes'] });
                 },
             });
         } catch (error) {

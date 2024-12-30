@@ -6,7 +6,6 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import UserPositionsCreateDialog from "./Components/Create";
 import UserPositionEditDialog from "./Components/Edit";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
 import { UserDivision, UserPosition } from "@/types/model";
 
 interface PageProps {
@@ -15,8 +14,6 @@ interface PageProps {
 }
 
 export default function UserPositionsIndex({ userPositions, userDivisions }: PageProps) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     return (
         <DashboardLayout
             header={
@@ -34,8 +31,8 @@ export default function UserPositionsIndex({ userPositions, userDivisions }: Pag
                     columns={columns}
                     data={userPositions}
                     detailDialog="Edit User Position"
-                    renderDialogContent={(data) => (
-                        <UserPositionEditDialog data={data} userDivisions={userDivisions} closeDialog={() => setIsDialogOpen(false)} />
+                    renderDialogContent={(data, closeDialog) => (
+                        <UserPositionEditDialog data={data} userDivisions={userDivisions} closeDialog={closeDialog} />
                     )}
                 />
             </Card>

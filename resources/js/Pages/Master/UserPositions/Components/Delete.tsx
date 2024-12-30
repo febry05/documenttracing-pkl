@@ -9,7 +9,7 @@ import { UserPosition } from "@/types/model";
 
 interface PageProps {
     data: UserPosition,
-    closeDialog: () => void;
+    closeDialog: () => void,
 }
 
 export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
@@ -21,7 +21,7 @@ export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
             router.delete(route('user-positions.destroy', data.id), {
                 onFinish: () => {
                     setIsOpen(false);
-                    closeDialog(); // Close both dialogs
+                    closeDialog();
                 }
             });
         } catch (error) {
@@ -29,13 +29,15 @@ export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
         }
     }
 
-    return (
+    return(
         <FormDialog open={isOpen} onOpenChange={setIsOpen}
-            trigger={{
-                text: "Delete",
-                icon: Trash2,
-                variant: "destructive"
-            }}
+            trigger={
+                {
+                    text: "Delete",
+                    icon: Trash2,
+                    variant: "destructive"
+                }
+            }
             title="Delete User Position"
             description={
                 <span>
@@ -43,7 +45,7 @@ export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
                     <strong>{data.name}</strong>
                     "?
                 </span>
-            }
+                }
             footer={
                 <Form {...form}>
                     <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
@@ -52,5 +54,5 @@ export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
                 </Form>
             }
         />
-    );
+    )
 }

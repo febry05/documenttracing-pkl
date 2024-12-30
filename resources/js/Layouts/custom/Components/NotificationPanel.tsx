@@ -77,7 +77,7 @@ export default function NotificationPanel({notifications}: {notifications: Notif
                         notifications.length > 0 ? notifications.map((notification) => (
                         <NotificationItem key={notification.project.id} data={notification}/>
                         ))
-                        : (<span className="text-muted-foreground italic text-center">No notifications.</span>)
+                        : (<span className="text-muted-foreground italic text-center text-sm">No notifications.</span>)
                     }
 
                     </div>

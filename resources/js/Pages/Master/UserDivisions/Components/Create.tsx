@@ -32,6 +32,7 @@ export default function UserDivisionCreateDialog() {
             router.post(route('user-divisions.store'), values, {
                 preserveScroll: true, // Keeps scroll position but reloads data
                 onFinish: () => {
+                    form.reset();
                     setIsOpen(false);
                 }, // Closes the dialog on success
             });

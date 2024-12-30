@@ -14,8 +14,6 @@ interface PageProps {
 }
 
 export default function UserDivisionsIndex({ userDivisions }: PageProps) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     return (
         <DashboardLayout
             header={
@@ -33,8 +31,8 @@ export default function UserDivisionsIndex({ userDivisions }: PageProps) {
                 columns={columns}
                 data={userDivisions}
                 detailDialog="Edit User Division"
-                renderDialogContent={(data) => (
-                    <UserDivisionEditDialog data={data} closeDialog={() => setIsDialogOpen(false)} />
+                renderDialogContent={(data, closeDialog) => (
+                    <UserDivisionEditDialog data={data} closeDialog={closeDialog} />
                 )}
             />
 

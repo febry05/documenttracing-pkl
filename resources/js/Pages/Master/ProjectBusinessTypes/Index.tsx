@@ -6,7 +6,6 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import ProjectBusinessTypeCreateDialog from "./Components/Create";
 import ProjectBusinessTypeEditDialog from "./Components/Edit";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
 import { ProjectBusinessType } from "@/types/model";
 
 interface PageProps {
@@ -14,8 +13,6 @@ interface PageProps {
 }
 
 export default function ProjectBusinessTypesIndex({ projectBusinessTypes }: PageProps) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     return (
         <DashboardLayout
             header={
@@ -32,8 +29,8 @@ export default function ProjectBusinessTypesIndex({ projectBusinessTypes }: Page
                     columns={columns}
                     data={projectBusinessTypes}
                     detailDialog="Edit Project Business Type"
-                    renderDialogContent={(data) => (
-                        <ProjectBusinessTypeEditDialog data={data} closeDialog={() => setIsDialogOpen(false)} />
+                    renderDialogContent={(data, closeDialog) => (
+                        <ProjectBusinessTypeEditDialog data={data} closeDialog={closeDialog} />
                     )}
                 />
             </Card>

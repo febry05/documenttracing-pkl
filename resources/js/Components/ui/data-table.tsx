@@ -49,7 +49,7 @@ interface DataTableProps<TData extends { id: number }, TValue> {
   filters?: ColumnFilterConfig[];
   detailPage?: string;
   detailDialog?: string;
-  renderDialogContent?: (data: TData) => React.ReactNode;
+  renderDialogContent?: (data: TData, closeDialog: () => void) => React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -104,6 +104,7 @@ export function DataTable<TData, TValue>({
   }
 
   const closeDialog = () => {
+    console.log('close dialog');
     setIsDialogOpen(false);
     setSelectedRowData(null);
   };
@@ -169,19 +170,19 @@ export function DataTable<TData, TValue>({
                         >
                             {flexRender(header.column.columnDef.header, header.getContext())}
                             {header.column.getCanSort() && (
-                            <div className="w-4 text-neutral-300 ms-auto">
-                                {header.column.getIsSorted() === "asc" ? (
-                                <div className="flex flex-col">
-                                    <ChevronUp size={14} className="text-black"/>
+                                <div className="w-4 text-neutral-300 ms-auto">
+                                    {header.column.getIsSorted() === "asc" ? (
+                                    <div className="flex flex-col">
+                                        <ChevronUp size={14} className="text-black"/>
+                                    </div>
+                                ) : header.column.getIsSorted() === "desc" ? (
+                                    <div className="flex flex-col">
+                                        <ChevronDown size={14} className="text-black"/>
+                                    </div>
+                                    ) : (
+                                    <ChevronsUpDown size={14}/>
+                                    )}
                                 </div>
-                            ) : header.column.getIsSorted() === "desc" ? (
-                                <div className="flex flex-col">
-                                    <ChevronDown size={14} className="text-black"/>
-                                </div>
-                                ) : (
-                                <ChevronsUpDown size={14}/>
-                                )}
-                            </div>
                             )}
                         </div>
                     </div>
@@ -241,9 +242,11 @@ export function DataTable<TData, TValue>({
                     <DialogHeader>
                         <DialogTitle>{detailDialog}</DialogTitle>
                     </DialogHeader>
-                    {selectedRowData && renderDialogContent && renderDialogContent(selectedRowData)}
+                    {selectedRowData && renderDialogContent && renderDialogContent(selectedRowData, closeDialog)}
                 </DialogContent>
         </Dialog>
+
+        {/* Pagination */}
         <div className="flex gap-2 mt-4 text-sm">
 
             <div className="flex gap-2 items-center">

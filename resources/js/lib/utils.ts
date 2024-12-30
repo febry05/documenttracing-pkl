@@ -40,3 +40,100 @@ export const permission = [
     'Manage User',
     'Manage Master Data',
 ];
+
+export const permissionGroups = {
+    project: {
+        name: "Project",
+        permissions: [
+            {
+                "id": 1,
+                "name": "Create Project"
+            },
+            {
+                "id": 2,
+                "name": "View Project"
+            },
+            {
+                "id": 3,
+                "name": "Update Project"
+            },
+            {
+                "id": 4,
+                "name": "Delete Project"
+            },
+            {
+                "id": 5,
+                "name": "Handle Owned Project",
+                "description": "Can only update data related to their own project (person in charge of a project)"
+            },
+        ]
+    },
+    projectDocument: {
+        name: "Project Document",
+        permissions: [
+            {
+                "id": 6,
+                "name": "Create Project Document"
+            },
+            {
+                "id": 7,
+                "name": "View Project Document"
+            },
+            {
+                "id": 8,
+                "name": "Update Project Document"
+            },
+            {
+                "id": 9,
+                "name": "Delete Project Document"
+            },
+        ]
+    },
+    projectDocumentVersion: {
+        name: "Project Document Version",
+        permissions: [
+            {
+                "id": 10,
+                "name": "Create Project Document Version"
+            },
+            {
+                "id": 11,
+                "name": "View Project Document Version"
+            },
+            {
+                "id": 12,
+                "name": "Update Project Document Version"
+            },
+            {
+                "id": 13,
+                "name": "Delete Project Document Version"
+            },
+        ]
+    },
+    projectDocumentVersionUpdate: {
+        name: "Project Document Version Update",
+        permissions: [
+            {
+                "id": 14,
+                "name": "View Project Document Version Update"
+            },
+            {
+                "id": 15,
+                "name": "Create Project Document Version Update"
+            },
+        ]
+    },
+    miscellaneous: {
+        name: "Miscellaneous",
+        permissions: [
+            {
+                "id": 16,
+                "name": "Manage User"
+            },
+            {
+                "id": 17,
+                "name": "Manage Master Data"
+            }
+        ]
+    },
+}

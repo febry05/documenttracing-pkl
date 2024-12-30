@@ -37,8 +37,8 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
         try {
             router.put(route('user-positions.update', data.id), values, {
                 onFinish: () => {
+                    form.reset();
                     closeDialog();
-                    router.visit(route('user-positions.index'), { only: ['userDivisions', 'userPositions'] });
                 },
             });
         } catch (error) {
