@@ -82,8 +82,8 @@ Route::middleware('auth')->group(function () {
 
     //Master Data
     Route::middleware('check_admin')->group(function () {
+        Route::resource('/users', UserController::class);
         Route::prefix('/master')->group(function () {
-            Route::resource('/users', UserController::class);
             Route::resource('/user-roles', RoleController::class);
             Route::resource('/user-permissions', PermissionController::class);
             Route::resource('/user-positions', UserPositionController::class);

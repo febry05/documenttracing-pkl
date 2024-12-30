@@ -42,6 +42,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         minSize: 10,
         maxSize: 10,
         enableResizing: false,
+        enableSorting: true
     },
     {
         accessorKey: "name",
@@ -83,6 +84,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
     {
         accessorKey: "due_date",
         header: "Due Date",
+        sortingFn: 'datetime',
         size: 50,
         minSize: 50,
         maxSize: 50,
@@ -126,6 +128,14 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
                 </div>
             </div>
         ),
+        sortingFn: (rowA, rowB) => {
+            if (rowA.original.due_date === null || rowB.original.due_date === null) {
+                return null;
+            }
+            const timeLeftA = new Date(rowA.original.due_date).getTime() - Date.now();
+            const timeLeftB = new Date(rowB.original.due_date).getTime() - Date.now();
+            return timeLeftA - timeLeftB;
+        },
         size: 50,
         minSize: 50,
         maxSize: 50,

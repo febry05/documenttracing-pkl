@@ -43,7 +43,6 @@ interface PageProps {
 }
 
 export default function UserRoleEdit({ role, permissions, rolePermissions }: PageProps) {
-    console.log(rolePermissions);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

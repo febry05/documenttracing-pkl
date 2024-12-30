@@ -1,16 +1,14 @@
-import { PropsWithChildren, ReactNode, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar-alt";
 import { AppSidebar } from "@/Components/app-sidebar";
 import { ScrollArea } from "@/Components/ui/scroll-area";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { usePage } from "@inertiajs/react";
 import { Toaster } from "@/Components/ui/sonner";
 import NotificationPanel from "./Components/NotificationPanel";
 import ProfilePanel from "./Components/ProfilePanel";
 import { Auth } from "@/types/model";
 import { toast } from "sonner";
+import { useCookies } from "react-cookie";
 
 type User = {
     name: string;
@@ -24,19 +22,13 @@ type Flash = {
 
 type Theme = "dark" | "light" | "system"
 
-const FormSchema = z.object({
-    search: z.string().min(2, {
-        message: "Search must be at least 4 characters.",
-    }),
-});
-
 export default function DashboardLayout({
     header,
     children,
 }: PropsWithChildren<{
     header?: ReactNode;
 }>) {
-    const { auth, flash, notifications } = usePage<{
+    const { auth, flash } = usePage<{
         auth: Auth;
         flash: Flash;
     }>().props;
@@ -48,13 +40,6 @@ export default function DashboardLayout({
         name: middleName,
         role: auth.role,
     };
-
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            search: "",
-        },
-    });
 
     const { url } = usePage();
 
@@ -72,13 +57,31 @@ export default function DashboardLayout({
         }
     }, [flash]);
 
+    // Get initial state from cookie
+    const [open, setOpen] = useState(() => {
+        const cookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('sidebar:state='));
+        return cookie ? cookie.split('=')[1] === 'true' : true;
+    });
+
+    // Handle sidebar state changes
+    const handleOpenChange = (newOpen: boolean) => {
+        setOpen(newOpen);
+        document.cookie = `sidebar:state=${newOpen}; path=/; max-age=31536000`; // 1 year
+    };
+
     return (
-        <SidebarProvider>
+        <SidebarProvider
+            defaultOpen={open}
+            open={open}
+            onOpenChange={handleOpenChange}
+        >
             <AppSidebar url={url} />
             <main className="w-full">
                 <nav className="w-full p-3 px-4 flex border-b sticky top-0 z-10 bg-sidebar dark:bg-sidebar">
                     {/* Sidebar Trigger */}
-                    <SidebarTrigger className="my-auto md:hidden" />
+                    <SidebarTrigger className="my-auto" />
 
                     <span className="ms-auto" />
 

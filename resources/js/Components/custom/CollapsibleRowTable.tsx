@@ -27,12 +27,7 @@ interface DataTableProps<TData extends { id: number }, TValue> {
 export default function CollapsibleRowTable({columns, data, filters = [], detailPage}: DataTableProps<any, any>) {
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = React.useState<string>("");
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [pagination, setPagination] = React.useState({
-        pageIndex: 0, //initial page index
-        //default page size, loaded from localStorage or fallback to 10
-        pageSize: Number(localStorage.getItem('tablePageSize')) || 10,
-    });
+    const [sorting, setSorting] = React.useState<SortingState>([]); // Add sorting state
 
     const table = useReactTable({
         data,
@@ -43,10 +38,10 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         getRowCanExpand: (row) => row.documentVersions && row.documentVersions.length > 0,
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        filterFromLeafRows: true,
+        getSortedRowModel: getSortedRowModel(), // Add sorting model
+        onSortingChange: setSorting, // Add sorting handler
         state: {
-            sorting,
+            sorting, // Add sorting state
             columnFilters,
             globalFilter,
         },

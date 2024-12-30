@@ -29,6 +29,7 @@ import { Link, usePage } from "@inertiajs/react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { Auth } from "@/types/model";
 import { can, canAny } from "@/lib/utils";
+import { useState } from "react";
 
 export function AppSidebar(url: any) {
     type SidebarItem = {
@@ -100,6 +101,27 @@ export function AppSidebar(url: any) {
         }
     );
 
+    // Add accordion state management
+    const [accordionStates, setAccordionStates] = useState<Record<string, string>>(() => {
+        return items.reduce((acc, item) => {
+            const cookie = document.cookie
+                .split('; ')
+                .find(row => row.startsWith(`accordion:${item.title}=`));
+            return {
+                ...acc,
+                [item.title]: cookie ? cookie.split('=')[1] : ''
+            };
+        }, {});
+    });
+
+    const handleAccordionChange = (itemTitle: string, value: string) => {
+        setAccordionStates(prev => ({
+            ...prev,
+            [itemTitle]: value
+        }));
+        document.cookie = `accordion:${itemTitle}=${value}; path=/; max-age=31536000`;
+    };
+
     return (
         <Sidebar collapsible="icon" className="flex">
             <SidebarHeader className="px-6 border-b">
@@ -134,7 +156,7 @@ export function AppSidebar(url: any) {
                                                 className="text-muted-foreground"
                                             >
                                                 <SidebarMenuSubItem>
-                                                    <SidebarMenuButton asChild>
+                                                    <SidebarMenuButton asChild isActive={sub.href.includes(url.url)}>
                                                         <Link href={sub.href}>
                                                             <span className="ms-7">
                                                                 {sub.title}
@@ -150,6 +172,8 @@ export function AppSidebar(url: any) {
                                             type="single"
                                             key={item.title}
                                             collapsible
+                                            value={accordionStates[item.title]}
+                                            onValueChange={(value) => handleAccordionChange(item.title, value)}
                                         >
                                             <AccordionItem value="item-1" className="border-0">
                                                 <AccordionTrigger className="p-0 border-0 hover:bg-accent hover:text-accent-foreground rounded pe-2">
