@@ -156,42 +156,49 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="w-full table-fixed">
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <TableHead key={header.id}>
-                  {header.isPlaceholder ? null : (
-                    <div className="flex items-center w-full text-black font-semibold">
-                        <div
-                            className={
-                            header.column.getCanSort()
-                                ? "flex items-center gap-1 cursor-pointer select-none w-full"
-                                : ""
-                            }
-                            onClick={header.column.getToggleSortingHandler()}
-                        >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {header.column.getCanSort() && (
-                                <div className="w-4 text-neutral-300 ms-auto">
-                                    {header.column.getIsSorted() === "asc" ? (
-                                    <div className="flex flex-col">
-                                        <ChevronUp size={14} className="text-black"/>
-                                    </div>
-                                ) : header.column.getIsSorted() === "desc" ? (
-                                    <div className="flex flex-col">
-                                        <ChevronDown size={14} className="text-black"/>
-                                    </div>
-                                    ) : (
-                                    <ChevronsUpDown size={14}/>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                  )}
-                </TableHead>
+                  <TableHead
+                    key={header.id}
+                    style={{
+                      width: header.getSize(),
+                      minWidth: header.column.columnDef.minSize,
+                      maxWidth: header.column.columnDef.maxSize
+                    }}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <div className="flex items-center w-full text-black font-semibold">
+                          <div
+                              className={
+                              header.column.getCanSort()
+                                  ? "flex items-center gap-1 cursor-pointer select-none w-full"
+                                  : ""
+                              }
+                              onClick={header.column.getToggleSortingHandler()}
+                          >
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                              {header.column.getCanSort() && (
+                                  <div className="w-4 text-neutral-300 ms-auto">
+                                      {header.column.getIsSorted() === "asc" ? (
+                                      <div className="flex flex-col">
+                                          <ChevronUp size={14} className="text-black"/>
+                                      </div>
+                                  ) : header.column.getIsSorted() === "desc" ? (
+                                      <div className="flex flex-col">
+                                          <ChevronDown size={14} className="text-black"/>
+                                      </div>
+                                      ) : (
+                                      <ChevronsUpDown size={14}/>
+                                      )}
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                    )}
+                  </TableHead>
                 ))}
               </TableRow>
             ))}
@@ -210,7 +217,14 @@ export function DataTable<TData, TValue>({
                           onClick={() => handleRowClick(row)}
                         >
                           {row.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id}>
+                            <TableCell
+                              key={cell.id}
+                              style={{
+                                width: cell.column.getSize(),
+                                minWidth: cell.column.columnDef.minSize,
+                                maxWidth: cell.column.columnDef.maxSize
+                              }}
+                            >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </TableCell>
                           ))}
@@ -224,7 +238,14 @@ export function DataTable<TData, TValue>({
                 ) : (
                   <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        style={{
+                          width: cell.column.getSize(),
+                          minWidth: cell.column.columnDef.minSize,
+                          maxWidth: cell.column.columnDef.maxSize
+                        }}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
