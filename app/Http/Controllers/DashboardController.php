@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Services\ProjectService;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Projects\ProjectDocumentVersion;
 
 class DashboardController extends Controller
 {
     protected $projectService;
+    // protected $projectService;
 
     public function __construct(Request $request, ProjectService $projectService)
     {
@@ -24,39 +28,64 @@ class DashboardController extends Controller
             'completed_documents' => 420,
         ];
 
-        $mockDocuments = [
-            [
-                'id' => 1,
-                'document' => 'BAPP & Lampirannya',
-                'project' => 'Seat Management Peralatan IT',
-                'pic' => 'R.M Angga N H',
-                'due_date' => '31 October 2024',
-                'days_left' => '4',
-                'priority' => 'High',
-            ],
-            [
-                'id' => 2,
-                'document' => 'SLA',
-                'project' => 'Wifi Managed Service Concordia Longue',
-                'pic' => 'Trya Suma A',
-                'due_date' => '27 October 2024',
-                'days_left' => '1',
-                'priority' => 'Medium',
-            ],
-            [
-                'id' => 3,
-                'document' => 'Project Bref',
-                'project' => 'APS Document Tracer',
-                'pic' => 'Muhammad Azhim Nugroho',
-                'due_date' => '20 November 2024',
-                'days_left' => '23',
-                'priority' => 'Low',
-            ],
-        ];
+        
 
         return Inertia::render('Dashboard', [
-            'stats' => $mockStats,
+            'stats' => $this->calculateDocumentStats(),
             'documents' => $this->projectService->getDashboard(),
         ]);
+    }
+
+    public function calculateDocumentStats()
+    {
+        $user = User::find(Auth::user()->id);
+
+        
+        $totalDocuments = ProjectDocumentVersion::whereHas('document.project.profile', function ($query) use ($user) {
+            $query->where('id', $user->id);
+            // dd($query);
+        })->count();
+        
+
+        $documentVersions = ProjectDocumentVersion::with(['updates', 'document.project.profile'])
+            ->whereHas('document.project.profile', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })->get();
+
+        $completedDocuments = 0;
+        $onProcessDocuments = 0;
+        $pendingDocuments = 0;
+        $notStartedDocuments = 0;
+
+        foreach ($documentVersions as $version) {
+            $latestUpdate = $version->updates->sortByDesc('created_at')->first();
+
+            if (!$latestUpdate) {
+                $notStartedDocuments++;
+            } else {
+                switch ($latestUpdate->status) {
+                    case '1': // Completed
+                        $completedDocuments++;
+                        break;
+                    case '2': // On Process
+                        $onProcessDocuments++;
+                        break;
+                    case '3': // Pending
+                        $pendingDocuments++;
+                        break;
+                    default:
+                        $notStartedDocuments++; // Not Started
+                        break;
+                }
+            }
+        }
+
+        return [
+            'totalDocuments' => $totalDocuments,
+            'onProcessDocuments' => $onProcessDocuments,
+            'pendingDocuments' => $pendingDocuments,
+            'completedDocuments' => $completedDocuments,
+            'not_startedDocuments' => $notStartedDocuments,
+        ];
     }
 }

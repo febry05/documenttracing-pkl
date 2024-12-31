@@ -27,10 +27,8 @@ class EnsureUserCanHandleProject
     //     return $user;
     // }
 
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $allowPermission): Response
     {
-
-
         $user = User::find(Auth::user()->id);
 
         $projectId = $request->route('project');
@@ -48,15 +46,27 @@ class EnsureUserCanHandleProject
             abort(403, 'Unauthorized action. Ensure the project is found');
         }
 
-        if (!$user->can('Handle Owned Project')) {
+        if (!$user->can('Handle Owned Project') && ($project->user_profile_id !== $user->id)) {
+            Log::error('User ' . $user->name . ' does not have the "Handle Owned Project" permission');
             abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
-            Log::error('User '. $user->name . 'does not have the "Handle Owned Project" permission');
+        } else if (!$user->can([
+                    'Create Project', 'View Project', 'Update Project', 'Delete Project', 
+                    'Create Project Document', 'View Project Document', 'Update Project Document', 'Delete Project Document', 
+                    'Create Project Document Version', 'View Project Document Version', 'Update Project Document Version', 'Delete Project Document Version', 
+                    'Create Project Document Version Update', 'View Project Document Version Update',
+                ])
+            ){
+            Log::info('User is an admin');
+            return $next($request);
+
         }
 
-        if ($project->user_profile_id !== ($user->id)) {
-            Log::error('User ID does not match project user ID', ['user_id' => $user->id, 'project_user_id' => $project->user_id]);
-            abort(403, 'Unauthorized action. Ensure the user is assigned to the project');
-        }
+
+
+        // if ($project->user_profile_id !== $user->id) {
+        //     Log::error('User ID does not match project user ID', ['user_id' => $user->id, 'project_user_id' => $project->user_id]);
+        //     abort(403, 'Unauthorized action. Ensure the user is assigned to the project');
+        // }
 
         return $next($request);
     }

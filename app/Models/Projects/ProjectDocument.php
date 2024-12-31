@@ -72,6 +72,15 @@ class ProjectDocument extends Model
                 return 'Yes (' .  $this->getDeadlineIntervalNameAttribute() . ')';
         }
     }
+
+    // public function updated(ProjectDocument $projectDocument): void
+    // {
+    //     History::create([
+    //         'user_id' => Auth::id(),
+    //         'table_name' => 'project_documents', //Take table name like projects, projects_document etc.
+    //         'table_record_id' => $projectDocument->id 
+    //     ]); 
+    // }
                     /**
      * Calculate the next deadline based on the interval and current date.
      *

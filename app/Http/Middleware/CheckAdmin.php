@@ -15,7 +15,7 @@ class CheckAdmin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $permission): Response
     {
         $user = User::find(Auth::user()->id);
         if (!$user) {
@@ -23,8 +23,8 @@ class CheckAdmin
         }
 
         // Check if the user has the 'admin' role or permission
-        if (!$user->can('Manage User')) {
-            abort(403, 'Unauthorized action. Only admins can access this resource.');
+        if (!$user->can($permission)) {
+            abort(403, 'Unauthorized action. Only users with ' . $permission . ' can access this resource.');
         }
 
         return $next($request);

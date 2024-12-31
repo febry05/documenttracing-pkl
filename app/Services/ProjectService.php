@@ -121,17 +121,17 @@ class ProjectService {
         return ProjectDocumentVersion::with('updates')->get()->map(function ($projectDocumentVersion) {
             return [
                 'id' => $projectDocumentVersion->id,
-                'version' => $projectDocumentVersion->version,
-                'release_date' => $projectDocumentVersion->release_date,
-                'document_number' => $projectDocumentVersion->document_number,
-                'deadline' => $projectDocumentVersion->deadline,
-                'project_document_id' => $projectDocumentVersion->project_document_id,
-                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->document_link : 'N/A',
+                'version' => $projectDocumentVersion->version ?? 'N/A',
+                'release_date' => $projectDocumentVersion->release_date ?? 'N/A',
+                'document_number' => $projectDocumentVersion->document_number ?? 'N/A',
+                'deadline' => $projectDocumentVersion->deadline ?? 'N/A',
+                'project_document_id' => $projectDocumentVersion->project_document_id ?? 'N/A',
+                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->document_link ?? 'N/A' : 'N/A',
                 'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
-                        'id' => $documentUpdate->id,
-                        'description' => $documentUpdate->description,
-                        'updated_at' => $documentUpdate->updated_at,
+                        'id' => $documentUpdate->id ?? 'N/A',
+                        'description' => $documentUpdate->description ?? 'N/A',
+                        'updated_at' => $documentUpdate->updated_at ?? 'N/A',
                     ];
                 }),
             ];
@@ -272,45 +272,46 @@ class ProjectService {
     }
 
     public function getNotifications()
-{
-    $user = Auth::user(); // Get the authenticated user
+    {
+        $user = Auth::user(); // Get the authenticated user
 
-    // Fetch projects and related data for the user
-    $projects = Project::with(['documents.versions'])
-        ->whereHas('profile', function ($query) use ($user) {
-            $query->where('user_id', $user->id); // Only fetch projects assigned to the user
-        })
-        ->get();
+        // Fetch projects and related data for the user
+        $projects = Project::with(['documents.versions'])
+            ->whereHas('profile', function ($query) use ($user) {
+                $query->where('user_id', $user->id); // Only fetch projects assigned to the user
+            })
+            ->get();
 
-    // Build notifications array
-    $notifications = $projects->flatMap(function ($project) {
-        return $project->documents->flatMap(function ($document) use ($project) {
-            return $document->versions->map(function ($version) use ($document, $project) {
+        // Build notifications array
+        $notifications = $projects->flatMap(function ($project) {
+            return $project->documents->flatMap(function ($document) use ($project) {
+                return $document->versions->map(function ($version) use ($document, $project) {
 
-                return [
-                    'project' => [
-                        'id' => $project->id,
-                        'name' => $project->name,
-                        'projectDocument' => [
-                            'id' => $document->id,
-                            'name' => $document->name,
-                            // 'daysLeft' => $document->version->deadline,
-                            'priority' => $document->priority_type_name,
-                            'projectDocumentVersion' => [
-                                'id' => $version->id,
-                                // 'daysLeft' => $version->deadline
-                                'deadline' => $version->deadline
-                                // tambah status
+                    return [
+                        'project' => [
+                            'id' => $project->id,
+                            'name' => $project->name,
+                            'projectDocument' => [
+                                'id' => $document->id,
+                                'name' => $document->name,
+                                // 'daysLeft' => $document->version->deadline,
+                                'priority' => $document->priority_type_name,
+                                'projectDocumentVersion' => [
+                                    'id' => $version->id,
+                                    // 'daysLeft' => $version->deadline
+                                    'deadline' => $version->deadline
+                                    // tambah status
+                                ],
                             ],
                         ],
-                    ],
-                ];
+                    ];
+                });
             });
         });
-    });
+        return $notifications->values()->toArray(); // Return as array
+    }
 
-    return $notifications->values()->toArray(); // Return as array
-}
+    
 
 
 }

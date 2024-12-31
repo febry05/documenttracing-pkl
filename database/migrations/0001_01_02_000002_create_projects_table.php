@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('user_profile_id')->constrained()->default(0);
             $table->foreignId('project_business_type_id')->constrained()->default(0);
+            
         });
     }
 
