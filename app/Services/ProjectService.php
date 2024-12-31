@@ -214,6 +214,10 @@ class ProjectService {
 
     public function calculateDeadline(ProjectDocument $document): Carbon
     {
+        // if($document->is_auto == 0) {
+        //     return $document->versions->deadline == null;
+        // }
+
         $now = now();
         $holidayChecker = new TanggalMerah();
 

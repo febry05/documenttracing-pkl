@@ -102,29 +102,30 @@ class ProjectDocumentVersionController extends Controller
                 $versionName = $now->format('F Y'); // Monthly
                 break;
             case 4:
-                $versionName = $now->format('l, jS F Y H:i'); // Detailed timestamp
+                $versionName = $now->format('l, jS F Y H:i'); 
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');
         };
+
+        if($document->is_auto == 0){
+            $deadline = null;
+        } else {
+            $deadline = $this->projectService->calculateDeadline($document);
+        }
         
-        $deadline = $this->projectService->calculateDeadline($document);
-        
+        // dd($deadline);
+
         $version = ProjectDocumentVersion::create([
             'version' => $versionName,
             'document_number' => $documentNumber,
             'release_date' => $releaseDate->toDateTimeString(),
-            'deadline' => $deadline->toDateTimeString(),
+            'deadline' => $deadline ? $deadline->toDateTimeString() : null,
             'project_document_id' => $document->id,
         ]);
-
-        // dd($now->toDateTimeString());
-        // If no release date is provided, schedule automation
-        // if (!$releaseDate) {
-        //     // Logic for scheduling automation
-        //     $this->scheduleAutomation($document);
-        // }
         
+        // dd($version);
+
         DB::commit();
 
         return redirect()->route('projects.documents.show', [
@@ -136,7 +137,7 @@ class ProjectDocumentVersionController extends Controller
                 : "Version {$version->version} created successfully and will be automated.");
             } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            // dd($e);
             return redirect()->back()->with('error', 'Failed to create version');
         }
     }
