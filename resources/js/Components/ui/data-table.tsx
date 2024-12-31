@@ -48,6 +48,7 @@ interface DataTableProps<TData extends { id: number }, TValue> {
   data: TData[]
   filters?: ColumnFilterConfig[];
   detailPage?: string;
+  detailPageFn?: (data?: TData) => void;
   detailDialog?: string;
   renderDialogContent?: (data: TData, closeDialog: () => void) => React.ReactNode;
 }
@@ -57,6 +58,7 @@ export function DataTable<TData, TValue>({
   data,
   filters = [],
   detailPage,
+  detailPageFn,
   detailDialog,
   renderDialogContent,
 }: DataTableProps<TData, TValue>) {
@@ -99,7 +101,9 @@ export function DataTable<TData, TValue>({
       setSelectedRowData(rowData)
       setIsDialogOpen(true)
     } else if (detailPage) {
-      router.visit(route(detailPage, { id: rowData.id }));
+        router.visit(route(detailPage, { id: rowData.id }));
+    } else if (detailPageFn) {
+        detailPageFn(rowData);
     }
   }
 
@@ -195,7 +199,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                (detailPage || detailDialog) ? (
+                (detailPage || detailPageFn || detailDialog) ? (
                   <TooltipProvider key={row.id}>
                     <Tooltip>
                       <TooltipTrigger asChild>

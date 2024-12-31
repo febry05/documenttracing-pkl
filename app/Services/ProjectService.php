@@ -37,7 +37,9 @@ class ProjectService {
                         })
                         ->map(function ($version) use ($document, $project) {
                             return [
-                                'id' => $version->id,
+                                'project_id' => $project->id,
+                                'project_document_id' => $document->id,
+                                'project_document_version_id' => $version->id,
                                 'name' => $version->version,
                                 'document' => $document->name,
                                 'project' => $project->name,

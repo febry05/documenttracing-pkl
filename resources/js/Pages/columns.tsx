@@ -8,7 +8,9 @@ import { ColumnDef } from "@tanstack/react-table"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Project = {
-  id: number
+  project_id: number
+  project_document_id: number
+  project_document_version_id: number
   document: string
   project: string
   pic: string

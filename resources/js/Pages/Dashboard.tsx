@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { Card } from "@/Components/ui/card";
 import { InfoCard } from "@/Components/custom/InfoCard";
 import { FileBarChart, FileCog, FileClock, FileCheck2 } from "lucide-react";
@@ -80,6 +80,11 @@ export default function Dashboard({ stats, documents }: PageProps) {
                             columns={columns}
                             data={documents}
                             filters={filters}
+                            detailPageFn={
+                                (data) => router.visit(
+                                    route("projects.documents.versions.show", [data.project_id, data.project_document_id, data.project_document_version_id])
+                                )
+                            }
                         />
                     </Card>
                 </div>
