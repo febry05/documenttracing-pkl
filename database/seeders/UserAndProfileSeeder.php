@@ -22,7 +22,7 @@ class UserAndProfileSeeder extends Seeder
             'password' => bcrypt('password'),
             'roles_id' => Role::select('id')->where('name', 'Administrator')->first()->id
         ]);
-        
+
         //2
         User::create([
             'email' => 'projectmanager@example.com',
@@ -36,7 +36,7 @@ class UserAndProfileSeeder extends Seeder
             'password' => bcrypt('password'),
             'roles_id' => Role::select('id')->where('name', 'Guest')->first()->id
         ]);
-        
+
         // User::factory(10)->create();
         //1
         UserProfile::create([
@@ -47,7 +47,7 @@ class UserAndProfileSeeder extends Seeder
             'phone' => '081234567890',
             'user_division_id' => UserDivision::select('id')->where('name', 'ICT')->first()->id,
             'user_position_id' => UserPosition::select('id')->where('name', 'Cyber Security')->first()->id,
-            
+
         ]);
 
         //2
@@ -60,7 +60,7 @@ class UserAndProfileSeeder extends Seeder
             'user_division_id' => UserDivision::select('id')->where('name', 'HRD')->first()->id,
             'user_position_id' => UserPosition::select('id')->where('name', 'Payment Roll')->first()->id,
         ]);
-        
+
         //3
         UserProfile::create([
             'user_id' => 3,

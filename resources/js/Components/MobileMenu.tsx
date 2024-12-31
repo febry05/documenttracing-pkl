@@ -25,7 +25,7 @@ const MobileMenu = ({ links }: { links: MenuItemProp[] }) => {
                         href="#"
                         className="flex items-center gap-2 text-lg font-semibold mb-4"
                     >
-                        <ApplicationLogo className="h-8 w-8 fill-current text-gray-500" />
+                        <ApplicationLogo className="h-8 w-8 fill-current text-neutral-500" />
 
                         <span>Document Tracing</span>
                     </Link>

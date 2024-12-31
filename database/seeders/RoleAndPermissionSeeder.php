@@ -40,16 +40,16 @@ class RoleAndPermissionSeeder extends Seeder
 
         Role::firstOrCreate([
             'name' => 'Administrator',
-            'description' => 'Web administrator adalah profesional teknis yang mengelola website.',
+            'description' => 'Role that gives its users full access to the website app.',
         ]);
         Role::firstOrCreate([
             'name' => 'Project Manager',
-        'description' => 'Can Handle Project where he’s have. And only can see other Project if here doesn’t added in the project',
+            'description' => 'Role used for its users to be assigned to a project, allowing them to make changes to all aspects of the project, except for deleting it.',
         ]);
 
         Role::firstOrCreate([
             'name' => 'Guest',
-            'description' => 'Only see project and Document Project',
+            'description' => 'Role that allows its users to view project details in the website app, but not make any changes to it.',
         ]);
 
         // app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

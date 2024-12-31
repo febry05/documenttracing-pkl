@@ -41,7 +41,7 @@ const AutoBreadcrumb: React.FC = () => {
                     <BreadcrumbItem key={to}>
                         {value === 'master' || (pathnames[index - 1] === 'users' || value === 'documents' || value === 'versions' || pathnames[index - 1] === 'user-roles')
                         ? (
-                            <span className="text-neutral-300 dark:text-neutral-300">{value.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}</span>
+                            <span className="text-neutral-300 dark:text-neutral-600">{value.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}</span>
                         ) : (
                             <Link href={to}>
                                 <span>{value.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}</span>

@@ -12,7 +12,7 @@ export default function TitleSeparator({ title, className, button }: { title: st
 } }) {
     return (
         <div className={"flex justify-between items-center " + className}>
-            <span className="font-semibold text-gray-600">
+            <span className="font-semibold text-neutral-600">
                 {title}
             </span>
             { button && (

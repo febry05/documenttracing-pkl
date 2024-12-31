@@ -23,7 +23,7 @@ export default function ProfilePanel(user: User) {
                             <span className="text-xs">
                                 {user.name}
                             </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span className="text-xs text-neutral-500 dark:text-neutral-400">
                                 {user.role}
                             </span>
                         </div>

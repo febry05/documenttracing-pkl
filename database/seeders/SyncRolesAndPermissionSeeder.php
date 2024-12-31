@@ -106,8 +106,9 @@ class SyncRolesAndPermissionSeeder extends Seeder
         $guestRole = Role::where('name', 'Guest')->first();
         $guestRole->givePermissionTo([
             'View Project',
-            'View Project Document Version',
             'View Project Document',
+            'View Project Document Version',
+            'View Project Document Version Update',
         ]);
         $guest = User::where('email', 'guest@example.com')->first();
         $guest->assignRole($guestRole);

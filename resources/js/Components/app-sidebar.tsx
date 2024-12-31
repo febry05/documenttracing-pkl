@@ -108,13 +108,13 @@ export function AppSidebar(url: any) {
                 <SidebarMenu>
                     <SidebarMenuItem className="py-3">
                         <SidebarMenuButton asChild>
-                            <Link href={route("dashboard")}>
+                            <Link href={route(can(userPermissions, 'Handle Owned Project') ? "dashboard" : "monitoring.index")}>
                                 <img
                                     src="/img/icon.png"
                                     alt="APS Logo"
                                     className="w-8 m"
                                 />
-                                <span className="text-lg text-gray-700 dark:text-gray-400 font-bold ms-2">
+                                <span className="text-lg text-neutral-700 dark:text-neutral-400 font-bold ms-2">
                                     Document Tracer
                                 </span>
                             </Link>
