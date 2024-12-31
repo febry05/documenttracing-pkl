@@ -26,6 +26,7 @@ export type ProjectMonitoring = {
 
 export const columns: ColumnDef<ProjectMonitoring>[] = [
     {
+        accessorKey: "index",
         header: 'No',
         cell: ({ row }) => (
             <div>
@@ -41,8 +42,17 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         size: 10,
         minSize: 10,
         maxSize: 10,
-        enableResizing: false,
-        enableSorting: true
+        enableResizing: true,
+        enableSorting: true,
+        sortingFn: (rowA, rowB) => {
+            const aNumber = rowA.depth > 0
+                ? parseInt(`${rowA.getParentRow()!.index + 1}${rowA.index + 1}`)
+                : rowA.index + 1;
+            const bNumber = rowB.depth > 0
+                ? parseInt(`${rowB.getParentRow()!.index + 1}${rowB.index + 1}`)
+                : rowB.index + 1;
+            return aNumber < bNumber ? -1 : aNumber > bNumber ? 1 : 0;
+        }
     },
     {
         accessorKey: "name",
