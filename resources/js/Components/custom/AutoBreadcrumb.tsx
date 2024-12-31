@@ -1,17 +1,22 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/Components/ui/breadcrumb';
 import { ChevronRight } from 'lucide-react';
+import { can } from '@/lib/utils';
+import { Auth } from '@/types/model';
 
 const AutoBreadcrumb: React.FC = () => {
     const { url } = usePage();
     const pathnames = url.split('/').filter((x) => x);
 
+    const { auth } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+
     const generateBreadcrumbs = () => {
         const breadcrumbs = [
             <BreadcrumbItem key="home">
-                <Link href={route('dashboard')}>
-                    <span>Home</span>
-                </Link>
+                    <Link href={route(can(userPermissions, 'Handle Owned Project') ? 'dashboard' : 'monitoring.index')}>
+                        <span>Home</span>
+                    </Link>
             </BreadcrumbItem>
         ];
 

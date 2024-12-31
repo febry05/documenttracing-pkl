@@ -23,6 +23,9 @@ export const columns: ColumnDef<Project>[] = [
     {
         header: 'No',
         accessorFn: (row, index) => index + 1,
+        size: 20,
+        minSize: 20,
+        maxSize: 20,
     },
     {
         accessorKey: "document",
@@ -42,6 +45,9 @@ export const columns: ColumnDef<Project>[] = [
                 </div>
             </div>
         ),
+        size: 60,
+        minSize: 60,
+        maxSize: 60,
     },
     {
         accessorKey: "days_left",
@@ -104,5 +110,8 @@ export const columns: ColumnDef<Project>[] = [
                 </>
             );
         },
+        size: 40,
+        minSize: 40,
+        maxSize: 40,
     }
 ]
