@@ -68,15 +68,16 @@ export default function ProjectDocumentVersionShow({
 }: PageProps) {
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
+    const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Document Version Details"
-                    button={can(userPermissions, "Update Project Document Version") && (
+                    button={(can(userPermissions, "Update Project Document Version") || userIsPIC) && (
                         <ProjectDocumentVersionEditDialog
-                            projectId={project.id}
+                            project={project.id}
                             projectDocumentId={projectDocument.id}
                             projectDocumentVersion={projectDocumentVersion}
                         />
@@ -170,13 +171,13 @@ export default function ProjectDocumentVersionShow({
                 </div>
             </Card>
 
-            {can(userPermissions, "View Project Document Version Update") && (
+            {(can(userPermissions, "View Project Document Version Update") || userIsPIC) && (
                 <>
                     <HeaderNavigation
                         title="Updates"
                         size="md"
                         breadcrumb={false}
-                        button={can(userPermissions, "Create Project Document Version Update") && (
+                        button={(can(userPermissions, "Create Project Document Version Update") || userIsPIC) && (
                             <ProjectDocumentVersionUpdateCreateDialog
                                 projectId={project.id}
                                 projectDocumentId={projectDocument.id}

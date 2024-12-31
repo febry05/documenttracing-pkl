@@ -1,4 +1,4 @@
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from "zod";
@@ -18,9 +18,10 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { IconButton } from "@/Components/custom/IconButton";
 import { PenLine, Save } from "lucide-react";
 import { Button } from "@/Components/ui/button";
-import { ProjectDocumentVersion } from "@/types/model";
+import { Auth, Project, ProjectDocumentVersion } from "@/types/model";
 import { ProjectDocumentVersionDeleteDialog } from "./Delete";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
+import { can } from "@/lib/utils";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),
@@ -28,13 +29,13 @@ const formSchema = z.object({
 });
 
 interface PageProps {
-    projectId: number,
+    project: Project,
     projectDocumentId: number,
     projectDocumentVersion: ProjectDocumentVersion,
 }
 
 export default function ProjectDocumentVersionEditDialog(
-    { projectId, projectDocumentId, projectDocumentVersion }
+    { project, projectDocumentId, projectDocumentVersion }
     : PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -46,11 +47,15 @@ export default function ProjectDocumentVersionEditDialog(
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("projects.documents.version.update", [projectId, projectDocumentId, projectDocumentVersion.id]), values);
+            router.post(route("projects.documents.version.update", [project.id, projectDocumentId, projectDocumentVersion.id]), values);
         } catch (error) {
             console.error("Submission error:", error);
         }
     }
+
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+    const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
         <Dialog>
@@ -113,7 +118,9 @@ export default function ProjectDocumentVersionEditDialog(
                             <DialogFooter>
                                 <div className="flex flex-row-reverse gap-4">
                                     <IconButton text="Save" icon={Save} type="submit" />
-                                    <ProjectDocumentVersionDeleteDialog projectId={projectId} projectDocumentId={projectDocumentId} projectDocumentVersion={projectDocumentVersion} />
+                                    { (can(userPermissions, 'Delete Project Document Version') || userIsPIC)
+                                        && <ProjectDocumentVersionDeleteDialog projectId={project.id} projectDocumentId={projectDocumentId} projectDocumentVersion={projectDocumentVersion} />
+                                    }
                                 </div>
                             </DialogFooter>
                         </div>

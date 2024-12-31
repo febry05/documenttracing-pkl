@@ -47,24 +47,29 @@ export const permissionGroups = {
         permissions: [
             {
                 "id": 1,
-                "name": "Create Project"
+                "name": "Create Project",
+                "label": "Create Projects",
             },
             {
                 "id": 2,
-                "name": "View Project"
+                "name": "View Project",
+                "label": "View Any Projects"
             },
             {
                 "id": 3,
-                "name": "Update Project"
+                "name": "Update Project",
+                "label": "Update Any Projects",
             },
             {
                 "id": 4,
-                "name": "Delete Project"
+                "name": "Delete Project",
+                "label": "Delete Any Projects",
             },
             {
                 "id": 5,
                 "name": "Handle Owned Project",
-                "description": "Can only update data related to their own project (person in charge of a project)"
+                "label": "Handle Only Owned Project",
+                "description": "This permission enables a user to be assigned to a project, allowing them to make changes to all aspects of the project, except for deleting it."
             },
         ]
     },
@@ -73,19 +78,23 @@ export const permissionGroups = {
         permissions: [
             {
                 "id": 6,
-                "name": "Create Project Document"
+                "name": "Create Project Document",
+                "label": "Create Project Documents",
             },
             {
                 "id": 7,
-                "name": "View Project Document"
+                "name": "View Project Document",
+                "label": "View Any Project Documents",
             },
             {
                 "id": 8,
-                "name": "Update Project Document"
+                "name": "Update Project Document",
+                "label": "Update Any Project Documents",
             },
             {
                 "id": 9,
-                "name": "Delete Project Document"
+                "name": "Delete Project Document",
+                "label": "Delete Any Project Documents",
             },
         ]
     },
@@ -94,19 +103,23 @@ export const permissionGroups = {
         permissions: [
             {
                 "id": 10,
-                "name": "Create Project Document Version"
+                "name": "Create Project Document Version",
+                "label": "Create Project Document Versions",
             },
             {
                 "id": 11,
-                "name": "View Project Document Version"
+                "name": "View Project Document Version",
+                "label": "View Any Project Document Versions",
             },
             {
                 "id": 12,
-                "name": "Update Project Document Version"
+                "name": "Update Project Document Version",
+                "label": "Update Any Project Document Versions",
             },
             {
                 "id": 13,
-                "name": "Delete Project Document Version"
+                "name": "Delete Project Document Version",
+                "label": "Delete Project Any Document Versions",
             },
         ]
     },
@@ -115,11 +128,13 @@ export const permissionGroups = {
         permissions: [
             {
                 "id": 14,
-                "name": "View Project Document Version Update"
+                "name": "View Project Document Version Update",
+                "label": "View Any Project Document Version Updates",
             },
             {
                 "id": 15,
-                "name": "Create Project Document Version Update"
+                "name": "Create Project Document Version Update",
+                "label": "Create Any Project Document Version Updates",
             },
         ]
     },
@@ -128,11 +143,13 @@ export const permissionGroups = {
         permissions: [
             {
                 "id": 16,
-                "name": "Manage User"
+                "name": "Manage User",
+                "label": "Manage Any User Data",
             },
             {
                 "id": 17,
-                "name": "Manage Master Data"
+                "name": "Manage Master Data",
+                "label": "Manage Any Master Data",
             }
         ]
     },

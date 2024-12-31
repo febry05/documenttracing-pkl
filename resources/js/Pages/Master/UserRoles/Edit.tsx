@@ -171,7 +171,7 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
                                                                             />
                                                                         </FormControl>
                                                                         <FormLabel className="text-sm flex gap-2 item-center hover:cursor-pointer">
-                                                                            {permission.name}
+                                                                            {permission.label ?? permission.name}
                                                                             {permission.description && <LearnTooltip text={permission.description} />}
                                                                         </FormLabel>
                                                                     </FormItem>

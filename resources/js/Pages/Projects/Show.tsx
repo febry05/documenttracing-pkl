@@ -26,18 +26,16 @@ interface PageProps {
 }
 
 export default function ProjectShow({ project, projectDocuments, projectDocumentVersions, priorities }: PageProps) {
-
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
-
-    console.log(projectDocuments);
+    const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Details"
-                    button={can(userPermissions, "Update Project") && (
+                    button={(can(userPermissions, "Update Project") || userIsPIC) && (
                         <Link href={route('projects.edit', project.id)}>
                             <IconButton icon={PenLine} text="Edit Project" variant="modify"/>
                         </Link>
@@ -64,13 +62,13 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
             </Card>
 
 
-            {can(userPermissions, "View Project Document") && (
+            {(can(userPermissions, "View Project Document") || userIsPIC) && (
                 <>
                     <HeaderNavigation
                         title="Documents"
                         size="md"
                         breadcrumb={false}
-                        button={can(userPermissions, "Create Project Document") && (
+                        button={(can(userPermissions, "Create Project Document") || userIsPIC) && (
                             <ProjectDocumentCreateDialog priorities={priorities} projectId={project.id}/>
                         )}
                         className="mb-4"
@@ -88,7 +86,7 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                                     </AccordionTrigger>
                                     <AccordionContent>
                                         <div className="p-4 pb-0 flex flex-col gap-4">
-                                            {can(userPermissions, "View Project Document Version") ? (
+                                            {(can(userPermissions, "View Project Document Version") || userIsPIC) ? (
                                                 projectDocument.project_document_versions.length > 0 ? projectDocument.project_document_versions.map((projectDocumentVersion) => (
                                                     <div key={projectDocumentVersion.id} className="flex items-center gap-4">
                                                         <TextLink text={projectDocumentVersion.version} href={route('projects.documents.versions.show', [project.id, projectDocument.id, projectDocumentVersion.id])} className="text-sm" />

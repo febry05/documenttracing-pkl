@@ -49,7 +49,28 @@ class SyncRolesAndPermissionSeeder extends Seeder
         }
 
         $adminRole = Role::where('name', 'Administrator')->first();
-        $adminRole->syncPermissions($permissions);
+        $adminRole->syncPermissions([
+            'Create Project',
+            'View Project',
+            'Update Project',
+            'Delete Project',
+
+            'Create Project Document',
+            'View Project Document',
+            'Update Project Document',
+            'Delete Project Document',
+
+            'Create Project Document Version',
+            'View Project Document Version',
+            'Update Project Document Version',
+            'Delete Project Document Version',
+
+            'View Project Document Version Update',
+            'Create Project Document Version Update',
+
+            'Manage User',
+            'Manage Master Data',
+        ]);
         $admin = User::where('email', 'admin@example.com')->first();
         // $admin->assignRole($adminRole);
         if ($admin && $adminRole) {
@@ -59,21 +80,21 @@ class SyncRolesAndPermissionSeeder extends Seeder
         $projectManagerRole = Role::where('name', 'Project Manager')->first();
         $projectManagerRole->givePermissionTo([
             'View Project',
-            'Update Project',
+            // 'Update Project',
 
-            'Create Project Document Version',
+            // 'Create Project Document Version',
             'View Project Document Version',
-            'Update Project Document Version',
+            // 'Update Project Document Version',
             // 'Delete Project Document Version',
 
             'Handle Owned Project',
 
-            'Create Project Document',
+            // 'Create Project Document',
             'View Project Document',
-            'Update Project Document',
+            // 'Update Project Document',
             // 'Delete Project Document',
 
-            'Create Project Document Version Update',
+            // 'Create Project Document Version Update',
             'View Project Document Version Update',
         ]);
         $projectManager = User::where('email', 'projectmanager@example.com')->first();
