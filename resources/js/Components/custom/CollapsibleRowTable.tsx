@@ -115,7 +115,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                     {header.isPlaceholder
                                         ? null
                                         : (
-                                            <div className="flex items-center w-full text-black font-semibold">
+                                            <div className="flex items-center w-full text-black dark:text-foreground font-semibold">
                                                 <div
                                                     className={
                                                     header.column.getCanSort()
@@ -126,14 +126,14 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                                 >
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                                     {header.column.getCanSort() && (
-                                                        <div className="w-4 text-neutral-300 ms-auto">
+                                                        <div className="w-4 text-neutral-300 dark:text-neutral-600 ms-auto">
                                                             {header.column.getIsSorted() === "asc" ? (
                                                             <div className="flex flex-col">
-                                                                <ChevronUp size={14} className="text-black"/>
+                                                                <ChevronUp size={14} className="text-black dark:text-foreground"/>
                                                             </div>
                                                         ) : header.column.getIsSorted() === "desc" ? (
                                                             <div className="flex flex-col">
-                                                                <ChevronDown size={14} className="text-black"/>
+                                                                <ChevronDown size={14} className="text-black dark:text-foreground"/>
                                                             </div>
                                                             ) : (
                                                             <ChevronsUpDown size={14}/>
@@ -188,7 +188,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                                     <TableRow
                                                         key={row.id}
                                                         data-state={row.getIsSelected() && "selected"}
-                                                        className={row.depth === 0 ? " bg-sky-500 hover:bg-sky-500/90 dark:bg-sky-700 dark:hover:bg-sky-700/90 text-background rounded-md" : ""}
+                                                        className={row.depth === 0 ? " bg-sky-500 hover:bg-sky-500/90 border-sky-600/40 dark:bg-gray-800 dark:hover:bg-gray-800/90 text-background rounded-md dark:border-gray-800/90 dark:text-foreground" : ""}
                                                         onClick={() => row.toggleExpanded()}
                                                         style={{ cursor: 'pointer' }}
                                                     >

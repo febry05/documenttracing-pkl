@@ -42,7 +42,7 @@ export default function BreadcrumbBuilder ({ tree }: PageProps) {
                         ? (
                             <BreadcrumbLink className="hover:underline" href={value.url}>{value.name}</BreadcrumbLink>
                         ) : (
-                            <span className="text-gray-600 dark:text-gray-400">{value.name}</span>
+                            <span className="text-neutral-600 dark:text-neutral-400">{value.name}</span>
                         )}
                     </BreadcrumbItem>
                 );
@@ -54,7 +54,7 @@ export default function BreadcrumbBuilder ({ tree }: PageProps) {
 
     return (
         <Breadcrumb>
-            <BreadcrumbList className="font-normal text-gray-500 dark:text-gray-300">
+            <BreadcrumbList className="font-normal text-neutral-500 dark:text-neutral-300">
                 {generateBreadcrumbs()}
             </BreadcrumbList>
         </Breadcrumb>

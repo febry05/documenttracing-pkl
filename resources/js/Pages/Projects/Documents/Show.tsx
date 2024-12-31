@@ -39,18 +39,17 @@ export default function ProjectDocumentsShow({
 }: PageProps) {
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
-
-    console.log(projectDocumentVersions);
+    const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
         <DashboardLayout
             header={
                 <HeaderNavigation
                     title="Project Document Details"
-                    button={can(userPermissions, "Update Project Document") && (
+                    button={(can(userPermissions, "Update Project Document") || userIsPIC) && (
                         <ProjectDocumentEditDialog
                             priorities={priorities}
-                            projectId={project.id}
+                            project={project}
                             projectDocument={projectDocument}
                         />
                     )}
@@ -90,99 +89,94 @@ export default function ProjectDocumentsShow({
                 </div>
             </Card>
 
-            {can(userPermissions, "View Project Document Version") && (
-                <VersionsSection project={project} projectDocument={projectDocument} projectDocumentVersions={projectDocumentVersions} userPermissions={userPermissions} />
+            {/* Project Document Version */}
+            {(can(userPermissions, "View Project Document Version") || userIsPIC) && (
+                <>
+                    <HeaderNavigation
+                        title="Versions"
+                        size="md"
+                        breadcrumb={false}
+                        button={(can(userPermissions, "Create Project Document Version") || userIsPIC) && (
+                            <ProjectDocumentVersionCreateDialog
+                                projectId={project.id}
+                                projectDocumentId={projectDocument.id}
+                            />
+                        )}
+                        className="mb-4"
+                    />
+
+                    <Card className="flex-auto p-4">
+                        <Accordion type="multiple" className="flex flex-col gap-4">
+                            {projectDocumentVersions.length > 0 ? projectDocumentVersions.map((projectDocumentVersion) => (
+                                <AccordionItem
+                                    key={projectDocumentVersion.id}
+                                    value={`item-${projectDocumentVersion.id}`}
+                                    className="bg-gray-50 dark:bg-background border-none rounded-md"
+                                >
+                                    <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-300 hover:dark:bg-gray-700">
+                                        <div className="flex items-center">
+                                            <TextLink
+                                                text={projectDocumentVersion.version}
+                                                href={route(
+                                                    "projects.documents.versions.show",
+                                                    [
+                                                        project.id,
+                                                        projectDocument.id,
+                                                        projectDocumentVersion.id,
+                                                    ]
+                                                )}
+                                                className="text-sm"
+                                            />
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="p-4 pb-0 flex flex-col">
+                                            <div className="grid md:grid-cols-3 gap-4">
+                                                <InfoPair
+                                                    label="Document Number"
+                                                    value={
+                                                        projectDocumentVersion.document_number
+                                                    }
+                                                    width={7}
+                                                    lineHeight="normal"
+                                                />
+                                                <InfoPair
+                                                    label="Release Date"
+                                                    value={format(
+                                                        projectDocumentVersion.release_date,
+                                                        "d MMMM yyyy"
+                                                    )}
+                                                    width={7}
+                                                    lineHeight="normal"
+                                                />
+                                                <InfoPair
+                                                    label="Latest Document"
+                                                    value={
+                                                        <Link
+                                                            href={
+                                                                projectDocumentVersion.latest_document
+                                                            }
+                                                            target="_blank"
+                                                        >
+                                                            <IconButton
+                                                                icon={Download}
+                                                                variant="outline"
+                                                                text="Download File"
+                                                            />
+                                                        </Link>
+                                                    }
+                                                    width={7}
+                                                    lineHeight="normal"
+                                                />
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            )) : <span className="italic text-muted-foreground">No versions available.</span> }
+                        </Accordion>
+                    </Card>
+                </>
             )}
         </DashboardLayout>
     );
-}
-
-function VersionsSection({project, projectDocument, projectDocumentVersions, userPermissions}: {project: Project, projectDocument: ProjectDocument, projectDocumentVersions: ProjectDocumentVersion[], userPermissions: string[]}) {
-    return(
-        <>
-            <HeaderNavigation
-                title="Versions"
-                size="md"
-                breadcrumb={false}
-                button={can(userPermissions, "Create Project Document Version") && (
-                    <ProjectDocumentVersionCreateDialog
-                        projectId={project.id}
-                        projectDocumentId={projectDocument.id}
-                    />
-                )}
-                className="mb-4"
-            />
-
-            <Card className="flex-auto p-4">
-                <Accordion type="multiple" className="flex flex-col gap-4">
-                    {projectDocumentVersions.length > 0 ? projectDocumentVersions.map((projectDocumentVersion) => (
-                        <AccordionItem
-                            key={projectDocumentVersion.id}
-                            value={`item-${projectDocumentVersion.id}`}
-                            className="bg-gray-50 dark:bg-background border-none rounded-md"
-                        >
-                            <AccordionTrigger className="bg-gray-200 dark:bg-gray-800 px-6 py-4 rounded-md hover:no-underline hover:bg-gray-300 hover:dark:bg-gray-700">
-                                <div className="flex items-center">
-                                    <TextLink
-                                        text={projectDocumentVersion.version}
-                                        href={route(
-                                            "projects.documents.versions.show",
-                                            [
-                                                project.id,
-                                                projectDocument.id,
-                                                projectDocumentVersion.id,
-                                            ]
-                                        )}
-                                        className="text-sm"
-                                    />
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                                <div className="p-4 pb-0 flex flex-col">
-                                    <div className="grid md:grid-cols-3 gap-4">
-                                        <InfoPair
-                                            label="Document Number"
-                                            value={
-                                                projectDocumentVersion.document_number
-                                            }
-                                            width={7}
-                                            lineHeight="normal"
-                                        />
-                                        <InfoPair
-                                            label="Release Date"
-                                            value={format(
-                                                projectDocumentVersion.release_date,
-                                                "d MMMM yyyy"
-                                            )}
-                                            width={7}
-                                            lineHeight="normal"
-                                        />
-                                        <InfoPair
-                                            label="Latest Document"
-                                            value={
-                                                <Link
-                                                    href={
-                                                        projectDocumentVersion.latest_document
-                                                    }
-                                                    target="_blank"
-                                                >
-                                                    <IconButton
-                                                        icon={Download}
-                                                        variant="outline"
-                                                        text="Download File"
-                                                    />
-                                                </Link>
-                                            }
-                                            width={7}
-                                            lineHeight="normal"
-                                        />
-                                    </div>
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    )) : <span className="italic text-muted-foreground">No versions available.</span> }
-                </Accordion>
-            </Card>
-        </>
-    )
 }

@@ -1,4 +1,4 @@
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -32,8 +32,8 @@ import {
     SelectValue,
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
-import { ProjectDocument } from "@/types/model";
-import { handleNumericInput } from "@/lib/utils";
+import { Auth, Project, ProjectDocument } from "@/types/model";
+import { can, handleNumericInput } from "@/lib/utils";
 import { ProjectDocumentDeleteDialog } from "./Delete";
 import { deadlineIntervals, weekdays } from "./Create";
 import { Switch } from "@/Components/ui/switch";
@@ -54,13 +54,13 @@ type Priority = {
 
 interface PageProps {
     priorities: Priority[];
-    projectId: number;
+    project: Project;
     projectDocument: ProjectDocument;
 }
 
 export default function ProjectDocumentEditDialog({
     priorities,
-    projectId,
+    project,
     projectDocument,
 }: PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -77,9 +77,9 @@ export default function ProjectDocumentEditDialog({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(
+            router.post(
                 route("projects.documents.update", [
-                    projectId,
+                    project.id,
                     projectDocument.id,
                 ]),
                 values
@@ -88,6 +88,10 @@ export default function ProjectDocumentEditDialog({
             console.error("Submission error:", error);
         }
     }
+
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+    const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
         <Dialog>
@@ -332,10 +336,12 @@ export default function ProjectDocumentEditDialog({
                                         icon={Save}
                                         type="submit"
                                     />
-                                    <ProjectDocumentDeleteDialog
-                                        projectId={projectId}
-                                        projectDocument={projectDocument}
-                                    />
+                                    {(can(userPermissions, "Delete Project Document") || userIsPIC) && (
+                                        <ProjectDocumentDeleteDialog
+                                            projectId={project.id}
+                                            projectDocument={projectDocument}
+                                        />
+                                    )}
                                 </div>
                             </DialogFooter>
                         </div>

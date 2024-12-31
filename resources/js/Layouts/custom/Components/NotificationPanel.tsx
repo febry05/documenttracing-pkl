@@ -16,7 +16,7 @@ function NotificationItem({data}: {data: Notification}) {
         priorityColor = "border bg-yellow-50 hover:bg-yellow-50/70 " +
                         "dark:bg-yellow-800 dark:border-yellow-600 hover:dark:bg-yellow-800/70"
     } else if(data.project.projectDocument.priority === "Low") {
-        priorityColor = "border dark:border-gray-800/50"
+        priorityColor = "border dark:border-neutral-800/50"
     }
 
     return(
@@ -49,7 +49,7 @@ function NotificationItem({data}: {data: Notification}) {
                             </div> */}
                             <div className="w-full text-left  flex">
                                 <AlarmClock size={16} className="me-2"/>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                <span className="text-xs text-neutral-500 dark:text-neutral-400">
                                     <Countdown endDate={data.project.projectDocument.projectDocumentVersion.deadline} endText="Time limit reached"/>
                                 </span>
                             </div>

@@ -66,7 +66,7 @@ class ProjectDocumentVersionController extends Controller
                 return to_route('projects')
                 ->with (['error' => 'Project not found']);
             }
-            
+
             if ($now > $project->contract_end) {
                 DB::rollBack();
                 return to_route('projects.documents.show', [
@@ -75,20 +75,20 @@ class ProjectDocumentVersionController extends Controller
                 ])->with ('error', 'When making Document Version for "' . $document->name . '" because Project "' . $project->name . '" ended on ' . $project->contract_end);
                 ;
             }
-            
-            
+
+
 
             $validated = $request->validate([
                 'release_date' => 'nullable|date', // Optional release date
                 'document_number' => 'required|string',
             ]);
-            
+
             $documentNumber = $validated['document_number'];
-            
+
             $releaseDate = $validated['release_date']
             ? now()->create($validated['release_date'])
             : null;
-                        
+
             $now = now();
 
             switch ($document->deadline_interval) {
@@ -102,7 +102,7 @@ class ProjectDocumentVersionController extends Controller
                 $versionName = $now->format('F Y'); // Monthly
                 break;
             case 4:
-                $versionName = $now->format('l, jS F Y H:i'); 
+                $versionName = $now->format('l, jS F Y H:i');
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');
@@ -113,7 +113,7 @@ class ProjectDocumentVersionController extends Controller
         } else {
             $deadline = $this->projectService->calculateDeadline($document);
         }
-        
+
         // dd($deadline);
 
         $version = ProjectDocumentVersion::create([
@@ -123,7 +123,7 @@ class ProjectDocumentVersionController extends Controller
             'deadline' => $deadline ? $deadline->toDateTimeString() : null,
             'project_document_id' => $document->id,
         ]);
-        
+
         // dd($version);
 
         DB::commit();
@@ -221,5 +221,5 @@ class ProjectDocumentVersionController extends Controller
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to delete version: ' . $e->getMessage()]);
         }
-    }   
+    }
 }

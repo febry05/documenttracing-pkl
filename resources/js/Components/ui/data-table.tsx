@@ -170,7 +170,7 @@ export function DataTable<TData, TValue>({
                     }}
                   >
                     {header.isPlaceholder ? null : (
-                      <div className="flex items-center w-full text-black font-semibold">
+                      <div className="flex items-center w-full text-black dark:text-foreground font-semibold">
                           <div
                               className={
                               header.column.getCanSort()
@@ -181,14 +181,14 @@ export function DataTable<TData, TValue>({
                           >
                               {flexRender(header.column.columnDef.header, header.getContext())}
                               {header.column.getCanSort() && (
-                                  <div className="w-4 text-neutral-300 ms-auto">
+                                  <div className="w-4 text-neutral-300 dark:text-neutral-600 ms-auto">
                                       {header.column.getIsSorted() === "asc" ? (
                                       <div className="flex flex-col">
-                                          <ChevronUp size={14} className="text-black"/>
+                                          <ChevronUp size={14} className="text-black dark:text-foreground"/>
                                       </div>
                                   ) : header.column.getIsSorted() === "desc" ? (
                                       <div className="flex flex-col">
-                                          <ChevronDown size={14} className="text-black"/>
+                                          <ChevronDown size={14} className="text-black dark:text-foreground"/>
                                       </div>
                                       ) : (
                                       <ChevronsUpDown size={14}/>

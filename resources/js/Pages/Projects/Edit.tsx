@@ -1,4 +1,4 @@
-import { Head, router } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,12 +24,13 @@ import { Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
-import { ProjectBusinessType } from "@/types/model";
+import { Auth, ProjectBusinessType } from "@/types/model";
 import { IconButton } from "@/Components/custom/IconButton";
 import { ProjectDeleteDialog } from "./Components/Delete";
 import { DatePicker } from "@/Components/custom/DatePicker";
 import { Project } from "@/types/model";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
+import { can } from "@/lib/utils";
 
 const formSchema = z
     .object({
@@ -85,6 +86,9 @@ export default function ProjectEdit({
             console.error("Submission error:", error);
         }
     }
+
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
 
     return (
         <DashboardLayout
@@ -394,7 +398,7 @@ export default function ProjectEdit({
                             text="Save"
                             onClick={form.handleSubmit(onSubmit)}
                         />
-                        <ProjectDeleteDialog project={project} />
+                        {can(userPermissions, "Delete Project") && (<ProjectDeleteDialog project={project} />)}
                     </div>
                 </div>
             </Card>
