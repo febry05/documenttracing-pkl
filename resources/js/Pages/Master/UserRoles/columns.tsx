@@ -7,6 +7,10 @@ export const columns: ColumnDef<UserRole>[] = [
     {
         header: 'No',
         accessorFn: (row, index) => index + 1,
+        enableResizing: true,
+        size: 10,
+        maxSize: 10,
+        minSize: 10,
     },
     {
         accessorKey: "name",

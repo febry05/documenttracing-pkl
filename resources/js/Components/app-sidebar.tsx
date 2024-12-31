@@ -13,6 +13,7 @@ import {
 } from "@/Components/ui/sidebar-alt";
 import {
     CalendarIcon,
+    ChevronDown,
     ChevronsUpDown,
     Clipboard,
     Gauge,
@@ -101,27 +102,6 @@ export function AppSidebar(url: any) {
         }
     );
 
-    // Add accordion state management
-    const [accordionStates, setAccordionStates] = useState<Record<string, string>>(() => {
-        return items.reduce((acc, item) => {
-            const cookie = document.cookie
-                .split('; ')
-                .find(row => row.startsWith(`accordion:${item.title}=`));
-            return {
-                ...acc,
-                [item.title]: cookie ? cookie.split('=')[1] : ''
-            };
-        }, {});
-    });
-
-    const handleAccordionChange = (itemTitle: string, value: string) => {
-        setAccordionStates(prev => ({
-            ...prev,
-            [itemTitle]: value
-        }));
-        document.cookie = `accordion:${itemTitle}=${value}; path=/; max-age=31536000`;
-    };
-
     return (
         <Sidebar collapsible="icon" className="flex">
             <SidebarHeader className="px-6 border-b">
@@ -167,40 +147,46 @@ export function AppSidebar(url: any) {
                                             </SidebarMenuSub>
                                         )
                                     );
+
                                     return (
-                                        <Accordion
-                                            type="single"
+                                        <Collapsible
+                                            defaultOpen={localStorage.getItem(`sidebar-${item.title}`) !== 'closed'}
+                                            className="group/collapsible"
                                             key={item.title}
-                                            collapsible
-                                            value={accordionStates[item.title]}
-                                            onValueChange={(value) => handleAccordionChange(item.title, value)}
+                                            onOpenChange={(open) => {
+                                                localStorage.setItem(
+                                                    `sidebar-${item.title}`,
+                                                    open ? 'open' : 'closed'
+                                                );
+                                            }}
                                         >
-                                            <AccordionItem value="item-1" className="border-0">
-                                                <AccordionTrigger className="p-0 border-0 hover:bg-accent hover:text-accent-foreground rounded pe-2">
-                                                    <SidebarMenuButton
-                                                        className="hover:bg-red"
-                                                        asChild
-                                                        {...(item.href.includes(
-                                                            url.url
-                                                        )
-                                                            ? { isActive: true }
-                                                            : {})}
-                                                    >
-                                                        <div>
-                                                            <item.icon
-                                                                size={32}
-                                                            />
-                                                            <span className="ms-7" style={{ fontWeight: 400 }}>
-                                                                {item.title}
-                                                            </span>
-                                                        </div>
-                                                    </SidebarMenuButton>
-                                                </AccordionTrigger>
-                                                <AccordionContent className="flex flex-col text-muted-foreground">
-                                                    {listSubMenu}
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                        </Accordion>
+                                            <SidebarMenuItem>
+                                            <CollapsibleTrigger asChild>
+                                                <SidebarMenuButton
+                                                    className="hover:bg-red"
+                                                    asChild
+                                                    {...(item.href.includes(
+                                                        url.url
+                                                    )
+                                                        ? { isActive: true }
+                                                        : {})}
+                                                >
+                                                    <div>
+                                                        <item.icon
+                                                            size={32}
+                                                        />
+                                                        <span className="ms-7" style={{ fontWeight: 400 }}>
+                                                            {item.title}
+                                                        </span>
+                                                        <ChevronDown className="ms-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                                                    </div>
+                                                </SidebarMenuButton>
+                                            </CollapsibleTrigger>
+                                            <CollapsibleContent>
+                                                {listSubMenu}
+                                            </CollapsibleContent>
+                                            </SidebarMenuItem>
+                                        </Collapsible>
                                     );
                                 } else {
                                     return (
