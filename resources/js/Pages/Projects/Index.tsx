@@ -37,6 +37,22 @@ export default function ProjectsIndex({
                 ...pics,
             ],
         },
+        {
+            columnId: "time_remaining",
+            label: "Time Remaining",
+            compare: "<",
+            options: [
+                { value: "all", label: "All Time" },
+                { value: "367", label: "A year Left" },
+                { value: "192", label: "6 Months Left" },
+                { value: "96", label: "3 Months Left" },
+                { value: "32", label: "A Month Left" },
+                { value: "11", label: "10 Days Left" },
+                { value: "8", label: "7 Days Left" },
+                { value: "4", label: "3 Days Left" },
+                { value: "1", label: "Contract Ended" },
+            ]
+        },
     ];
 
     const { auth  } = usePage<{ auth: Auth }>().props;

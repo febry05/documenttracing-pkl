@@ -1,5 +1,5 @@
 import { Inertia } from "@inertiajs/inertia";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -57,7 +57,6 @@ export default function UsersEdit({
     userDivisions,
     userPositions,
 }: PageProps) {
-    // console.log(user);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

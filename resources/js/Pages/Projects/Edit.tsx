@@ -103,6 +103,7 @@ export default function ProjectEdit({
                             action=""
                             method="POST"
                             onSubmit={form.handleSubmit(onSubmit)}
+                            className="flex flex-col gap-8"
                         >
                             {/* Project info [START] */}
                             <div className="flex flex-col gap-2">

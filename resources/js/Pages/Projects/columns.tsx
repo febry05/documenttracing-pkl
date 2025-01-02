@@ -62,7 +62,35 @@ export const columns: ColumnDef<Project>[] = [
     },
     {
         accessorKey: "time_remaining",
+        // accessorFn: (row) => {
+        //     return (<Countdown startDate={row.contract_start} endDate={row.contract_end} />);
+        // },
         header: "Time Remaining",
+        filterFn: (row, columnId, filterValue) => {
+            // If the filterValue is empty (i.e., "all" is selected), return true for all rows
+            if (!filterValue) {
+                return true;
+            }
+
+            const { compare, filterValue: value } = filterValue;
+
+            // Ensure we are working with numbers for comparison
+            const rowValue = new Date(row.getValue('contract_end')).getTime();
+            const now = new Date().getTime();
+            const daysLeft = Math.max(0, Math.floor((rowValue - now) / (1000 * 60 * 60 * 24)));
+            const filterNum = parseFloat(value);
+
+            console.log(rowValue, now, daysLeft, filterNum);
+
+            if (isNaN(daysLeft) || isNaN(filterNum) || ((filterNum > 1) && (daysLeft === 0))) {
+                return false;
+            }
+
+            if (compare === '<') return daysLeft < filterNum;
+            if (compare === '>') return daysLeft > filterNum;
+
+            return daysLeft === filterNum;
+        },
         cell: ({ row }) => (
             <div className="w-full flex">
                 <div className="mx-auto">

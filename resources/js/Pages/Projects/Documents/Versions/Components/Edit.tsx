@@ -47,7 +47,7 @@ export default function ProjectDocumentVersionEditDialog(
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.post(route("projects.documents.version.update", [project.id, projectDocumentId, projectDocumentVersion.id]), values);
+            router.post(route("projects.documents.versions.update", [project.id, projectDocumentId, projectDocumentVersion.id]), values);
         } catch (error) {
             console.error("Submission error:", error);
         }

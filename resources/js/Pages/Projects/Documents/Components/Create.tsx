@@ -91,8 +91,12 @@ export default function ProjectDocumentCreateDialog({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            setOpen(false);
-            router.post(route("projects.documents.store", projectId), values);
+            router.post(route("projects.documents.store", { project: projectId }), values, {
+                onFinish: () => {
+                    form.reset();
+                    setOpen(false);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
