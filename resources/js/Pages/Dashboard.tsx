@@ -8,10 +8,10 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 
 interface PageProps {
     stats: {
-        total_documents: number;
-        onProcess_documents: number;
-        pending_documents: number;
-        completed_documents: number;
+        totalDocuments: number;
+        onProcessDocuments: number;
+        pendingDocuments: number;
+        completedDocuments: number;
     };
     documents: Project[];
 }
@@ -54,22 +54,22 @@ export default function Dashboard({ stats, documents }: PageProps) {
             <div className="flex flex-col gap-4 md:gap-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <InfoCard
-                        title={stats.total_documents.toString()}
+                        title={stats.totalDocuments.toString()}
                         caption="Total Documents"
                         icon={FileBarChart}
                     />
                     <InfoCard
-                        title={stats.onProcess_documents.toString()}
+                        title={stats.onProcessDocuments.toString()}
                         caption="On Process Documents"
                         icon={FileCog}
                     />
                     <InfoCard
-                        title={stats.pending_documents.toString()}
+                        title={stats.pendingDocuments.toString()}
                         caption="Pending Documents"
                         icon={FileClock}
                     />
                     <InfoCard
-                        title={stats.completed_documents.toString()}
+                        title={stats.completedDocuments.toString()}
                         caption="Completed Documents"
                         icon={FileCheck2}
                     />
@@ -80,9 +80,13 @@ export default function Dashboard({ stats, documents }: PageProps) {
                             columns={columns}
                             data={documents}
                             filters={filters}
-                            detailPageFn={
-                                (data) => router.visit(
-                                    route("projects.documents.versions.show", [data.project_id, data.project_document_id, data.project_document_version_id])
+                            detailPageFn={(data) =>
+                                router.visit(
+                                    route("projects.documents.versions.show", [
+                                        data.project_id,
+                                        data.project_document_id,
+                                        data.project_document_version_id,
+                                    ])
                                 )
                             }
                         />
