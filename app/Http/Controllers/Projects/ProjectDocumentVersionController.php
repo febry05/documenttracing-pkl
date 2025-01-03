@@ -55,6 +55,15 @@ class ProjectDocumentVersionController extends Controller
         ]);
     }
 
+    // public function index($projectId, $projectDocumentId) {
+    //     return Inertia::render('Projects/Documents/Versions/Index', [
+    //         'project' => $this->projectService->getProjects($projectId)->firstWhere('id', $projectId),
+    //         'projectDocument' => $this->projectService->getProjectDocuments($projectId)->firstWhere('id', $projectDocumentId),
+    //         'projectDocumentVersions' => $this->projectService->getProjectDocumentVersions($projectDocumentId),
+    //         'statuses' => $this->statuses,
+    //     ]);
+    // }
+
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
         DB::beginTransaction();

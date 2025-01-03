@@ -31,43 +31,48 @@ class EnsureUserCanHandleProject
     {
         $user = User::find(Auth::user()->id);
 
-        $projectId = $request->route('project');
-        $project = Project::with('documents.versions.updates')->findOrFail($projectId);
-
-        // dd($user, $project);
-
         if (!$user) {
-            Log::error('User not found', ['user_id' => Auth::user()->id]);
+            Log::error('User not found', ['user_id' => Auth::id()]);
             abort(403, 'Unauthorized action. User not found');
         }
 
-        if(!$project){
+        $projectId = $request->route('project');
+        $project = Project::with(['documents.versions.updates'])->find($projectId);
+
+        if (!$project) {
             Log::error('Project not found', ['project_id' => $projectId]);
             abort(403, 'Unauthorized action. Ensure the project is found');
         }
 
-        if (!$user->can('Handle Owned Project') && ($project->user_profile_id !== $user->id)) {
-            Log::error('User ' . $user->name . ' does not have the "Handle Owned Project" permission');
+        if (!$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id) {
+            Log::error('User does not have the "Handle Owned Project" permission', [
+                'user_id' => $user->id,
+                'project_id' => $projectId,
+            ]);
             abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
-        } else if (!$user->can([
-                    'Create Project', 'View Project', 'Update Project', 'Delete Project', 
-                    'Create Project Document', 'View Project Document', 'Update Project Document', 'Delete Project Document', 
-                    'Create Project Document Version', 'View Project Document Version', 'Update Project Document Version', 'Delete Project Document Version', 
-                    'Create Project Document Version Update', 'View Project Document Version Update',
-                ])
-            ){
-            Log::info('User is an admin');
-            return $next($request);
-
         }
 
-
-
-        // if ($project->user_profile_id !== $user->id) {
-        //     Log::error('User ID does not match project user ID', ['user_id' => $user->id, 'project_user_id' => $project->user_id]);
-        //     abort(403, 'Unauthorized action. Ensure the user is assigned to the project');
-        // }
+        if (!$user->can($allowPermission)) {
+            Log::error('User does not have the required permission', [
+                'user_id' => $user->id,
+                'permission' => $allowPermission,
+            ]);
+            abort(403, 'Unauthorized action. Check if the user has the required permission');
+        }
 
         return $next($request);
     }
+        // if (!$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id) {
+        //     Log::error('User ' . $user->name . ' does not have the "Handle Owned Project" permission');
+        //     abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
+        //     } elseif (!$user->can($allowPermission)) {
+        //         Log::error('User ' . $user->name . ' does not have the ' . $allowPermission . ' permission');
+        //         abort(403, 'Unauthorized action. Check if the user has the ' . $allowPermission . ' permission');
+        // }
+
+        // If neither Check 1 nor Check 2 passes, deny access
+        // Log::error('User does not meet the required conditions', [
+        //     'user_id' => $user->id,
+        //     'project_id' => $projectId,
+        // ]);
 }

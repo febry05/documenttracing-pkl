@@ -118,7 +118,7 @@ class UserController extends Controller
                 'nik' => $user->nik ,
                 'phone' => $user->phone ,
                 'employee_no' => $user->employee_no,
-                'roles_id' => $user->user->first()->id ,
+                'roles_id' => $user->user->id ,
                 'user_division_id' => $user->division->id,
                 'user_position_id' => $user->position->id,
             ],

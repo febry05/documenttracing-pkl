@@ -42,43 +42,48 @@ Route::middleware('auth')->group(function () {
     //Users
     Route::resource('/update-password', PasswordController::class)->only(['update']);
 
+    //Projects 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-
-    Route::post('/projects/{project}/documents/create', [ProjectDocumentController::class, 'store'])->name('projects.documents.store');
-    Route::post('/projects/{project}/documents/{document}/version/create', [ProjectDocumentVersionController::class, 'store'])->name('projects.documents.versions.store');
-
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+    
+    
+    //Documents
     Route::get('/projects/{project}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
     Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
+
+
+    //Versions
     Route::get('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
     Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
-
-    // Route::middleware('can_handle_project')->group(function () {
-       // Project resource routes (except index and show)
+    
         Route::resource('/projects', ProjectController::class)
-            ->except(['index', 'show']);
+            ->except(['index', 'show'])
+            ->middleware(['can_handle_project', 'permission:Create Project,Update Project, Delete Project'])
+            ;
 
         // Document-related routes
         Route::prefix('/projects')->name('projects.')->group(function () {
             Route::resource('/{project}/documents', ProjectDocumentController::class)
                 ->except(['index', 'show'])
-                ->middleware('can_handle_project');
+                ->middleware(['can_handle_project', 'permission:Create Project Document,Update Project Document, Delete Project Document'])
+                ;
 
             // Version-related routes
             Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
                 Route::resource('/versions', ProjectDocumentVersionController::class)
-                    ->except(['index', 'show'])
-                    ->middleware('can_handle_project');
+                 ->except(['index', 'show'])
+                ->middleware(['can_handle_project', 'permission:Create Project Document Version,Update Project Document Version, Delete Project Document Version'])
+                ;
 
                 // Update-related routes
                 Route::prefix('/versions/{version}')->name('versions.')->group(function () {
                     Route::resource('/updates', UpdateController::class)
-                        ->middleware('can_handle_project');
+                        ->except(['index', 'show'])
+                        ->middleware(['can_handle_project', 'permission:Create Project Document Version Update,Update Project Document Version Update, Delete Project Document Version Update']) 
+                        ;
                 });
             });
         });
-    // // });
-
-    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
     //Master Data
     Route::middleware('check_admin')->group(function () {
