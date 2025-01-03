@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'block.root' => App\Http\Middleware\BlockRootMiddleware::class,
             'can_handle_project' => App\Http\Middleware\EnsureUserCanHandleProject::class,
             'check_admin' => App\Http\Middleware\CheckAdmin::class,
+            'check_permission' => App\Http\Middleware\checkPermission::class,
         ]);
         //
     })

@@ -96,6 +96,8 @@ class ProjectService {
                 'id' => $document->id,
                 'name' => $document->name,
                 'weekly_deadline' => $document->weekly_deadline,
+                'weekly_deadline_name' => $document->weekly_deadline_type_name,
+
                 'monthly_deadline' => $document->monthly_deadline,
                 // 'deadline' => $document->deadline,
                 'is_auto' => $document->is_auto,
@@ -104,7 +106,7 @@ class ProjectService {
                 'priority_name' => $document->priority_type_name,
 
                 'deadline_interval' => $document->deadline_interval,
-                'deadline_interval_name' => $document->getDeadlineIntervalNameAttribute(),
+                'deadline_interval_name' => $document->deadline_interval_type_name,
 
                 'project_document_versions' => $document->versions->map(function ($version){
                     return [
@@ -311,7 +313,7 @@ class ProjectService {
         return $notifications->values()->toArray(); // Return as array
     }
 
-    
+
 
 
 }

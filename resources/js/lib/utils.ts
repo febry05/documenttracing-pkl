@@ -65,12 +65,6 @@ export const permissionGroups = {
                 "name": "Delete Project",
                 "label": "Delete Any Projects",
             },
-            {
-                "id": 5,
-                "name": "Handle Owned Project",
-                "label": "Handle Only Owned Project",
-                "description": "This permission enables a user to be assigned to a project, allowing them to make changes to all aspects of the project, except for deleting it."
-            },
         ]
     },
     projectDocument: {
@@ -150,7 +144,13 @@ export const permissionGroups = {
                 "id": 17,
                 "name": "Manage Master Data",
                 "label": "Manage Any Master Data",
-            }
+            },
+            {
+                "id": 5,
+                "name": "Handle Owned Project",
+                "label": "Handle Only Owned Project",
+                "description": "This permission enables a user to be assigned to a project, allowing them to make changes to all aspects of the project, except for deleting it."
+            },
         ]
     },
 }

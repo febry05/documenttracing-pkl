@@ -45,9 +45,40 @@ Route::middleware('auth')->group(function () {
     //Projects 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 
-    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create')->middleware('permission:Create Project');
-    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store')->middleware('permission:Create Project');
-    
+    Route::post('/projects/{project}/documents/create', [ProjectDocumentController::class, 'store'])->name('projects.documents.store');
+    Route::post('/projects/{project}/documents/{document}/version/create', [ProjectDocumentVersionController::class, 'store'])->name('projects.documents.versions.store');
+
+    Route::get('/projects/{project}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
+    Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
+    Route::get('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
+    Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
+
+    // Route::middleware('can_handle_project')->group(function () {
+       // Project resource routes (except index and show)
+        Route::resource('/projects', ProjectController::class)
+            ->except(['index', 'show']);
+
+        // Document-related routes
+        Route::prefix('/projects')->name('projects.')->group(function () {
+            Route::resource('/{project}/documents', ProjectDocumentController::class)
+                ->except(['index', 'show'])
+                ->middleware('can_handle_project');
+
+            // Version-related routes
+            Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
+                Route::resource('/versions', ProjectDocumentVersionController::class)
+                    ->except(['index', 'show'])
+                    ->middleware('can_handle_project');
+
+                // Update-related routes
+                Route::prefix('/versions/{version}')->name('versions.')->group(function () {
+                    Route::resource('/updates', UpdateController::class)
+                        ->middleware('can_handle_project');
+                });
+            });
+        });
+    // // });
+
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit')->middleware(['can_handle_project | permission:Update Project']);
