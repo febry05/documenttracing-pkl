@@ -27,17 +27,18 @@ class EnsureUserCanHandleProject
     //     return $user;
     // }
 
-    public function handle(Request $request, Closure $next, $allowPermission): Response
+    public function handle(Request $request, Closure $next): Response
     {
         $user = User::find(Auth::user()->id);
 
+        
+        $projectId = $request->route('project');
+        $project = Project::with(['documents.versions.updates'])->find($projectId);
+        
         if (!$user) {
             Log::error('User not found', ['user_id' => Auth::id()]);
             abort(403, 'Unauthorized action. User not found');
         }
-
-        $projectId = $request->route('project');
-        $project = Project::with(['documents.versions.updates'])->find($projectId);
 
         if (!$project) {
             Log::error('Project not found', ['project_id' => $projectId]);
@@ -52,13 +53,21 @@ class EnsureUserCanHandleProject
             abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
         }
 
-        if (!$user->can($allowPermission)) {
-            Log::error('User does not have the required permission', [
-                'user_id' => $user->id,
-                'permission' => $allowPermission,
-            ]);
-            abort(403, 'Unauthorized action. Check if the user has the required permission');
+        $a = !$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id; 
+        $b = !$project;
+        $c = !$user;
+
+        if($a && $b && $c) {
+            
         }
+
+        // if (!$user->can($permission)) {
+        //     Log::error('User does not have the required permission', [
+        //         'user_id' => $user->id,
+        //         'permission' => $permission,
+        //     ]);
+        //     abort(403, 'Unauthorized action. Check if the user has the required permission');
+        // }
 
         return $next($request);
     }

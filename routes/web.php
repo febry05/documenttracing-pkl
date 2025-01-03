@@ -44,52 +44,66 @@ Route::middleware('auth')->group(function () {
 
     //Projects 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+
+    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create')->middleware('permission:Create Project');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store')->middleware('permission:Create Project');
+    
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit')->middleware(['can_handle_project | permission:Update Project']);
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     
     
     //Documents
     Route::get('/projects/{project}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
+    Route::get('/projects/{project}/documents/create', [ProjectDocumentController::class, 'create'])->name('projects.documents.create');
+    Route::post('/projects/{project}/documents', [ProjectDocumentController::class, 'store'])->name('projects.documents.store');
     Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
+    Route::get('/projects/{project}/documents/{document}/edit', [ProjectDocumentController::class, 'edit'])->name('projects.documents.edit');
+    Route::put('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'update'])->name('projects.documents.update');
+    Route::delete('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'destroy'])->name('projects.documents.destroy');
 
 
-    //Versions
+    // //Versions
     Route::get('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
     Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
     
-        Route::resource('/projects', ProjectController::class)
-            ->except(['index', 'show'])
-            ->middleware(['can_handle_project', 'permission:Create Project,Update Project, Delete Project'])
-            ;
+        // Route::resource('/projects', ProjectController::class)
+        //     // ->except(['index', 'show'])
+        //     ->middleware(['can_handle_project', 'permission:Create Project,Update Project, Delete Project'])
+        //     ;
 
-        // Document-related routes
-        Route::prefix('/projects')->name('projects.')->group(function () {
-            Route::resource('/{project}/documents', ProjectDocumentController::class)
-                ->except(['index', 'show'])
-                ->middleware(['can_handle_project', 'permission:Create Project Document,Update Project Document, Delete Project Document'])
-                ;
+        // // Document-related routes
+        // Route::prefix('/projects')->name('projects.')->group(function () {
+        //     Route::resource('/{project}/documents', ProjectDocumentController::class)
+        //         ->except(['index', 'show'])
+        //         ->middleware(['can_handle_project', 'permission:Create Project Document,Update Project Document, Delete Project Document'])
+        //         ;
 
-            // Version-related routes
-            Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
-                Route::resource('/versions', ProjectDocumentVersionController::class)
-                 ->except(['index', 'show'])
-                ->middleware(['can_handle_project', 'permission:Create Project Document Version,Update Project Document Version, Delete Project Document Version'])
-                ;
+        //     // Version-related routes
+        //     Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
+        //         Route::resource('/versions', ProjectDocumentVersionController::class)
+        //          ->except(['index', 'show'])
+        //         ->middleware(['can_handle_project', 'permission:Create Project Document Version,Update Project Document Version, Delete Project Document Version'])
+        //         ;
 
-                // Update-related routes
-                Route::prefix('/versions/{version}')->name('versions.')->group(function () {
-                    Route::resource('/updates', UpdateController::class)
-                        ->except(['index', 'show'])
-                        ->middleware(['can_handle_project', 'permission:Create Project Document Version Update,Update Project Document Version Update, Delete Project Document Version Update']) 
-                        ;
-                });
-            });
-        });
+        //         // Update-related routes
+        //         Route::prefix('/versions/{version}')->name('versions.')->group(function () {
+        //             Route::resource('/updates', UpdateController::class)
+        //                 ->except(['index', 'show'])
+        //                 ->middleware(['can_handle_project', 'permission:Create Project Document Version Update,Update Project Document Version Update, Delete Project Document Version Update']) 
+        //                 ;
+        //         });
+        //     });
+        // });
 
     //Master Data
+    Route::resource('/user-roles', RoleController::class);
     Route::middleware('check_admin')->group(function () {
         Route::resource('/users', UserController::class);
         Route::prefix('/master')->group(function () {
-            Route::resource('/user-roles', RoleController::class);
             Route::resource('/user-permissions', PermissionController::class);
             Route::resource('/user-positions', UserPositionController::class);
             Route::resource('/user-divisions', UserDivisionController::class);
