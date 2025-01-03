@@ -60,13 +60,13 @@ Route::middleware('auth')->group(function () {
         // Document-related routes
         Route::prefix('/projects')->name('projects.')->group(function () {
             Route::resource('/{project}/documents', ProjectDocumentController::class)
-                ->except(['index', 'show', 'store'])
+                ->except(['index', 'show'])
                 ->middleware('can_handle_project');
 
             // Version-related routes
             Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
                 Route::resource('/versions', ProjectDocumentVersionController::class)
-                    ->except(['index', 'show', 'store'])
+                    ->except(['index', 'show'])
                     ->middleware('can_handle_project');
 
                 // Update-related routes
