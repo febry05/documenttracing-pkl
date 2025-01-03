@@ -61,10 +61,13 @@ export const columns: ColumnDef<Project>[] = [
             const { compare, filterValue: value } = filterValue;
 
             // Ensure we are working with numbers for comparison
-            const rowValue = new Date(row.getValue(columnId)).getTime();
+            // const rowValue = new Date(row.getValue(columnId)).getTime();
+            const rowValue = row.getValue(columnId);
             const now = new Date().getTime();
             const daysLeft = Math.max(0, Math.floor((rowValue - now) / (1000 * 60 * 60 * 24)));
             const filterNum = parseFloat(value);
+
+            console.log(rowValue, now, daysLeft, filterNum);
 
             if (isNaN(daysLeft) || isNaN(filterNum) || ((filterNum > 1) && (daysLeft === 0))) {
                 return false;
@@ -84,9 +87,10 @@ export const columns: ColumnDef<Project>[] = [
                 </div>
             </div>
         ),
-        sortingFn: (rowA, rowB, getValue) => {
+        sortingFn: (rowA, rowB) => {
             const timeLeftA = new Date(rowA.original.days_left).getTime() - Date.now();
             const timeLeftB = new Date(rowB.original.days_left).getTime() - Date.now();
+            console.log(timeLeftA, timeLeftB, (timeLeftA - timeLeftB));
             return timeLeftA - timeLeftB;
         },
         size: 50,

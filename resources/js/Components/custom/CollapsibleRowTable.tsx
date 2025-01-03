@@ -222,7 +222,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={table.getAllColumns().length} className="text-center py-2">
+                                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center italic text-muted-foreground">
                                     No data available.
                                 </TableCell>
                             </TableRow>
