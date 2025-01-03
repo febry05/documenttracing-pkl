@@ -53,13 +53,13 @@ class EnsureUserCanHandleProject
             abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
         }
 
-        $a = !$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id; 
-        $b = !$project;
-        $c = !$user;
+        // $a = !$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id; 
+        // $b = !$project;
+        // $c = !$user;
 
-        if($a && $b && $c) {
+        // if($a && $b && $c) {
             
-        }
+        // }
 
         // if (!$user->can($permission)) {
         //     Log::error('User does not have the required permission', [
