@@ -63,6 +63,24 @@ class ProjectDocument extends Model
         }
     }
 
+    public function getWeeklyDeadlineTypeNameAttribute()
+    {
+        switch ($this->weekly_deadline) {
+            case 1:
+                return 'Monday';
+            case 2:
+                return 'Tuesday';
+            case 3:
+                return 'Wednesday';
+            case 4:
+                return 'Thursday';
+            case 5:
+                return 'Friday';
+            default:
+                return 'Monday';
+        }
+    }
+
     public function getIsAutoTypeNameAttribute()
     {
         switch ($this->is_auto) {
@@ -78,8 +96,8 @@ class ProjectDocument extends Model
     //     History::create([
     //         'user_id' => Auth::id(),
     //         'table_name' => 'project_documents', //Take table name like projects, projects_document etc.
-    //         'table_record_id' => $projectDocument->id 
-    //     ]); 
+    //         'table_record_id' => $projectDocument->id
+    //     ]);
     // }
                     /**
      * Calculate the next deadline based on the interval and current date.

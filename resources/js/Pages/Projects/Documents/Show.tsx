@@ -23,6 +23,7 @@ import TextLink from "@/Components/custom/TextLink";
 import ProjectDocumentEditDialog from "./Components/Edit";
 import { can } from "@/lib/utils";
 import PriorityBadge from "@/Components/custom/PriorityBadge";
+import { Badge } from "@/Components/ui/badge";
 
 interface PageProps {
     project: Project;
@@ -40,6 +41,17 @@ export default function ProjectDocumentsShow({
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
     const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
+    const autoGenerateBadge = projectDocument.is_auto ? (
+        <Badge variant="default" className="flex w-fit py-0 my-0">
+            <span className="border-r pe-2 h-full content-center">Yes</span>
+            {projectDocument.weekly_deadline
+                ? <span className="ms-2">Every {projectDocument.weekly_deadline_name}</span>
+                : <span className="ms-2">Every {projectDocument.monthly_deadline}{projectDocument.monthly_deadline === 1 ? 'st' : projectDocument.monthly_deadline === 2 ? 'nd' : projectDocument.monthly_deadline === 3 ? 'rd' : 'th'} day</span>
+            }
+        </Badge>
+    ) : (
+        <Badge variant="secondary">No</Badge>
+    );
 
     return (
         <DashboardLayout
@@ -84,7 +96,7 @@ export default function ProjectDocumentsShow({
                     />
                     <InfoPair
                         label="Automatically Generate Version"
-                        value={projectDocument.is_auto_name}
+                        value={autoGenerateBadge}
                     />
                 </div>
             </Card>

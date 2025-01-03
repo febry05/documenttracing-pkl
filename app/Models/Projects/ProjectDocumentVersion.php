@@ -70,7 +70,7 @@ class ProjectDocumentVersion extends Model
     {
     DB::beginTransaction();
     try {
-        $now = Carbon::now(); 
+        $now = Carbon::now();
         //now();
         switch ($this->document->deadline_interval) {
             case 1:
@@ -87,7 +87,7 @@ class ProjectDocumentVersion extends Model
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');
-        } 
+        }
 
         $deadline = $this->calculateDeadline($this->document->deadline_interval);
 
@@ -117,7 +117,7 @@ class ProjectDocumentVersion extends Model
             'document_id' => $this->id,
             'error' => $e->getMessage(),
         ]);
-            throw $e;  
+            throw $e;
         }
     }
 
