@@ -30,11 +30,11 @@ Route::middleware('block.root')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('ensure_project_manager');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/monitoring/{year?}/{month?}', [MonitoringController::class, 'index'])->name('monitoring.index');
+    Route::get('/monitoring/{year?}/{month?}', [MonitoringController::class, 'index'])->name('monitoring.index')->middleware('permission:Access Monitoring Page');
 });
 
 
@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/projects/{project}/documents', [ProjectDocumentController::class, 'store'])->name('projects.documents.store')->middleware('check_permission:true,Create Project Document');
     Route::get('/projects/{project}/documents/{document}/edit', [ProjectDocumentController::class, 'edit'])->name('projects.documents.edit')->middleware('check_permission:true,Update Project Document');
     Route::put('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'update'])->name('projects.documents.update')->middleware('check_permission:true,Update Project Document');
-    
+     
     Route::delete('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'destroy'])->name('projects.documents.destroy')->middleware('check_permission:true,Delete Project Document');
     Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show')->middleware('check_permission:true,View Project Document');
 

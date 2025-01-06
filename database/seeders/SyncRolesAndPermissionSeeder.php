@@ -40,6 +40,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
 
             'Manage User',
             'Manage Master Data',
+            'Access Monitoring Page',
         ];
 
         // app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
@@ -70,6 +71,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
 
             'Manage User',
             'Manage Master Data',
+            'Access Monitoring Page',
         ]);
         $admin = User::where('email', 'admin@example.com')->first();
         // $admin->assignRole($adminRole);
@@ -96,6 +98,8 @@ class SyncRolesAndPermissionSeeder extends Seeder
 
             // 'Create Project Document Version Update',
             'View Project Document Version Update',
+
+            'Access Monitoring Page',
         ]);
         $projectManager = User::where('email', 'projectmanager@example.com')->first();
         // $projectManager->assignRole($projectManagerRole);
@@ -109,6 +113,7 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'View Project Document',
             'View Project Document Version',
             'View Project Document Version Update',
+            'Access Monitoring Page',
         ]);
         $guest = User::where('email', 'guest@example.com')->first();
         $guest->assignRole($guestRole);
