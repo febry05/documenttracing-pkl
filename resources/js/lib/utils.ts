@@ -153,7 +153,7 @@ export const permissionGroups = {
             },
             {
                 "id": 17,
-                "name": "View Monitoring Page",
+                "name": "Access Monitoring Page",
             },
         ]
     },

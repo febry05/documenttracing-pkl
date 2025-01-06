@@ -43,7 +43,7 @@ export function AppSidebar(url: any) {
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
 
-    can(userPermissions, 'View Monitoring Page') && items.unshift(
+    can(userPermissions, 'Access Monitoring Page') && items.unshift(
         {
             title: "Monitoring",
             href: "/monitoring",
