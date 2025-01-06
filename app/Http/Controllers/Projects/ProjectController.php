@@ -40,6 +40,14 @@ class ProjectController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Projects/Create', [
+            'projectBusinessTypes' => $this->projectService->getProjectBusinessTypes(),
+            'projectManagers' => $this->projectService->getProjectManagers(),
+        ]);
+    }
+    
     public function show($id, ProjectService $projectService, Request $request){
         return Inertia::render('Projects/Show', [
             'project' => $this->projectService->getProjects()->firstWhere('id', $id),
@@ -50,13 +58,6 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return Inertia::render('Projects/Create', [
-            'projectBusinessTypes' => $this->projectService->getProjectBusinessTypes(),
-            'projectManagers' => $this->projectService->getProjectManagers(),
-        ]);
-    }
 
     public function store(Request $request, Project $project)
     {

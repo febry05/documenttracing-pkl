@@ -42,65 +42,41 @@ Route::middleware('auth')->group(function () {
     //Users
     Route::resource('/update-password', PasswordController::class)->only(['update']);
 
-    //Projects 
-    // Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-
-    // Route::post('/projects/{project}/documents/create', [ProjectDocumentController::class, 'store'])->name('projects.documents.store');
-    // Route::post('/projects/{project}/documents/{document}/version/create', [ProjectDocumentVersionController::class, 'store'])->name('projects.documents.versions.store');
-
-    // Route::get('/projects/{project}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
-    // Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
-    // Route::get('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
-    // Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
-
-    // // Route::middleware('can_handle_project')->group(function () {
-    //    // Project resource routes (except index and show)
-    //     Route::resource('/projects', ProjectController::class)
-    //         ->except(['index', 'show']);
-
-    //     // Document-related routes
-    //     Route::prefix('/projects')->name('projects.')->group(function () {
-    //         Route::resource('/{project}/documents', ProjectDocumentController::class)
-    //             ->except(['index', 'show'])
-    //             ->middleware('can_handle_project');
-
-    //         // Version-related routes
-    //         Route::prefix('/{project}/documents/{document}')->name('documents.')->group(function () {
-    //             Route::resource('/versions', ProjectDocumentVersionController::class)
-    //                 ->except(['index', 'show'])
-    //                 ->middleware('can_handle_project');
-
-    //             // Update-related routes
-    //             Route::prefix('/versions/{version}')->name('versions.')->group(function () {
-    //                 Route::resource('/updates', UpdateController::class)
-    //                     ->middleware('can_handle_project');
-    //             });
-    //         });
-    //     });
-    // // // });
+    //Projects
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-
-    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit')->middleware[('check_permission:true, Update Project')];
-    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-
-    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create')->middleware('permission:Create Project');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store')->middleware('permission:Create Project');
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit')->middleware('check_permission:true,Update Project');
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update')->middleware('check_permission:true,Update Project');
+    
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy')->middleware('permission:Delete Project'); 
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show')->middleware('check_permission:true,View Project');
     
     
     //Documents
     Route::get('/projects/{project}/documents', [ProjectDocumentController::class, 'index'])->name('projects.documents.index');
-    Route::get('/projects/{project}/documents/create', [ProjectDocumentController::class, 'create'])->name('projects.documents.create');
-    Route::post('/projects/{project}/documents', [ProjectDocumentController::class, 'store'])->name('projects.documents.store');
-    Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show');
-    Route::get('/projects/{project}/documents/{document}/edit', [ProjectDocumentController::class, 'edit'])->name('projects.documents.edit');
-    Route::put('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'update'])->name('projects.documents.update');
-    Route::delete('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'destroy'])->name('projects.documents.destroy');
+    Route::get('/projects/{project}/documents/create', [ProjectDocumentController::class, 'create'])->name('projects.documents.create')->middleware('check_permission:true,Create Project Document');
+    Route::post('/projects/{project}/documents', [ProjectDocumentController::class, 'store'])->name('projects.documents.store')->middleware('check_permission:true,Create Project Document');
+    Route::get('/projects/{project}/documents/{document}/edit', [ProjectDocumentController::class, 'edit'])->name('projects.documents.edit')->middleware('check_permission:true,Update Project Document');
+    Route::put('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'update'])->name('projects.documents.update')->middleware('check_permission:true,Update Project Document');
+    
+    Route::delete('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'destroy'])->name('projects.documents.destroy')->middleware('check_permission:true,Delete Project Document');
+    Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'show'])->name('projects.documents.show')->middleware('check_permission:true,View Project Document');
 
 
     // //Versions
     Route::get('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'index'])->name('projects.documents.versions.index');
-    Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show');
+    Route::get('/projects/{project}/documents/{document}/versions/create', [ProjectDocumentVersionController::class, 'create'])->name('projects.documents.versions.create')->middleware('check_permission:true,Create Project Document Version');
+    Route::post('/projects/{project}/documents/{document}/versions', [ProjectDocumentVersionController::class, 'store'])->name('projects.documents.versions.store')->middleware('check_permission:true,Create Project Document Version');
+    Route::get('/projects/{project}/documents/{document}/versions/{version}/edit', [ProjectDocumentVersionController::class, 'edit'])->name('projects.documents.versions.edit')->middleware('check_permission:true,Update Project Document Version');
+    Route::put('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'update'])->name('projects.documents.versions.update')->middleware('check_permission:true,Update Project Document Version');
+    
+    Route::delete('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'destroy'])->name('projects.documents.versions.destroy')->middleware('check_permission:true,Delete Project Document Version');
+    Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show')->middleware('check_permission:true,View Project Document Version');
+
+    //Update Document
+    Route::get('/projects/{project}/documents/{document}/versions/{version}/updates/create', [UpdateController::class, 'create'])->name('projects.documents.versions.updates.create')->middleware('check_permission:true,View Project Document Version Update');
+    Route::post('/projects/{project}/documents/{document}/versions/{version}/updates', [UpdateController::class, 'store'])->name('projects.documents.versions.updates.store')->middleware('check_permission:true,Create Project Document Version Update');
     
 
     //Master Data
