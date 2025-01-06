@@ -104,6 +104,8 @@ export default function UsersEdit({
         setSelectedDivision(divisionId);
     };
 
+    console.log(user);
+
     return (
         <DashboardLayout
             header={<HeaderNavigation title="Edit User" />}
