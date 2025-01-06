@@ -31,27 +31,31 @@ class EnsureUserCanHandleProject
     {
         $user = User::find(Auth::user()->id);
 
-        
-        $projectId = $request->route('project');
-        $project = Project::with(['documents.versions.updates'])->find($projectId);
-        
-        if (!$user) {
-            Log::error('User not found', ['user_id' => Auth::id()]);
-            abort(403, 'Unauthorized action. User not found');
+        if(!$user->can('Handle Owned Project')) {
+            return redirect()->route('monitoring.index');
         }
 
-        if (!$project) {
-            Log::error('Project not found', ['project_id' => $projectId]);
-            abort(403, 'Unauthorized action. Ensure the project is found');
-        }
+        
+        // $projectId = $request->route('project');
+        // $project = Project::with(['documents.versions.updates'])->find($projectId);
+        
+        // if (!$user) {
+        //     Log::error('User not found', ['user_id' => Auth::id()]);
+        //     abort(403, 'Unauthorized action. User not found');
+        // }
 
-        if (!$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id) {
-            Log::error('User does not have the "Handle Owned Project" permission', [
-                'user_id' => $user->id,
-                'project_id' => $projectId,
-            ]);
-            abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
-        }
+        // if (!$project) {
+        //     Log::error('Project not found', ['project_id' => $projectId]);
+        //     abort(403, 'Unauthorized action. Ensure the project is found');
+        // }
+
+        // if (!$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id) {
+        //     Log::error('User does not have the "Handle Owned Project" permission', [
+        //         'user_id' => $user->id,
+        //         'project_id' => $projectId,
+        //     ]);
+        //     abort(403, 'Unauthorized action. Check if the user has the "Handle Owned Project" permission');
+        // }
 
         // $a = !$user->can('Handle Owned Project') && $project->user_profile_id !== $user->profile->id; 
         // $b = !$project;
