@@ -113,7 +113,7 @@ export const permissionGroups = {
             {
                 "id": 13,
                 "name": "Delete Project Document Version",
-                "label": "Delete Project Any Document Versions",
+                "label": "Delete Any Project Document Versions",
             },
         ]
     },
@@ -150,6 +150,10 @@ export const permissionGroups = {
                 "name": "Handle Owned Project",
                 "label": "Handle Only Owned Project",
                 "description": "This permission enables a user to be assigned to a project, allowing them to make changes to all aspects of the project, except for deleting it."
+            },
+            {
+                "id": 17,
+                "name": "View Monitoring Page",
             },
         ]
     },

@@ -27,10 +27,8 @@ import {
     CollapsibleTrigger,
 } from "@/Components/ui/collapsible";
 import { Link, usePage } from "@inertiajs/react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { Auth } from "@/types/model";
 import { can, canAny } from "@/lib/utils";
-import { useState } from "react";
 
 export function AppSidebar(url: any) {
     type SidebarItem = {
@@ -40,16 +38,18 @@ export function AppSidebar(url: any) {
         submenu?: { title: string; href: string }[];
     };
 
-    const items: SidebarItem[] = [
+    const items: SidebarItem[] = [];
+
+    const { auth  } = usePage<{ auth: Auth }>().props;
+    const userPermissions = auth.permissions;
+
+    can(userPermissions, 'View Monitoring Page') && items.unshift(
         {
             title: "Monitoring",
             href: "/monitoring",
             icon: CalendarIcon,
-        },
-    ];
-
-    const { auth  } = usePage<{ auth: Auth }>().props;
-    const userPermissions = auth.permissions;
+        }
+    );
 
     can(userPermissions, 'Handle Owned Project') && items.unshift(
         {

@@ -40,6 +40,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(), // Add sorting model
         onSortingChange: setSorting, // Add sorting handler
+        filterFromLeafRows: true,
         state: {
             sorting, // Add sorting state
             columnFilters,

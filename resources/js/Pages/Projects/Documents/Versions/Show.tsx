@@ -145,7 +145,7 @@ export default function ProjectDocumentVersionShow({
                     <InfoPair
                         label="Time Remaining"
                         value={
-                            <Countdown startDate={new Date()} endDate={projectDocumentVersion.deadline} notStartedText="" endText=""/>
+                            <Countdown startDate={new Date()} endDate={projectDocumentVersion.deadline} endText="Deadline Reached"/>
                         }
                     />
                     <InfoPair
