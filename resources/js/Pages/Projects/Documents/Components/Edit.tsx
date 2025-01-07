@@ -37,6 +37,7 @@ import { can, handleNumericInput } from "@/lib/utils";
 import { ProjectDocumentDeleteDialog } from "./Delete";
 import { deadlineIntervals, weekdays } from "./Create";
 import { Switch } from "@/Components/ui/switch";
+import { useState } from "react";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -44,7 +45,7 @@ const formSchema = z.object({
     weekly_deadline: z.number().optional(),
     monthly_deadline: z.number().min(1).max(31).optional(),
     priority: z.number(),
-    is_auto: z.boolean(),
+    is_auto: z.boolean().optional(),
 });
 
 type Priority = {
@@ -63,6 +64,7 @@ export default function ProjectDocumentEditDialog({
     project,
     projectDocument,
 }: PageProps) {
+    const [isOpen, setIsOpen] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -71,19 +73,25 @@ export default function ProjectDocumentEditDialog({
             monthly_deadline: projectDocument.monthly_deadline || undefined,
             deadline_interval: projectDocument.deadline_interval || undefined,
             priority: projectDocument.priority,
-            is_auto: projectDocument.is_auto,
+            is_auto: projectDocument.is_auto || undefined,
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.post(
+            router.put(
                 route("projects.documents.update", [
                     project.id,
                     projectDocument.id,
                 ]),
                 values
-            );
+            , {
+                preserveScroll: true,
+                onFinish: () => {
+                    form.reset();
+                    setIsOpen(false);
+                },
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -94,7 +102,7 @@ export default function ProjectDocumentEditDialog({
     const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button className="w-fit" variant="modify">
                     <PenLine className="me-2" size={18} />

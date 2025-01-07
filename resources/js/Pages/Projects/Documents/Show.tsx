@@ -24,6 +24,7 @@ import ProjectDocumentEditDialog from "./Components/Edit";
 import { can } from "@/lib/utils";
 import PriorityBadge from "@/Components/custom/PriorityBadge";
 import { Badge } from "@/Components/ui/badge";
+import StatusBadge from "@/Components/custom/StatusBadge";
 
 interface PageProps {
     project: Project;
@@ -143,7 +144,7 @@ export default function ProjectDocumentsShow({
                                     </AccordionTrigger>
                                     <AccordionContent>
                                         <div className="p-4 pb-0 flex flex-col">
-                                            <div className="grid md:grid-cols-3 gap-4">
+                                            <div className="grid md:grid-cols-4 gap-4">
                                                 <InfoPair
                                                     label="Document Number"
                                                     value={
@@ -164,19 +165,54 @@ export default function ProjectDocumentsShow({
                                                 <InfoPair
                                                     label="Latest Document"
                                                     value={
-                                                        <Link
-                                                            href={
-                                                                projectDocumentVersion.latest_document
-                                                            }
-                                                            target="_blank"
-                                                        >
-                                                            <IconButton
-                                                                icon={Download}
-                                                                variant="outline"
-                                                                text="Download File"
-                                                            />
-                                                        </Link>
+                                                        projectDocumentVersion.latest_document == "N/A"
+                                                        ? (
+                                                            <span className="italic text-muted-foreground">
+                                                                No document available.
+                                                            </span>
+                                                        )
+                                                        : (
+                                                            <Link
+                                                                href={
+                                                                    projectDocumentVersion.latest_document == "N/A" ? projectDocumentVersion.latest_document : "#"
+                                                                }
+                                                                target="_blank"
+                                                            >
+                                                                <IconButton
+                                                                    icon={Download}
+                                                                    variant="outline"
+                                                                    text="Download File"
+                                                                />
+                                                            </Link>
+                                                        )
                                                     }
+                                                    width={7}
+                                                    lineHeight="normal"
+                                                />
+                                                <InfoPair
+                                                    label="Last Update"
+                                                    value={
+                                                        projectDocumentVersion.latest_update == "N/A"
+                                                        ? (
+                                                            <span className="italic text-muted-foreground">
+                                                                No update available.
+                                                            </span>
+                                                        )
+                                                        : (
+                                                            <span>
+                                                                {format(
+                                                                    projectDocumentVersion.latest_update,
+                                                                    "d MMMM yyyy kk:mm:ss"
+                                                                )}
+                                                            </span>
+                                                        )
+                                                    }
+                                                    width={7}
+                                                    lineHeight="normal"
+                                                />
+                                                <InfoPair
+                                                    label="Status"
+                                                    value={<StatusBadge status={projectDocumentVersion.latest_status_name} />}
                                                     width={7}
                                                     lineHeight="normal"
                                                 />

@@ -97,6 +97,10 @@ export type ProjectDocumentVersion = BaseModel & {
     project_document_id: string;
 
     latest_document: string;
+    latest_update: string | Date;
+
+    latest_status: number;
+    latest_status_name: string;
 };
 
 export type ProjectDocumentVersionUpdate = BaseModel & {
