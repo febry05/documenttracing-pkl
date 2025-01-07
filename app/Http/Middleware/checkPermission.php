@@ -31,19 +31,30 @@ class checkPermission
         //         || $user->can($permission)
         //     )
         // );
+        // dd($permission);
 
         // ini jalan kalo:
         //->middleware('check_permission:true,View Project Document Version');
         // ditulis
+        // if (!(
+        //         $handleOwnedProject  == true
+        //         && (
+        //             ($user->can('Handle Owned Project') && $project->user_profile_id === $user->id)
+        //             || $user->can($permission)
+        //         )
+        //     )) {
+        //     abort(403, 'Unauthorized action. Only users with \'Handle Owned Project \' or ' . $permission . ' permission can access this resource.');
+                
         if (!(
                 $handleOwnedProject  == true
                 && (
                     ($user->can('Handle Owned Project') && $project->user_profile_id === $user->id)
-                    || $user->can($permission)
+                    || 
+                    $user->can($permission)
                 )
             )) {
             abort(403, 'Unauthorized action. Only users with \'Handle Owned Project \' or ' . $permission . ' permission can access this resource.');
-
+                
         // ini jalan kalo:
         //->middleware('check_permission:false,View Project Document Version');
         // ditulis

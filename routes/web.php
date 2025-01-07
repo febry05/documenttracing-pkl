@@ -75,8 +75,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects/{project}/documents/{document}/versions/{version}', [ProjectDocumentVersionController::class, 'show'])->name('projects.documents.versions.show')->middleware('check_permission:true,View Project Document Version');
 
     //Update Document
-    Route::get('/projects/{project}/documents/{document}/versions/{version}/updates/create', [UpdateController::class, 'create'])->name('projects.documents.versions.updates.create')->middleware('check_permission:true,View Project Document Version Update');
-    Route::post('/projects/{project}/documents/{document}/versions/{version}/updates', [UpdateController::class, 'store'])->name('projects.documents.versions.updates.store')->middleware('check_permission:true,Create Project Document Version Update');
+    // Route::get('/projects/{project}/documents/{document}/versions/{version}/updates/create', [UpdateController::class, 'create'])->name('projects.documents.versions.updates.create');
+    Route::post('/projects/{project}/documents/{document}/versions/{version}/updates', [UpdateController::class, 'store'])->name('projects.documents.versions.updates.store')
+    // ->middleware('check_permission:false,Create Project Document Version')
+    ;
     
 
     //Master Data

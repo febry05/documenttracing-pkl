@@ -41,12 +41,13 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // dd(Auth::user()->roles ?? 'true');
         // dd($this->projectService->getNotifications());
         return array_merge(parent::share($request), [
             'auth' => Auth::check() ? [
                 'name' => Auth::user()->profile->name,
                 'permissions' => $request->user() ? $request->user()->getAllPermissions()->pluck('name') : [],
-                'role' => ModelsRole::findByName(Auth::user()->getRoleNames()[0])->name,
+                'role' => count(Auth::user()->roles) > 0 ? ModelsRole::findByName(Auth::user()->getRoleNames()[0])->name : "N/A",
                 'notifications' => $this->projectService->getNotifications(),
             ] : [
                 'user' => $request->user()
