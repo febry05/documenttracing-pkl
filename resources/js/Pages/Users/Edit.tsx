@@ -457,6 +457,7 @@ export default function UsersEdit({
                             type="submit"
                             icon={Save}
                             text="Save"
+                            onClick={form.handleSubmit(onSubmit)}
                         />
                         <UserDeleteDialog data={user} />
                     </div>
