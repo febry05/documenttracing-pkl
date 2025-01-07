@@ -54,8 +54,9 @@ class UpdateController extends Controller
             ])
             ->with('success', 'Document Version Update created successfully');
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             return back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
-    }   
+    }
 }

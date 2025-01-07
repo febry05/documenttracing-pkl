@@ -97,13 +97,9 @@ class UserController extends Controller
 
         return to_route('users.index')->with('success', 'User "' . $request->name . '" created successfully.');
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             DB::rollBack();
-            // session()->flash('flash', [
-            //     'status' => 'error',
-            //     'message' => 'Problem occurred when creating user "' . $request->name . '".',
-            // ]);
-            return to_route('users.index')->with('error', 'Problem occurred when creating user "' . $request->name . '".');
+            return to_route('users.index')->with('error', 'Problem occurred when creating user: "' . $e->getMessage() . '".');
         }
     }
 
@@ -118,7 +114,7 @@ class UserController extends Controller
                 'nik' => $user->nik ,
                 'phone' => $user->phone ,
                 'employee_no' => $user->employee_no,
-                'roles_id' => $user->user->id ,
+                'roles_id' => $user->user->roles->first()->id ?? "N/A",
                 'user_division_id' => $user->division->id,
                 'user_position_id' => $user->position->id,
             ],
@@ -143,6 +139,9 @@ class UserController extends Controller
                 'user_division_id' => 'required|integer',
                 'user_position_id' => 'required|integer',
             ]);
+
+            // dd($validatedData);
+            
 
             $user = User::findOrFail($id);
             $user->email = $validatedData['email'];
@@ -169,7 +168,21 @@ class UserController extends Controller
             return to_route('users.index')->with('success', 'User "' . $request->name . '" updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('users.index')->with('error', 'Problem occurred when updating user "' . $request->name . '".');
+            return to_route('users.index')->with('error', 'Problem occurred when creating user: "' . $e->getMessage() . '".');
+        }
+    }
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            DB::commit();
+            return to_route('users.index')->with('success', 'User "' . $user->name . '" deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('users.index')->with('error', 'Problem occurred when deleting user: "' . $e->getMessage() . '".');
         }
     }
 }

@@ -146,8 +146,8 @@ class ProjectDocumentVersionController extends Controller
                 : "Version {$version->version} created successfully and will be automated.");
             } catch (\Exception $e) {
             DB::rollBack();
-            // dd($e);
-            return redirect()->back()->with('error', 'Failed to create version');
+            // //dd($e);
+            return redirect()->back()->with('error', 'Failed to create version: ' . $e->getMessage());
         }
     }
 
@@ -205,8 +205,8 @@ class ProjectDocumentVersionController extends Controller
                     : "Version {$version->version} updated successfully and will be automated.");
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
-            return redirect()->back()->with('error', 'Failed to update version');
+            //dd($e);
+            return redirect()->back()->with('error', 'Failed to update version: ' . $e->getMessage());
         }
     }
 

@@ -75,7 +75,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-01-12',
                 'contract_end' => '2024-11-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Azhim Nugroho')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
             ],
             [
                 'name' => 'Penyedia Jasa Manage Service Jaringan LAN di 13 Bandara Angkasa Pura 1 (Air Asia)',

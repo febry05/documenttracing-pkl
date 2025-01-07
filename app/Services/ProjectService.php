@@ -128,7 +128,7 @@ class ProjectService {
                 'document_number' => $projectDocumentVersion->document_number ?? 'N/A',
                 'deadline' => $projectDocumentVersion->deadline ?? 'N/A',
                 'project_document_id' => $projectDocumentVersion->project_document_id ?? 'N/A',
-                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->document_link ?? 'N/A' : 'N/A',
+                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->last()->document_link ?? 'N/A' : 'N/A',
                 'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id ?? 'N/A',

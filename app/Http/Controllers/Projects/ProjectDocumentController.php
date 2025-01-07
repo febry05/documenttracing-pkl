@@ -94,7 +94,7 @@ class ProjectDocumentController extends Controller
             return to_route('projects.show' , $project);
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            //dd($e);
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
         }
     }

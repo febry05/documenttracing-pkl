@@ -85,7 +85,7 @@ class ProjectController extends Controller
             ->with('success', 'Project '. $request->name .' created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to create project');
+            return redirect()->back()->with('error', 'Failed to create project: ' . $e->getMessage());
         }
     }
 
@@ -126,7 +126,7 @@ class ProjectController extends Controller
             ->with('success', 'Project "'. $request->name .'" has been updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to update project');
+            return redirect()->back()->with('error', 'Failed to update project: ' . $e->getMessage());
         }
     }
 
@@ -147,7 +147,7 @@ class ProjectController extends Controller
                 ->with('success', 'Project "' . $project->name . '" has been deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to delete project');
+            return redirect()->back()->with('error', 'Failed to delete project: ' . $e->getMessage());
         }
     }
 

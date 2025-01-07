@@ -34,6 +34,7 @@ import {
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
+import React from "react";
 
 const formSchema = z.object({
     title: z.string().min(1).max(255),
@@ -66,17 +67,24 @@ export default function ProjectDocumentVersionUpdateCreateDialog({
             release_date: new Date(),
         },
     });
+    const [open, setOpen] = React.useState(false);
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(
-                route("projects.documents.versions.updates.store", [
-                    projectId,
-                    projectDocumentId,
-                    projectDocumentVersionId,
-                ]),
+            router.post(
+                route("projects.documents.versions.updates.store", {
+                    project: projectId,
+                    document: projectDocumentId,
+                    version: projectDocumentVersionId,
+                }),
                 values
-            );
+            ),
+                {
+                    onFinished: () => {
+                        form.reset();
+                        setOpen(false);
+                    },
+                };
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -85,7 +93,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog({
     // console.log(projectDocumentId);
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="w-fit">
                     <Plus className="me-2" size={18} />

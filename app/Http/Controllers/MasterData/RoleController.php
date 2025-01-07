@@ -38,9 +38,9 @@ class RoleController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:255|unique:roles,name',
                 'description' => 'required|string',
-                'permissions' => 'required|array',
+                'permissions' => 'required|array|exists:permissions,name',
             ]);
 
             $role = new Role();
@@ -81,9 +81,9 @@ class RoleController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:255|unique:roles,name,' . $id,
                 'description' => 'required|string',
-                'permissions' => 'required|array',
+                'permissions' => 'required|array|exists:permissions,name',
             ]);
 
             $role = Role::findOrFail($id);
