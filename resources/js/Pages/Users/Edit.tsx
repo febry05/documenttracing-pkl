@@ -104,6 +104,8 @@ export default function UsersEdit({
         setSelectedDivision(divisionId);
     };
 
+    console.log(user);
+
     return (
         <DashboardLayout
             header={<HeaderNavigation title="Edit User" />}
@@ -111,13 +113,13 @@ export default function UsersEdit({
             <Head title="Edit User" />
 
             <Card className="p-8">
-                <Form {...form}>
-                    <form
-                        action=""
-                        method="POST"
-                        onSubmit={form.handleSubmit(onSubmit)}
-                    >
-                        <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-8">
+                    <Form {...form}>
+                        <form
+                            action=""
+                            method="POST"
+                            onSubmit={form.handleSubmit(onSubmit)}
+                        >
                             {/* Credentials info [START] */}
                             <div className="flex flex-col gap-2">
                                 <span className="font-bold text-sm">
@@ -448,17 +450,17 @@ export default function UsersEdit({
                                 </div>
                             </div>
                             {/* Employee Info [END] */}
-                            <div className="flex flex-row-reverse gap-4">
-                                <IconButton
-                                    type="submit"
-                                    icon={Save}
-                                    text="Save"
-                                />
-                                <UserDeleteDialog data={user} />
-                            </div>
-                        </div>
-                    </form>
-                </Form>
+                            </form>
+                        </Form>
+                    <div className="flex flex-row-reverse gap-4">
+                        <IconButton
+                            type="submit"
+                            icon={Save}
+                            text="Save"
+                        />
+                        <UserDeleteDialog data={user} />
+                    </div>
+                </div>
             </Card>
         </DashboardLayout>
     );

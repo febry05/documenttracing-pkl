@@ -134,7 +134,12 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
                             <FormItem>
                                 {/* Title & Description */}
                                 <div className="mb-4">
-                                    <FormLabel className="text-base">Role Permissions</FormLabel>
+                                    <FormLabel className="text-base">
+                                        Role Permissions
+                                        <span className="text-destructive ms-1">
+                                            *
+                                        </span>
+                                    </FormLabel>
                                     <FormDescription>
                                         Select the permissions you want this role assigned to.
                                     </FormDescription>
