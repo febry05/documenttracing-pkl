@@ -18,6 +18,7 @@ import { Separator } from "@/Components/ui/separator";
 import { can } from "@/lib/utils";
 import Countdown from "@/Components/custom/Countdown";
 import PriorityBadge from "@/Components/custom/PriorityBadge";
+import StatusBadge from "@/Components/custom/StatusBadge";
 
 interface PageProps {
     project: Project;
@@ -33,14 +34,18 @@ function Update({
     projectDocumentVersionUpdate: ProjectDocumentVersionUpdate;
 }) {
     return (
-        <div className="flex">
-            <div className="flex flex-col">
+        <div className="flex md:flex-row flex-col gap-6 bg-muted p-4 rounded-lg">
+            <div className="flex flex-col gap-2">
                 <span className="font-semibold">
                     {projectDocumentVersionUpdate.title}
                 </span>
-                {projectDocumentVersionUpdate.description}
+                <span>
+                    {projectDocumentVersionUpdate.description} {' '}
+                </span>
+                    {projectDocumentVersionUpdate.document_link && (<TextLink className="text-blue-800 text-sm" text="View Document" href={projectDocumentVersionUpdate.document_link}/>)}
             </div>
-            <div className="flex flex-col basis-1/4 items-end text-right ms-auto">
+            {/* <Separator orientation="vertical"/> */}
+            <div className="flex flex-col md:basis-2/5 md:items-end md:text-right md:ms-auto gap-2">
                 <span className="font-semibold">
                     {format(
                         projectDocumentVersionUpdate.created_at,
@@ -54,6 +59,7 @@ function Update({
                         "kk:mm:ss"
                     )}
                 </div>
+                <StatusBadge status={projectDocumentVersionUpdate.status_name} className="w-fit" />
             </div>
         </div>
     );
@@ -77,7 +83,7 @@ export default function ProjectDocumentVersionShow({
                     title="Project Document Version Details"
                     button={(can(userPermissions, "Update Project Document Version") || userIsPIC) && (
                         <ProjectDocumentVersionEditDialog
-                            project={project.id}
+                            project={project}
                             projectDocumentId={projectDocument.id}
                             projectDocumentVersion={projectDocumentVersion}
                         />
@@ -151,11 +157,7 @@ export default function ProjectDocumentVersionShow({
                     <InfoPair
                         label="Status"
                         value={
-                            projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[
-                                      projectDocumentVersionUpdates.length - 1
-                                  ].status_name
-                                : "N/A"
+                            <StatusBadge status={projectDocumentVersion.latest_status_name} />
                         }
                     />
                     <InfoPair
@@ -202,12 +204,6 @@ export default function ProjectDocumentVersionShow({
                                             projectDocumentVersionUpdate
                                         }
                                     />
-                                    {projectDocumentVersionUpdates.indexOf(
-                                        projectDocumentVersionUpdate
-                                    ) !==
-                                        projectDocumentVersionUpdates.length - 1 && (
-                                        <Separator className="mt-4"/>
-                                    )}
                                 </div>
                             )
                         )}

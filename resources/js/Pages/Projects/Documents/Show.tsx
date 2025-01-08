@@ -144,7 +144,7 @@ export default function ProjectDocumentsShow({
                                     </AccordionTrigger>
                                     <AccordionContent>
                                         <div className="p-4 pb-0 flex flex-col">
-                                            <div className="grid md:grid-cols-4 gap-4">
+                                            <div className="grid md:grid-cols-5 gap-4">
                                                 <InfoPair
                                                     label="Document Number"
                                                     value={
@@ -163,6 +163,12 @@ export default function ProjectDocumentsShow({
                                                     lineHeight="normal"
                                                 />
                                                 <InfoPair
+                                                    label="Status"
+                                                    value={<StatusBadge status={projectDocumentVersion.latest_status_name} />}
+                                                    width={7}
+                                                    lineHeight="normal"
+                                                />
+                                                <InfoPair
                                                     label="Latest Document"
                                                     value={
                                                         projectDocumentVersion.latest_document == "N/A"
@@ -172,18 +178,18 @@ export default function ProjectDocumentsShow({
                                                             </span>
                                                         )
                                                         : (
-                                                            <Link
+                                                            <a
                                                                 href={
-                                                                    projectDocumentVersion.latest_document == "N/A" ? projectDocumentVersion.latest_document : "#"
+                                                                    projectDocumentVersion.latest_document
                                                                 }
                                                                 target="_blank"
                                                             >
                                                                 <IconButton
                                                                     icon={Download}
                                                                     variant="outline"
-                                                                    text="Download File"
+                                                                    text="View Document"
                                                                 />
-                                                            </Link>
+                                                            </a>
                                                         )
                                                     }
                                                     width={7}
@@ -210,17 +216,11 @@ export default function ProjectDocumentsShow({
                                                     width={7}
                                                     lineHeight="normal"
                                                 />
-                                                <InfoPair
-                                                    label="Status"
-                                                    value={<StatusBadge status={projectDocumentVersion.latest_status_name} />}
-                                                    width={7}
-                                                    lineHeight="normal"
-                                                />
                                             </div>
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
-                            )) : <span className="italic text-muted-foreground">No versions available.</span> }
+                            )) : <span className="italic text-center text-sm p-6 text-muted-foreground">No versions available.</span> }
                         </Accordion>
                     </Card>
                 </>

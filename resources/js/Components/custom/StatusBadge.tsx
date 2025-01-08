@@ -1,8 +1,7 @@
 import { Badge } from '@/Components/ui/badge';
 
-export default function StatusBadge({ status }: { status: "Completed" | "On Process" | "Pending" | "Not Started" | undefined | string }) {
+export default function StatusBadge({ status, className }: { status: "Completed" | "On Process" | "Pending" | "Not Started" | undefined | string, className?: string }) {
     let variant: string;
-    let className: string;
 
     if (status === 'Completed') {
         variant = 'default';

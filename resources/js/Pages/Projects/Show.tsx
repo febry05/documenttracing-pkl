@@ -99,7 +99,7 @@ export default function ProjectShow({ project, projectDocuments, projectDocument
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
-                            )) : <span className="italic text-muted-foreground">No documents available.</span>
+                            )) : <span className="italic text-sm text-center p-3 text-muted-foreground">No documents available.</span>
                             }
                         </Accordion>
                         </div>

@@ -87,7 +87,7 @@ export default function ProjectDocumentEditDialog({
                 values
             , {
                 preserveScroll: true,
-                onFinish: () => {
+                onProgress: () => {
                     form.reset();
                     setIsOpen(false);
                 },
@@ -343,6 +343,7 @@ export default function ProjectDocumentEditDialog({
                                         text="Save"
                                         icon={Save}
                                         type="submit"
+                                        onClick={form.handleSubmit(onSubmit)}
                                     />
                                     {(can(userPermissions, "Delete Project Document") || userIsPIC) && (
                                         <ProjectDocumentDeleteDialog

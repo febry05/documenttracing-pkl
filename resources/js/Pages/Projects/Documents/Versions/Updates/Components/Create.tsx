@@ -79,12 +79,12 @@ export default function ProjectDocumentVersionUpdateCreateDialog({
                 }),
                 values
             ),
-                {
-                    onFinished: () => {
+                // {
+                    // onFinished: () => {
                         form.reset();
                         setOpen(false);
-                    },
-                };
+                    // },
+                // };
         } catch (error) {
             console.error("Submission error:", error);
         }

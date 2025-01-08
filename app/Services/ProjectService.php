@@ -128,10 +128,11 @@ class ProjectService {
                 'document_number' => $projectDocumentVersion->document_number ?? 'N/A',
                 'deadline' => $projectDocumentVersion->deadline ?? 'N/A',
                 'project_document_id' => $projectDocumentVersion->project_document_id ?? 'N/A',
-                'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->document_link : 'N/A',
-                'latest_status' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->status : 'N/A',
-                'latest_status_name' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->status_type_name : 'N/A',
-                'latest_update' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->latest()->updated_at : 'N/A',
+                // 'latest_document' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->last()->document_link?->first(fn($update) => $update->document_link !== null)?->document_link : 'N/A',
+                'latest_document' => !$projectDocumentVersion->updates->isEmpty() && $projectDocumentVersion->updates->whereNotNull('document_link')->last()?->document_link ? $projectDocumentVersion->updates->whereNotNull('document_link')->last()?->document_link : 'N/A',
+                'latest_status' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->last()->status : 'N/A',
+                'latest_status_name' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->last()->status_type_name : 'N/A',
+                'latest_update' => !$projectDocumentVersion->updates->isEmpty() ? $projectDocumentVersion->updates->last()->updated_at : 'N/A',
                 'document_updates' => $projectDocumentVersion->updates->map(function ($documentUpdate) {
                     return [
                         'id' => $documentUpdate->id ?? 'N/A',
@@ -144,7 +145,11 @@ class ProjectService {
     }
 
     public function getProjectDocumentVersionUpdates($projectDocumentVersionId){
-        return ProjectDocumentVersionUpdate::select('id', 'title', 'status', 'description', 'document_link', 'project_document_version_id', 'created_at', 'updated_at')->where('project_document_version_id', $projectDocumentVersionId)->get()->map(function ($projectDocumentVersionUpdate) {
+        return ProjectDocumentVersionUpdate::select('id', 'title', 'status', 'description', 'document_link', 'project_document_version_id', 'created_at', 'updated_at')
+            ->where('project_document_version_id', $projectDocumentVersionId)
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->map(function ($projectDocumentVersionUpdate) {
             return [
                 'id' => $projectDocumentVersionUpdate->id,
                 'title' => $projectDocumentVersionUpdate->title,
@@ -228,8 +233,12 @@ class ProjectService {
 
         return match ($document->deadline_interval) {
             1 => $this->adjustForHolidays($now->addDay(), $holidayChecker), // Daily
+            // ============================================================================================================================ $now Diubah jadi $document->release_date ============================================================================================================================
             2 => $this->calculateWeeklyDeadline($document->weekly_deadline, $now, $holidayChecker), // Weekly
+            // 2 => $this->calculateWeeklyDeadline($document->weekly_deadline, $document->release_date, $holidayChecker), // Weekly
             3 => $this->calculateMonthlyDeadline($document->monthly_deadline, $now, $holidayChecker), // Monthly
+            // 3 => $this->calculateMonthlyDeadline($document->monthly_deadline, $document->release_date, $holidayChecker), // Monthly
+            // ============================================================================================================================ $now Diubah jadi $document->release_date ============================================================================================================================
             4 => $this->adjustForHolidays($now->addMinute(), $holidayChecker), // Tetsting
             default => throw new \InvalidArgumentException('Invalid deadline interval.'),
         };
