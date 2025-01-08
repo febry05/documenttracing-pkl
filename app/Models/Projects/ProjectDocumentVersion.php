@@ -70,20 +70,21 @@ class ProjectDocumentVersion extends Model
     {
     DB::beginTransaction();
     try {
-        $now = Carbon::now();
+        // $now = Carbon::now();
+        $releaseDate = $this->document->versions->release_date;
         //now();
         switch ($this->document->deadline_interval) {
             case 1:
-                $versionName = $now->format('d M Y'); // Daily
+                $versionName = $releaseDate->format('l, d M Y'); // Daily with day name
             break;
             case 2:
-                $versionName = 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'); // Weekly
+                $versionName = 'Week ' . $releaseDate->weekOfMonth . ' ' . $releaseDate->format('F Y (' .$this->document->name.')'); // Weekly
                 break;
             case 3:
-                $versionName = $now->format('F Y'); // Monthly
+                $versionName = $releaseDate->format('F Y (' .$this->document->name.')'); // Monthly
                 break;
             case 4:
-                $versionName = $now->format('l, jS F Y H:i'); // Detailed timestamp
+                $versionName = $releaseDate->format('l, jS F Y H:i (' .$this->document->name.') (For Testing)'); // Detailed timestamp
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');
@@ -96,7 +97,7 @@ class ProjectDocumentVersion extends Model
         $newVersion = new ProjectDocumentVersion([
             'version' => $versionName,
             'document_number' => '0',
-            'release_date' => $now->toDateTimeString(),
+            'release_date' => $releaseDate->toDateTimeString(),
             'deadline' => $deadline->toDateTimeString(),
             'is_generated' => false,
             'project_document_id' => $this->document->id,
