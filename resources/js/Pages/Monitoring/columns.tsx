@@ -1,9 +1,10 @@
 "use client"
 
 import Countdown from "@/Components/custom/Countdown"; // Ensure Countdown component accepts endDate and separateLines props
+import { IconButton } from "@/Components/custom/IconButton";
 import PriorityBadge from "@/Components/custom/PriorityBadge";
 import { ColumnDef } from "@tanstack/react-table"
-import { ChevronDown, ChevronLeft } from "lucide-react";
+import { ChevronDown, ChevronLeft, Download, Link, Link2 } from "lucide-react";
 import React from "react";
 
 // This type is used to define the shape of our data.
@@ -86,9 +87,9 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
                 </>
             );
         },
-        size: 25,
-        minSize: 25,
-        maxSize: 25,
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
         enableResizing: false,
     },
     {
@@ -176,16 +177,44 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
                         <div className="ms-auto">
                             {row.getIsExpanded() ? <ChevronLeft size={16} /> : <ChevronDown size={16} />}
                         </div>
-                    ) : (
-                        ''
-                    )}{' '}
-                    {getValue<boolean>()}
+                    ) : ( getValue() == "N/A"
+                        ? (
+                            <a
+                                href={
+                                    getValue() as string
+                                }
+                                target="_blank"
+                            >
+                                <IconButton
+                                    icon={Link2}
+                                    variant="outline"
+                                    text="View"
+                                    size="xs"
+                                    className="font-normal"
+                                />
+                        </a>
+                        )
+                        : ( <a
+                                href={
+                                    getValue() as string
+                                }
+                                target="_blank"
+                            >
+                                <IconButton
+                                    icon={Link2}
+                                    variant="outline"
+                                    text="View"
+                                    size="xs"
+                                    className="font-normal"
+                                />
+                        </a>
+                    ))}{' '}
                 </div>
             </div>
         ),
-        size: 100,
-        minSize: 100,
-        maxSize: 100,
+        size: 75,
+        minSize: 75,
+        maxSize: 75,
         enableResizing: false,
     },
 ]

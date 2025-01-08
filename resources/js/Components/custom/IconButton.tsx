@@ -9,13 +9,14 @@ interface PageProps {
     type?: "button" | "submit" | "reset",
     onClick?: () => void,
     disabled?: boolean,
+    size?: "xs" | "sm" | "default" | "lg" | "icon",
 }
 
-export function IconButton({variant, className, icon, text, type, onClick, disabled}: PageProps) {
+export function IconButton({variant, className, icon, text, type, onClick, disabled, size}: PageProps) {
     const Icon = icon || AlignJustifyIcon;
 
     return (
-        <Button className={className} variant={variant} type={type} onClick={onClick} disabled={disabled}>
+        <Button className={className} variant={variant} type={type} onClick={onClick} disabled={disabled} size={size}>
             <Icon className="me-2" size={18} />
             {text}
         </Button>

@@ -10,7 +10,7 @@ import {
 } from "@/Components/ui/accordion";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
-import { Download } from "lucide-react";
+import { Download, Link2 } from "lucide-react";
 import ProjectDocumentVersionCreateDialog from "./Versions/Components/Create";
 import {
     Auth,
@@ -185,9 +185,11 @@ export default function ProjectDocumentsShow({
                                                                 target="_blank"
                                                             >
                                                                 <IconButton
-                                                                    icon={Download}
+                                                                    icon={Link2}
                                                                     variant="outline"
                                                                     text="View Document"
+                                                                    size="xs"
+                                                                    className="font-normal"
                                                                 />
                                                             </a>
                                                         )

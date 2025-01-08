@@ -34,12 +34,12 @@ function Update({
     projectDocumentVersionUpdate: ProjectDocumentVersionUpdate;
 }) {
     return (
-        <div className="flex md:flex-row flex-col gap-6 bg-muted p-4 rounded-lg">
+        <div className="flex md:flex-row flex-col gap-6 bg-muted p-4 rounded-lg border">
             <div className="flex flex-col gap-2">
                 <span className="font-semibold">
                     {projectDocumentVersionUpdate.title}
                 </span>
-                <span>
+                <span className="text-sm">
                     {projectDocumentVersionUpdate.description} {' '}
                 </span>
                     {projectDocumentVersionUpdate.document_link && (<TextLink className="text-blue-800 text-sm" text="View Document" href={projectDocumentVersionUpdate.document_link}/>)}
@@ -59,7 +59,7 @@ function Update({
                         "kk:mm:ss"
                     )}
                 </div>
-                <StatusBadge status={projectDocumentVersionUpdate.status_name} className="w-fit" />
+                <StatusBadge status={projectDocumentVersionUpdate.status_name} className="w-fit text-sm" />
             </div>
         </div>
     );
