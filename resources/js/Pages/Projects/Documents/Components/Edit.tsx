@@ -87,7 +87,7 @@ export default function ProjectDocumentEditDialog({
                 values
             , {
                 preserveScroll: true,
-                onProgress: () => {
+                onBefore: () => {
                     form.reset();
                     setIsOpen(false);
                 },
@@ -337,25 +337,25 @@ export default function ProjectDocumentEditDialog({
                                 )}
                             />
 
-                            <DialogFooter>
-                                <div className="flex flex-row-reverse gap-4">
-                                    <IconButton
-                                        text="Save"
-                                        icon={Save}
-                                        type="submit"
-                                        onClick={form.handleSubmit(onSubmit)}
-                                    />
-                                    {(can(userPermissions, "Delete Project Document") || userIsPIC) && (
-                                        <ProjectDocumentDeleteDialog
-                                            projectId={project.id}
-                                            projectDocument={projectDocument}
-                                        />
-                                    )}
-                                </div>
-                            </DialogFooter>
                         </div>
                     </form>
                 </Form>
+                <DialogFooter>
+                    <div className="flex flex-row-reverse gap-4">
+                        <IconButton
+                            text="Save"
+                            icon={Save}
+                            type="submit"
+                            onClick={form.handleSubmit(onSubmit)}
+                        />
+                        {(can(userPermissions, "Delete Project Document") || userIsPIC) && (
+                            <ProjectDocumentDeleteDialog
+                                projectId={project.id}
+                                projectDocument={projectDocument}
+                            />
+                        )}
+                    </div>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );

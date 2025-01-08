@@ -20,12 +20,16 @@ export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentI
 
     async function onSubmit() {
         try {
-            router.delete(route('user.destroy', projectDocumentVersion.id), {
-                onFinish: () => {
-                    setIsOpen(false);
-                    router.visit(route('user.project.document.show', [projectId, projectDocumentId]), { only: ['projectId', 'projectDocument'] });
-                },
-            });
+            router.delete(
+                route("projects.documents.versions.destroy", [projectId, projectDocumentId, projectDocumentVersion.id]),
+                {
+                    preserveScroll: true,
+                    onBefore: () => {
+                        form.reset();
+                        setIsOpen(false);
+                    },
+                }
+            );
         } catch (error) {
             console.error('Submission error:', error);
         }

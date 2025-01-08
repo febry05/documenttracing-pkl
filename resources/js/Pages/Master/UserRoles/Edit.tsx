@@ -24,6 +24,7 @@ import { Save } from "lucide-react";
 import { UserRole } from "@/types/model";
 import { permissionGroups } from "@/lib/utils";
 import LearnTooltip from "@/Components/custom/LearnTooltip";
+import { toast } from "sonner";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -54,7 +55,17 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.put(route("user-roles.update", role.id), values);
+            const loadingToast = toast.loading("Loading...", {
+                description: "Please wait while we are updating the user role.",
+            });
+            router.put(route('user-roles.update', role.id), values, {
+                onBefore: () => {
+                    form.reset();
+                },
+                onFinish: () => {
+                    toast.dismiss(loadingToast);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -191,15 +202,18 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
                                 </div>
                                 <FormMessage />
                             </FormItem>
-
-                            <div className="flex flex-row-reverse gap-4">
-                                <IconButton type="submit" icon={Save} text="Save"/>
-                                <UserRoleDeleteDialog data={role}/>
-                            </div>
-
                         </div>
                     </form>
                 </Form>
+                <div className="flex flex-row-reverse gap-4">
+                    <IconButton
+                        type="submit"
+                        icon={Save}
+                        text="Save"
+                        onClick={form.handleSubmit(onSubmit)}
+                    />
+                    <UserRoleDeleteDialog data={role}/>
+                </div>
             </Card>
         </DashboardLayout>
     );
