@@ -115,7 +115,7 @@ export function AppSidebar(url: any) {
                                     className="w-8 m"
                                 />
                                 <span className="text-lg text-neutral-700 dark:text-neutral-400 font-bold ms-2">
-                                    Document Tracer
+                                    Document Tracing
                                 </span>
                             </Link>
                         </SidebarMenuButton>

@@ -189,15 +189,22 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                                     <TableRow
                                                         key={row.id}
                                                         data-state={row.getIsSelected() && "selected"}
-                                                        className={row.depth === 0 ? " bg-sky-500 hover:bg-sky-500/90 border-sky-600/40 dark:bg-gray-800 dark:hover:bg-gray-800/90 text-background rounded-md dark:border-gray-800/90 dark:text-foreground" : ""}
+                                                        className={row.depth === 0 ? "bg-primary hover:bg-primary/90 border-primary/20 dark:bg-gray-800 dark:hover:bg-gray-800/90 text-background rounded-md dark:border-gray-800/90 dark:text-foreground" : ""}
                                                         onClick={() => row.toggleExpanded()}
                                                         style={{ cursor: 'pointer' }}
                                                     >
                                                         {row.getVisibleCells().map((cell) => (
-                                                            <TableCell key={cell.id} style={{ width: cell.column.getSize() }} className={row.depth === 0 ? "py-2" : "py-2"}>
+                                                            <TableCell
+                                                                key={cell.id}
+                                                                style={{ width: cell.column.getSize() }}
+                                                                className="py-2"
+                                                                // colSpan={row.depth === 0 && cell.column.id === 'name' ? columns.length - 2 : undefined}
+                                                                // colSpan={cell.column.id == 'name' && row.depth == 0 && columns.length - 2}
+                                                            >
                                                                 {row.depth === 0 && cell.column.columnDef.header === "Name" ? (
                                                                     <>
-                                                                        <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit'/>
+                                                                        {/* {row.depth == 0 &&  columns.length - 2} {' row depth:'} {row.depth} {' '} */}
+                                                                        <TextLink href={route('projects.show', row.original.id)} text={cell.getValue()?.toString()} className='w-fit' iconClass='text-neutral-300'/>
                                                                     </>
                                                                 ) : (
                                                                     flexRender(cell.column.columnDef.cell, cell.getContext())

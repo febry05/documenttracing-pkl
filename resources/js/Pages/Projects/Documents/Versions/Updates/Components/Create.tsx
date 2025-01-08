@@ -38,7 +38,7 @@ import React from "react";
 
 const formSchema = z.object({
     title: z.string().min(1).max(255),
-    description: z.string().min(1).max(255),
+    description: z.string().max(255).optional(),
     document_link: z.string().max(255).optional(),
     status: z.number(),
     release_date: z.date(),
@@ -144,9 +144,9 @@ export default function ProjectDocumentVersionUpdateCreateDialog({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
-                                        <span className="text-destructive ms-1">
+                                        {/* <span className="text-destructive ms-1">
                                             *
-                                        </span>
+                                        </span> */}
                                         <FormControl>
                                             <Textarea
                                                 placeholder="Enter the update description"

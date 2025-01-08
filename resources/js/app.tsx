@@ -6,7 +6,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ThemeProvider } from "@/Components/theme-provider";
 
-const appName = import.meta.env.VITE_APP_NAME || "APS Document Tracer";
+const appName = import.meta.env.VITE_APP_NAME || "APS Document Tracing";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

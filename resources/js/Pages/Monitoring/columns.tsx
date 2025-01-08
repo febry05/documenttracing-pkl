@@ -3,6 +3,7 @@
 import Countdown from "@/Components/custom/Countdown"; // Ensure Countdown component accepts endDate and separateLines props
 import { IconButton } from "@/Components/custom/IconButton";
 import PriorityBadge from "@/Components/custom/PriorityBadge";
+import StatusBadge from "@/Components/custom/StatusBadge";
 import { ColumnDef } from "@tanstack/react-table"
 import { ChevronDown, ChevronLeft, Download, Link, Link2 } from "lucide-react";
 import React from "react";
@@ -131,12 +132,9 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
         },
         cell: ({ row, getValue }) => (
             <div className="w-full flex">
-                <div className="mx-auto">
-                    {getValue() && (
-                        <Countdown startDate={row.original.release_date} endDate={getValue() as string | Date} separateLines={true} endText="Time Limit Reached" />
-                    )}
-                    {/* 22 */}
-                </div>
+                {getValue() && (
+                    <Countdown startDate={row.original.release_date} endDate={getValue() as string | Date} separateLines={true} endText="Time Limit Reached" />
+                )}
             </div>
         ),
         sortingFn: (rowA, rowB) => {
@@ -155,10 +153,12 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
     {
         accessorKey: "status",
         header: "Status",
-        cell: ({ getValue }) => (
+        cell: ({ getValue, row }) => (
             <div className="w-full flex">
                 <div className="mx-auto">
-                    {getValue() as React.ReactNode}
+                {row.depth != 0 && (
+                    <StatusBadge status={getValue()}/>
+                )}
                 </div>
             </div>
         ),
@@ -169,7 +169,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
     },
     {
         accessorKey: "document_link",
-        header: "File",
+        header: "Latest Document",
         cell: ({ row, getValue }) => (
             <div>
                 <div className="flex">
@@ -179,42 +179,30 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
                         </div>
                     ) : ( getValue() == "N/A"
                         ? (
-                            <a
-                                href={
-                                    getValue() as string
-                                }
-                                target="_blank"
-                            >
-                                <IconButton
-                                    icon={Link2}
-                                    variant="outline"
-                                    text="View"
-                                    size="xs"
-                                    className="font-normal"
-                                />
-                        </a>
+                            <span className="text-sm text-muted-foreground italic">
+                                No document.
+                            </span>
                         )
-                        : ( <a
-                                href={
-                                    getValue() as string
-                                }
-                                target="_blank"
-                            >
-                                <IconButton
-                                    icon={Link2}
-                                    variant="outline"
-                                    text="View"
-                                    size="xs"
-                                    className="font-normal"
-                                />
+                        : (<a
+                            href={getValue() as string}
+                            target="_blank"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <IconButton
+                                icon={Link2}
+                                variant="outline"
+                                text="View"
+                                size="xs"
+                                className="font-normal"
+                            />
                         </a>
                     ))}{' '}
                 </div>
             </div>
         ),
-        size: 75,
-        minSize: 75,
-        maxSize: 75,
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
         enableResizing: false,
     },
 ]

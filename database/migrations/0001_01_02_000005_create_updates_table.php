@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->tinyInteger('status'); // 1 = Completed, 2 = On Process, 3 = Pending, 4 = Not Started
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('document_link')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('project_document_version_id');

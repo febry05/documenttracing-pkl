@@ -11,7 +11,7 @@ use App\Models\Projects\ProjectDocumentVersion;
 use App\Models\Projects\ProjectDocumentVersionUpdate;
 
 class UpdateController extends Controller
-{ 
+{
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
         DB::beginTransaction();
@@ -33,7 +33,7 @@ class UpdateController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string',
                 'status' => 'required|integer',
-                'description' => 'required|string',
+                'description' => 'nullable|string',
                 'document_link' => 'nullable|string',
             ]);
 

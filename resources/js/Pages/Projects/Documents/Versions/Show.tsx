@@ -19,6 +19,8 @@ import { can } from "@/lib/utils";
 import Countdown from "@/Components/custom/Countdown";
 import PriorityBadge from "@/Components/custom/PriorityBadge";
 import StatusBadge from "@/Components/custom/StatusBadge";
+import { IconButton } from "@/Components/custom/IconButton";
+import { Link2 } from "lucide-react";
 
 interface PageProps {
     project: Project;
@@ -34,15 +36,23 @@ function Update({
     projectDocumentVersionUpdate: ProjectDocumentVersionUpdate;
 }) {
     return (
-        <div className="flex md:flex-row flex-col gap-6 bg-muted p-4 rounded-lg border">
+        <div className="flex md:flex-row flex-col gap-6 bg-neutral-50 p-4 rounded-lg border">
             <div className="flex flex-col gap-2">
                 <span className="font-semibold">
                     {projectDocumentVersionUpdate.title}
                 </span>
                 <span className="text-sm">
-                    {projectDocumentVersionUpdate.description} {' '}
+                    {
+                        projectDocumentVersionUpdate.description
+                        ??
+                        <span className="text-muted-foreground italic">No description provided</span>
+                    }
                 </span>
-                    {projectDocumentVersionUpdate.document_link && (<TextLink className="text-blue-800 text-sm" text="View Document" href={projectDocumentVersionUpdate.document_link}/>)}
+                    {
+                        projectDocumentVersionUpdate.document_link
+                        ? <TextLink className="text-blue-800 dark:text-blue-400 text-sm" text="View Document" target="_blank" href={projectDocumentVersionUpdate.document_link}/>
+                        : <span className="text-muted-foreground italic text-sm">No document provided</span>
+                    }
             </div>
             {/* <Separator orientation="vertical"/> */}
             <div className="flex flex-col md:basis-2/5 md:items-end md:text-right md:ms-auto gap-2">
@@ -163,11 +173,24 @@ export default function ProjectDocumentVersionShow({
                     <InfoPair
                         label="Latest File"
                         value={
-                            projectDocumentVersionUpdates.length > 0
-                                ? projectDocumentVersionUpdates[
-                                      projectDocumentVersionUpdates.length - 1
-                                  ].document_link
-                                : "N/A"
+                            projectDocumentVersion.latest_document
+                            ?
+                            // <TextLink className="text-blue-800 dark:text-blue-400 text-sm" text="View Document" target="_blank" href={projectDocumentVersion.latest_document}/>
+                            <a
+                                href={
+                                    projectDocumentVersion.latest_document
+                                }
+                                target="_blank"
+                            >
+                                <IconButton
+                                    icon={Link2}
+                                    variant="outline"
+                                    text="View Document"
+                                    size="xs"
+                                    className="font-normal"
+                                />
+                            </a>
+                            : <span className="text-muted-foreground italic text-sm">No document provided</span>
                         }
                     />
                 </div>
