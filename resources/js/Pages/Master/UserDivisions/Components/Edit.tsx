@@ -4,7 +4,6 @@ import { Input } from "@/Components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Inertia } from "@inertiajs/inertia";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Textarea } from "@/Components/ui/textarea";
 import { Save } from "lucide-react";
@@ -13,7 +12,7 @@ import { router } from "@inertiajs/react";
 import { UserDivision } from "@/types/model";
 
 const formSchema = z.object({
-    name: z.string().min(3).max(255),
+    name: z.string().min(2).max(255),
     description: z.string().max(255).optional(),
 })
 
@@ -35,7 +34,7 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
         try {
             router.put(route('user-divisions.update', data.id), values, {
                 preserveScroll: true,
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     closeDialog();
                 }
@@ -91,7 +90,7 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
                     <Button
                         type="submit"
                         onClick={form.handleSubmit(onSubmit)}
-                        >
+                    >
                         <Save className="me-2" size={18} />
                         Save
                     </Button>

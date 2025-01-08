@@ -35,7 +35,7 @@ export default function ProjectBusinessTypeEditDialog({ data, closeDialog }: Pag
         try {
             router.put(route('project-business-types.update', data.id), values, {
                     preserveScroll: true,
-                    onFinish: () => {
+                    onBefore: () => {
                         form.reset();
                         closeDialog();
                     }

@@ -19,7 +19,7 @@ export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
     async function onSubmit() {
         try {
             router.delete(route('user-positions.destroy', data.id), {
-                onFinish: () => {
+                onBefore: () => {
                     setIsOpen(false);
                     closeDialog();
                 }

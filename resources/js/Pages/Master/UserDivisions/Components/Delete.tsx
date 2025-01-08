@@ -20,7 +20,7 @@ export function UserDivisionDeleteDialog({data, closeDialog}: PageProps) {
         try {
             router.delete(route('user-divisions.destroy', data.id), {
                 preserveScroll: true,
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     closeDialog();
                     setIsOpen(false);

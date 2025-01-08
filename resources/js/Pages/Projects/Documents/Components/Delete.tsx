@@ -20,7 +20,7 @@ export function ProjectDocumentDeleteDialog({ projectId, projectDocument }: Page
     async function onSubmit() {
         try {
             router.delete(route('projects.documents.destroy', [projectId, projectDocument.id]), {
-                onFinish: () => {
+                onBefore: () => {
                     setIsOpen(false);
                     router.visit(route('projects.documents.show', ), { only: ['userDivisions', 'userPositions'] });
                 },

@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { UserRole } from "@/types/model";
+import { toast } from "sonner";
 
 interface PageProps {
     data: UserRole,
@@ -18,11 +19,17 @@ export function UserRoleDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
+            const loadingToast = toast.loading("Loading...", {
+                description: "Please wait while we are updating the user position.",
+            });
             router.delete(route('user-roles.destroy', data.id), {
-                onFinish: () => {
+                onBefore: () => {
+                    form.reset();
                     setIsOpen(false);
-                    router.visit(route('user-roles.index'), { only: ['userRoles'] });
                 },
+                onFinish: () => {
+                    toast.dismiss(loadingToast);
+                }
             });
         } catch (error) {
             console.error('Submission error:', error);

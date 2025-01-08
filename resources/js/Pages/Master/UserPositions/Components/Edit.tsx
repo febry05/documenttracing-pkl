@@ -10,6 +10,7 @@ import { UserPositionDeleteDialog } from "./Delete";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { router } from "@inertiajs/react";
 import { UserDivision, UserPosition } from "@/types/model";
+import { toast } from "sonner";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -33,13 +34,21 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
         },
     });
 
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = toast.loading("Loading...", {
+                description: "Please wait while we are updating the user position.",
+            });
             router.put(route('user-positions.update', data.id), values, {
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     closeDialog();
                 },
+                onFinish: () => {
+                    toast.dismiss(loadingToast);
+                }
+
             });
         } catch (error) {
             console.error('Submission error:', error);

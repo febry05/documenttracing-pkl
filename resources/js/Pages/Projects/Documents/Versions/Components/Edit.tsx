@@ -53,7 +53,7 @@ export default function ProjectDocumentVersionEditDialog(
                 values,
                 {
                     preserveScroll: true,
-                    onProgress: () => {
+                    onBefore: () => {
                         form.reset();
                         setIsOpen(false);
                     },
