@@ -69,7 +69,7 @@ function Update({
                         "kk:mm:ss"
                     )}
                 </div>
-                <StatusBadge status={projectDocumentVersionUpdate.status_name} className="w-fit text-sm" />
+                <StatusBadge status={projectDocumentVersionUpdate.status_name} className="w-fit" />
             </div>
         </div>
     );
