@@ -92,7 +92,7 @@ export default function ProjectDocumentCreateDialog({
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             router.post(route("projects.documents.store", { project: projectId }), values, {
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     setOpen(false);
                 }

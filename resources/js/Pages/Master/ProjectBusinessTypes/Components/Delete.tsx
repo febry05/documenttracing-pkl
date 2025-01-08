@@ -20,7 +20,7 @@ export function ProjectBusinessTypeDeleteDialog({ data, closeDialog }: PageProps
     async function onSubmit() {
         try {
             router.delete(route('project-business-types.destroy', data.id), {
-                onFinish: () => {
+                onBefore: () => {
                     setIsOpen(false);
                     closeDialog();
                 }

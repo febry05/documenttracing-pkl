@@ -31,7 +31,7 @@ export default function ProjectBusinessTypeCreateDialog() {
         try {
             router.post(route('project-business-types.store'), values, {
                 preserveScroll: true,
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     setIsOpen(false);
                 },

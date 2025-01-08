@@ -34,7 +34,7 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
         try {
             router.put(route('user-divisions.update', data.id), values, {
                 preserveScroll: true,
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     closeDialog();
                 }

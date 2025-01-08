@@ -38,7 +38,7 @@ export default function UserPositionCreateDialog({ userDivisions }: PageProps) {
         try {
             router.post(route('user-positions.store'), values, {
                 preserveScroll: true,
-                onFinish: () => {
+                onBefore: () => {
                     form.reset();
                     setIsOpen(false);
                 },

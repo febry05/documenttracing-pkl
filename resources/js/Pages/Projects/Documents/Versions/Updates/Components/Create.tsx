@@ -80,7 +80,7 @@ export default function ProjectDocumentVersionUpdateCreateDialog({
                 values
             ),
                 // {
-                    // onFinished: () => {
+                    // onBeforeed: () => {
                         form.reset();
                         setOpen(false);
                     // },
