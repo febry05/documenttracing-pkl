@@ -222,22 +222,16 @@ class ProjectService {
         ])->filter()->implode(' ') ?: 'Today';
     }
 
-    public function calculateDeadline(ProjectDocument $document): Carbon
+    public function calculateDeadline(ProjectDocument $document, $releaseDate): Carbon
     {
-        // if($document->is_auto == 0) {
-        //     return $document->versions->deadline == null;
-        // }
-
-        // $now = now();
-        $releaseDate = Carbon::parse($document->versions->release_date);
-
+        $now = now();
         $holidayChecker = new TanggalMerah();
 
         return match ($document->deadline_interval) {
             1 => $this->adjustForHolidays($releaseDate->addDay(), $holidayChecker), // Daily
             2 => $this->calculateWeeklyDeadline($document->weekly_deadline, $releaseDate, $holidayChecker), // Weekly
             3 => $this->calculateMonthlyDeadline($document->monthly_deadline, $releaseDate, $holidayChecker), // Monthly
-            4 => $this->adjustForHolidays($releaseDate->addMinute(), $holidayChecker), // Tetsting
+            4 => $this->adjustForHolidays($now->addSecond(15), $holidayChecker), // Tetsting
             default => throw new \InvalidArgumentException('Invalid deadline interval.'),
         };
     }

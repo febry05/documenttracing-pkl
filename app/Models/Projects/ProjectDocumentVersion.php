@@ -71,20 +71,24 @@ class ProjectDocumentVersion extends Model
     DB::beginTransaction();
     try {
         // $now = Carbon::now();
-        $releaseDate = $this->document->versions->release_date;
+        // $releaseDate = $this->versions->release_date;
+        $releaseDate = Carbon::parse($this->release_date);
+        // $releaseDate = $this->document->versions->orderBy('release_date', 'desc')->first()->release_date;
+        
         //now();
         switch ($this->document->deadline_interval) {
             case 1:
-                $versionName = $releaseDate->format('l, d M Y'); // Daily with day name
-            break;
+                $versionName = $releaseDate->format('l, d M Y') . '('. $document->name .')'; // Daily with day name
+                break;
             case 2:
-                $versionName = 'Week ' . $releaseDate->weekOfMonth . ' ' . $releaseDate->format('F Y (' .$this->document->name.')'); // Weekly
+                $versionName = 'Week ' . $releaseDate->weekOfMonth . ' ' . $releaseDate->format('F Y') .  '(' . $document->name . ')'; // Weekly
                 break;
             case 3:
-                $versionName = $releaseDate->format('F Y (' .$this->document->name.')'); // Monthly
+                $versionName = $releaseDate->format('F Y') .  '(' . $document->name . ')'; // Monthly
                 break;
             case 4:
-                $versionName = $releaseDate->format('l, jS F Y H:i (' .$this->document->name.') (For Testing)'); // Detailed timestamp
+                // $versionName = $releaseDate->format('Version Name Test'); // Detailed timestamp
+                $versionName = $releaseDate->format('l, jS F Y H:i') . '(' . $document->name .') (For Testing)'; // Detailed timestamp
                 break;
             default:
                 throw new InvalidArgumentException('Invalid deadline interval.');
@@ -96,7 +100,7 @@ class ProjectDocumentVersion extends Model
 
         $newVersion = new ProjectDocumentVersion([
             'version' => $versionName,
-            'document_number' => '0',
+            'document_number' => $this->document_number,
             'release_date' => $releaseDate->toDateTimeString(),
             'deadline' => $deadline->toDateTimeString(),
             'is_generated' => false,
@@ -144,32 +148,33 @@ class ProjectDocumentVersion extends Model
 
     protected function calculateDeadline(): Carbon
     {
+        $releaseDate = Carbon::parse($this->release_date);
         $now = now();
         $holidayChecker = new TanggalMerah();
 
         return match ($this->document->deadline_interval) {
-            1 => $this->adjustForHolidays($now->addDay(), $holidayChecker), // Daily
-            2 => $this->calculateWeeklyDeadline($this->document->weekly_deadline, $now, $holidayChecker), // Weekly
-            3 => $this->calculateMonthlyDeadline($this->document->monthly_deadline, $now, $holidayChecker), // Monthly
+            1 => $this->adjustForHolidays($releaseDate->addDay(), $holidayChecker), // Daily
+            2 => $this->calculateWeeklyDeadline($this->document->weekly_deadline, $releaseDate, $holidayChecker), // Weekly
+            3 => $this->calculateMonthlyDeadline($this->document->monthly_deadline, $releaseDate, $holidayChecker), // Monthly
             4 => $now->addMinute(),
             default => throw new \InvalidArgumentException('Invalid deadline interval.'),
         };
     }
 
-    protected function calculateWeeklyDeadline(int $weeklyDeadline, Carbon $now, TanggalMerah $holidayChecker): Carbon
+    protected function calculateWeeklyDeadline(int $weeklyDeadline, Carbon $releaseDate, TanggalMerah $holidayChecker): Carbon
     {
         $dayOfWeek = $this->mapDayToWeekday($weeklyDeadline);
-        $deadline = $now->next($dayOfWeek);
+        $deadline = $releaseDate->next($dayOfWeek);
 
         return $this->adjustForHolidays($deadline, $holidayChecker);
     }
 
-    protected function calculateMonthlyDeadline(int $monthlyDeadline, Carbon $now, TanggalMerah $holidayChecker): Carbon
+    protected function calculateMonthlyDeadline(int $monthlyDeadline, Carbon $releaseDate, TanggalMerah $holidayChecker): Carbon
     {
-        $deadline = Carbon::create($now->year, $now->month, $monthlyDeadline);
+        $deadline = Carbon::create($releaseDate->year, $releaseDate->month, $monthlyDeadline);
 
         // Move to the next month if the date is in the past
-        if ($deadline->lessThan($now)) {
+        if ($deadline->lessThan($releaseDate)) {
             $deadline->addMonth();
         }
 

@@ -92,42 +92,47 @@ class ProjectDocumentVersionController extends Controller
                 'document_number' => 'required|string',
             ]);
 
+            // dd($validated);
+
             $documentNumber = $validated['document_number'];
 
             $releaseDate = $validated['release_date']
-            ? now()->create($validated['release_date'])
+            ? Carbon::create($validated['release_date'])
             : null;
 
-            $now = now();
+            // dd($validated['release_date']);
+            // dd($releaseDate);
+
+            // $now = now();
 
             switch ($document->deadline_interval) {
-            case 1:
-                $versionName = $now->format('d M Y'); // Daily
-            break;
-            case 2:
-                $versionName = 'Week ' . $now->weekOfMonth . ' ' . $now->format('F Y'); // Weekly
-                break;
-            case 3:
-                $versionName = $now->format('F Y'); // Monthly
-                break;
-            case 4:
-                $versionName = $now->format('l, jS F Y H:i');
-                break;
-            default:
-                throw new InvalidArgumentException('Invalid deadline interval.');
-        };
+                case 1:
+                    $versionName = $releaseDate->format('l, d M Y') . '('. $document->name .')'; // Daily with day name
+                    break;
+                case 2:
+                    $versionName = 'Week ' . $releaseDate->weekOfMonth . ' ' . $releaseDate->format('F Y') .  '(' . $document->name . ')'; // Weekly
+                    break;
+                case 3:
+                    $versionName = $releaseDate->format('F Y') .  '(' . $document->name . ')'; // Monthly
+                    break;
+                case 4:
+                    $versionName = $releaseDate->format('l, jS F Y H:i') . '(' . $document->name .') (For Testing)';
+                    break;
+                default:
+                    throw new InvalidArgumentException('Invalid deadline interval.');
+        }
 
         if($document->is_auto == 0){
             $deadline = null;
         } else {
-            $deadline = $this->projectService->calculateDeadline($document);
+            $deadline = $this->projectService->calculateDeadline($document, $releaseDate);
         }
 
-        // ============================================================================================================================ Supaya dokumen arsip kd mencamuhi version automatic generation ============================================================================================================================
         $isGenerated = false;
-        $document->is_auto == 1 && $document->versions->isNotEmpty() ?? $isGenerated = true;
-        // ============================================================================================================================ Supaya dokumen arsip kd mencamuhi version automatic generation ============================================================================================================================
 
+        if($document->is_auto == 1 && $document->versions->isNotEmpty()) {
+            $isGenerated = true;
+        }
         $version = ProjectDocumentVersion::create([
             'version' => $versionName,
             'document_number' => $documentNumber,
@@ -189,7 +194,7 @@ class ProjectDocumentVersionController extends Controller
                     throw new InvalidArgumentException('Invalid deadline interval.');
             };
 
-            $deadline = $this->projectService->calculateDeadline($document);
+            $deadline = $this->projectService->calculateDeadline($document, $releaseDate);
 
             $version->update([
                 'version' => $versionName,
