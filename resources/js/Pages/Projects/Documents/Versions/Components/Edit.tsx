@@ -22,6 +22,7 @@ import { Auth, Project, ProjectDocumentVersion } from "@/types/model";
 import { ProjectDocumentVersionDeleteDialog } from "./Delete";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 import { can } from "@/lib/utils";
+import { useState } from "react";
 
 const formSchema = z.object({
     document_number: z.string().min(1).max(30),
@@ -44,10 +45,20 @@ export default function ProjectDocumentVersionEditDialog(
             release_date: new Date(projectDocumentVersion.release_date),
         },
     });
-
+    const [isOpen, setIsOpen] = useState(false);
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.post(route("projects.documents.versions.update", [project.id, projectDocumentId, projectDocumentVersion.id]), values);
+            router.put(
+                route("projects.documents.versions.update", [project.id, projectDocumentId, projectDocumentVersion.id]),
+                values,
+                {
+                    preserveScroll: true,
+                    onProgress: () => {
+                        form.reset();
+                        setIsOpen(false);
+                    },
+                }
+            );
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -58,7 +69,7 @@ export default function ProjectDocumentVersionEditDialog(
     const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button className="w-fit" variant="modify">
                     <PenLine className="me-2" size={18} />
@@ -114,19 +125,18 @@ export default function ProjectDocumentVersionEditDialog(
                                     </FormItem>
                                 )}
                             />
-
-                            <DialogFooter>
-                                <div className="flex flex-row-reverse gap-4">
-                                    <IconButton text="Save" icon={Save} type="submit" />
-                                    { (can(userPermissions, 'Delete Project Document Version') || userIsPIC)
-                                        && <ProjectDocumentVersionDeleteDialog projectId={project.id} projectDocumentId={projectDocumentId} projectDocumentVersion={projectDocumentVersion} />
-                                    }
-                                </div>
-                            </DialogFooter>
                         </div>
-
                     </form>
                 </Form>
+
+                <DialogFooter>
+                    <div className="flex flex-row-reverse gap-4">
+                        <IconButton text="Save" icon={Save} type="submit" onClick={form.handleSubmit(onSubmit)}/>
+                        { (can(userPermissions, 'Delete Project Document Version') || userIsPIC)
+                            && <ProjectDocumentVersionDeleteDialog projectId={project.id} projectDocumentId={projectDocumentId} projectDocumentVersion={projectDocumentVersion} />
+                        }
+                    </div>
+                </DialogFooter>
 
             </DialogContent>
         </Dialog>

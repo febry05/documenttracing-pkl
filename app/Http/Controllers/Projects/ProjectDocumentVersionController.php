@@ -123,7 +123,10 @@ class ProjectDocumentVersionController extends Controller
             $deadline = $this->projectService->calculateDeadline($document);
         }
 
-        // dd($deadline);
+        // ============================================================================================================================ Supaya dokumen arsip kd mencamuhi version automatic generation ============================================================================================================================
+        $isGenerated = false;
+        $document->is_auto == 1 && $document->versions->isNotEmpty() ?? $isGenerated = true;
+        // ============================================================================================================================ Supaya dokumen arsip kd mencamuhi version automatic generation ============================================================================================================================
 
         $version = ProjectDocumentVersion::create([
             'version' => $versionName,
@@ -131,6 +134,7 @@ class ProjectDocumentVersionController extends Controller
             'release_date' => $releaseDate->toDateTimeString(),
             'deadline' => $deadline ? $deadline->toDateTimeString() : null,
             'project_document_id' => $document->id,
+            'is_generated' => $isGenerated,
         ]);
 
         // dd($version);
