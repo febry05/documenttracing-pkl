@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { UserDivision } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -36,12 +37,15 @@ export default function UserPositionCreateDialog({ userDivisions }: PageProps) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are creating the user position.");
             router.post(route('user-positions.store'), values, {
                 preserveScroll: true,
                 onBefore: () => {
-                    form.reset();
                     setIsOpen(false);
                 },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
             });
         } catch (error) {
             console.error('Submission error:', error);

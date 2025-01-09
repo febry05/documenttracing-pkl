@@ -20,7 +20,7 @@ import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { Checkbox } from "@/Components/ui/checkbox";
 import LearnTooltip from "@/Components/custom/LearnTooltip";
-import { permissionGroups } from "@/lib/utils";
+import { dismissToast, permissionGroups, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -49,24 +49,19 @@ export default function UserRoleCreate({ permissions }: PageProps) {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.post(route("user-roles.store"), values);
+            const loadingToast = showLoadingToast("Please wait while we are creating the user role.");
+            router.post(route("user-roles.store"), values, {
+                onBefore: () => {
+                    form.reset();
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
     }
-
-    // const objectMap = (obj, fn) =>
-    //     Object.fromEntries(
-    //         Object.entries(obj).map(
-    //         ([k, v], i) => [k, fn(v, k, i)]
-    //     )
-    // )
-
-    // objectMap(permissionGroups, (group) => {
-    //     console.log('group', group);
-    // });
-
-    // Object.values(permissionGroups).map((group) => (console.log('group', group)));
 
     return (
         <DashboardLayout

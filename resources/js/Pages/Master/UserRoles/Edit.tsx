@@ -22,9 +22,8 @@ import { UserRoleDeleteDialog } from "./Components/Delete";
 import { IconButton } from "@/Components/custom/IconButton";
 import { Save } from "lucide-react";
 import { UserRole } from "@/types/model";
-import { permissionGroups } from "@/lib/utils";
+import { dismissToast, permissionGroups, showLoadingToast } from "@/lib/utils";
 import LearnTooltip from "@/Components/custom/LearnTooltip";
-import { toast } from "sonner";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -55,15 +54,10 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const loadingToast = toast.loading("Loading...", {
-                description: "Please wait while we are updating the user role.",
-            });
+            const loadingToast = showLoadingToast("Please wait while we are updating the user role.");
             router.put(route('user-roles.update', role.id), values, {
-                onBefore: () => {
-                    form.reset();
-                },
                 onFinish: () => {
-                    toast.dismiss(loadingToast);
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

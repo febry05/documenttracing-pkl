@@ -24,7 +24,7 @@ import {
 import { Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
-import { handleNumericInput } from "@/lib/utils";
+import { dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useState } from 'react';
 import { UserRole, UserDivision, UserPosition } from "@/types/model";
@@ -69,7 +69,12 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.post(route("users.store"), values);
+            const loadingToast = showLoadingToast("Please wait while we are creating the user.");
+            router.post(route("users.store"), values, {
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }

@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { User } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
     data: User,
@@ -18,10 +19,13 @@ export function UserDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are deleting the user.");
             router.delete(route('user.destroy', data.id), {
-                onFinish: () => {
+                onBefore: () => {
                     setIsOpen(false);
-                    router.visit(route('user.index'), { only: ['users', 'positions', 'roles'] });
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 },
             });
         } catch (error) {

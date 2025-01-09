@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { UserPosition } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
     data: UserPosition,
@@ -18,10 +19,14 @@ export function UserPositionDeleteDialog({ data, closeDialog }: PageProps) {
 
     async function onSubmit() {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are deleting the user position.");
             router.delete(route('user-positions.destroy', data.id), {
                 onBefore: () => {
                     setIsOpen(false);
                     closeDialog();
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

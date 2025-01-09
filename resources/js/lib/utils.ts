@@ -1,4 +1,6 @@
+import { router } from "@inertiajs/react";
 import { type ClassValue, clsx } from "clsx";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -158,3 +160,13 @@ export const permissionGroups = {
         ]
     },
 }
+
+export const showLoadingToast = (description: string) => {
+    return toast.loading("Loading...", {
+        description: description,
+    });
+};
+
+export const dismissToast = (toastId: string) => {
+    toast.dismiss(toastId);
+};

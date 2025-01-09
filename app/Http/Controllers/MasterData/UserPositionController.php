@@ -64,7 +64,7 @@ class UserPositionController extends Controller
             $userPosition->save();
 
             DB::commit();
-            return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' created successfully.');
+            return redirect()->route('user-positions.index')->with('success', 'Position **'. $userPosition->name .'** created successfully.');
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -89,7 +89,7 @@ class UserPositionController extends Controller
             $userPosition->save();
 
             DB::commit();
-            return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' updated successfully.');
+            return redirect()->route('user-positions.index')->with('success', 'Position **'. $userPosition->name .'** updated successfully.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to update user position.']);
@@ -103,7 +103,7 @@ class UserPositionController extends Controller
             $userPosition->delete();
 
             DB::commit();
-            return redirect()->route('user-positions.index')->with('success', 'Position '. $userPosition->name .' deleted successfully.');
+            return redirect()->route('user-positions.index')->with('success', 'Position **'. $userPosition->name .'** deleted successfully.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to delete user position.']);

@@ -33,7 +33,7 @@ import {
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { Auth, Project, ProjectDocument } from "@/types/model";
-import { can, handleNumericInput } from "@/lib/utils";
+import { can, dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
 import { ProjectDocumentDeleteDialog } from "./Delete";
 import { deadlineIntervals, weekdays } from "./Create";
 import { Switch } from "@/Components/ui/switch";
@@ -80,6 +80,7 @@ export default function ProjectDocumentEditDialog({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are updating the project document.");
             router.put(
                 route("projects.documents.update", [
                     project,
@@ -89,9 +90,11 @@ export default function ProjectDocumentEditDialog({
             , {
                 preserveScroll: true,
                 onBefore: () => {
-                    form.reset();
                     setIsOpen(false);
                 },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
             });
         } catch (error) {
             console.error("Submission error:", error);

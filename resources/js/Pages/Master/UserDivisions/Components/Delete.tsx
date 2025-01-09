@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { UserDivision } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
     data: UserDivision,
@@ -18,12 +19,16 @@ export function UserDivisionDeleteDialog({data, closeDialog}: PageProps) {
 
     async function onSubmit() {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are deleting the user division.");
             router.delete(route('user-divisions.destroy', data.id), {
                 preserveScroll: true,
                 onBefore: () => {
                     form.reset();
                     closeDialog();
                     setIsOpen(false);
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

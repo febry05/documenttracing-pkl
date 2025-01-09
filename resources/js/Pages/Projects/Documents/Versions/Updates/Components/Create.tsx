@@ -35,6 +35,7 @@ import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 import React from "react";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     title: z.string().min(1).max(255),
@@ -71,21 +72,22 @@ export default function ProjectDocumentVersionUpdateCreateDialog({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are creating the project document version update.");
             router.post(
                 route("projects.documents.versions.updates.store", {
                     project: projectId,
                     document: projectDocumentId,
                     version: projectDocumentVersionId,
                 }),
-                values
-            ),
-                // {
-                    // onBeforeed: () => {
-                        form.reset();
+                values, {
+                    onBefore: () => {
                         setOpen(false);
-                    // },
-                // };
-        } catch (error) {
+                    },
+                    onFinish: () => {
+                        dismissToast(loadingToast as string);
+                    }
+                });
+            } catch (error) {
             console.error("Submission error:", error);
         }
     }

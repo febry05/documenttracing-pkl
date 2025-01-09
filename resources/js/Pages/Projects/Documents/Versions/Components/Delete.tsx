@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { ProjectDocumentVersion } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
     projectId: number,
@@ -20,6 +21,7 @@ export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentI
 
     async function onSubmit() {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are creating the project document version.");
             router.delete(
                 route("projects.documents.versions.destroy", [projectId, projectDocumentId, projectDocumentVersion.id]),
                 {
@@ -28,6 +30,9 @@ export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentI
                         form.reset();
                         setIsOpen(false);
                     },
+                    onFinish: () => {
+                        dismissToast(loadingToast as string);
+                    }
                 }
             );
         } catch (error) {

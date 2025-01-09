@@ -10,6 +10,7 @@ import { Save } from "lucide-react";
 import { UserDivisionDeleteDialog } from "./Delete";
 import { router } from "@inertiajs/react";
 import { UserDivision } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(2).max(255),
@@ -32,11 +33,14 @@ export default function UserDivisionEditDialog({ data, closeDialog }: PageProps)
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are updating the user division.");
             router.put(route('user-divisions.update', data.id), values, {
                 preserveScroll: true,
                 onBefore: () => {
-                    form.reset();
                     closeDialog();
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

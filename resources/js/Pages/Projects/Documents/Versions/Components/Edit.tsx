@@ -21,7 +21,7 @@ import { Button } from "@/Components/ui/button";
 import { Auth, Project, ProjectDocumentVersion } from "@/types/model";
 import { ProjectDocumentVersionDeleteDialog } from "./Delete";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
-import { can } from "@/lib/utils";
+import { can, dismissToast, showLoadingToast } from "@/lib/utils";
 import { useState } from "react";
 
 const formSchema = z.object({
@@ -48,15 +48,16 @@ export default function ProjectDocumentVersionEditDialog(
     const [isOpen, setIsOpen] = useState(false);
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are updating the project document version.");
             router.put(
-                route("projects.documents.versions.update", [project.id, projectDocumentId, projectDocumentVersion.id]),
-                values,
-                {
+                route("projects.documents.versions.update", [project.id, projectDocumentId, projectDocumentVersion.id]), values, {
                     preserveScroll: true,
                     onBefore: () => {
-                        form.reset();
                         setIsOpen(false);
                     },
+                    onFinish: () => {
+                        dismissToast(loadingToast as string);
+                    }
                 }
             );
         } catch (error) {

@@ -121,7 +121,7 @@ class ProjectDocumentController extends Controller
         DB::commit();
 
         return redirect()->route('projects.documents.show',  [$project, $document])
-            ->with('success', 'Document created successfully.');
+            ->with('success', 'Document "' . $document->name . '" updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);

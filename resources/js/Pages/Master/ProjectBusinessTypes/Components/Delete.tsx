@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { ProjectBusinessType } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
     data: ProjectBusinessType,
@@ -19,10 +20,14 @@ export function ProjectBusinessTypeDeleteDialog({ data, closeDialog }: PageProps
 
     async function onSubmit() {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are deleting the business project type.");
             router.delete(route('project-business-types.destroy', data.id), {
                 onBefore: () => {
                     setIsOpen(false);
                     closeDialog();
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

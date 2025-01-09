@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -29,12 +30,15 @@ export default function ProjectBusinessTypeCreateDialog() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are creating the business project type.");
             router.post(route('project-business-types.store'), values, {
                 preserveScroll: true,
                 onBefore: () => {
-                    form.reset();
                     setIsOpen(false);
                 },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
             });
         } catch (error) {
             console.error('Submission error:', error);

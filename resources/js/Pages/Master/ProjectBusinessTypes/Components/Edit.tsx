@@ -11,6 +11,7 @@ import { Save, Trash2 } from "lucide-react";
 import { ProjectBusinessTypeDeleteDialog } from "./Delete";
 import { router } from "@inertiajs/react";
 import { ProjectBusinessType } from "@/types/model";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -33,11 +34,14 @@ export default function ProjectBusinessTypeEditDialog({ data, closeDialog }: Pag
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are updating the business project type.");
             router.put(route('project-business-types.update', data.id), values, {
                     preserveScroll: true,
                     onBefore: () => {
-                        form.reset();
                         closeDialog();
+                    },
+                    onFinish: () => {
+                        dismissToast(loadingToast as string);
                     }
                 }
             );

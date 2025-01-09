@@ -28,6 +28,7 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { ProjectBusinessType } from "@/types/model";
 import { DatePicker } from "@/Components/custom/DatePicker";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z
     .object({
@@ -76,7 +77,12 @@ export default function ProjectCreate({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.post(route("projects.store"), values);
+            const loadingToast = showLoadingToast("Please wait while we are creating the project.");
+            router.post(route("projects.store"), values,{
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }

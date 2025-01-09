@@ -46,7 +46,9 @@ export default function DashboardLayout({
     useEffect(() => {
         if (flash.success) {
             toast.success("Success!", {
-                description: flash.success,
+                description: <>{flash.success.split('**').map((text, i) =>
+                    i % 2 === 0 ? text : <strong key={i}>{text}</strong>
+                )}</>,
                 closeButton: true,
             });
         } else if (flash.error) {

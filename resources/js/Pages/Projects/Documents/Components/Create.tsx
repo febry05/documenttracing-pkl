@@ -33,7 +33,7 @@ import {
     SelectValue,
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
-import { handleNumericInput } from "@/lib/utils";
+import { dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
 import { Switch } from "@/Components/ui/switch";
 import React from "react";
 
@@ -91,10 +91,13 @@ export default function ProjectDocumentCreateDialog({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            const loadingToast = showLoadingToast("Please wait while we are creating the project document.");
             router.post(route("projects.documents.store", { project: projectId }), values, {
                 onBefore: () => {
-                    form.reset();
                     setOpen(false);
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

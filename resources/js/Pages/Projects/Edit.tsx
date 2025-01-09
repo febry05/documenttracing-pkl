@@ -30,7 +30,7 @@ import { ProjectDeleteDialog } from "./Components/Delete";
 import { DatePicker } from "@/Components/custom/DatePicker";
 import { Project } from "@/types/model";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
-import { can } from "@/lib/utils";
+import { can, dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z
     .object({
@@ -81,7 +81,12 @@ export default function ProjectEdit({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await router.put(route("projects.update", project.id), values);
+            const loadingToast = showLoadingToast("Please wait while we are updating the project.");
+            router.put(route("projects.update", project.id), values, {
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }

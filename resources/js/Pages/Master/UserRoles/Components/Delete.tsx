@@ -1,4 +1,3 @@
-import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "react-hook-form";
 import { FormDialog } from "@/Components/custom/FormDialog";
 import { Button } from "@/Components/ui/button";
@@ -7,7 +6,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { UserRole } from "@/types/model";
-import { toast } from "sonner";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
     data: UserRole,
@@ -19,16 +18,13 @@ export function UserRoleDeleteDialog({data}: PageProps) {
 
     async function onSubmit() {
         try {
-            const loadingToast = toast.loading("Loading...", {
-                description: "Please wait while we are updating the user position.",
-            });
+            const loadingToast = showLoadingToast("Please wait while we are deleting the user role.");
             router.delete(route('user-roles.destroy', data.id), {
                 onBefore: () => {
-                    form.reset();
                     setIsOpen(false);
                 },
                 onFinish: () => {
-                    toast.dismiss(loadingToast);
+                    dismissToast(loadingToast as string);
                 }
             });
         } catch (error) {

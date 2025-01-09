@@ -24,7 +24,7 @@ import {
 import { Save } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
-import { handleNumericInput } from "@/lib/utils";
+import { dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useEffect, useState } from "react";
 import { IconButton } from "@/Components/custom/IconButton";
@@ -74,7 +74,15 @@ export default function UsersEdit({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.put(route("users.update", user.id), values);
+            const loadingToast = showLoadingToast("Please wait while we are updating the user.");
+            router.put(route("users.update", user.id), values, {
+                onBefore: () => {
+                    form.reset();
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
