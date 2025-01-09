@@ -205,9 +205,10 @@ class ProjectDocumentVersionController extends Controller
 
             DB::commit();
 
-            return redirect()->route('projects.documents.show', [
+            return redirect()->route('projects.documents.versions.show', [
                 'project' => $project->id,
                 'document' => $document->id,
+                'version' => $version->id,
             ])
                 ->with('success', $releaseDate
                     ? "Version {$version->version} updated successfully with release date {$releaseDate->format('Y-m-d')}."

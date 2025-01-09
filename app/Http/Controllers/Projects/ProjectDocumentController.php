@@ -99,7 +99,7 @@ class ProjectDocumentController extends Controller
         }
     }
 
-    public function update($id, Request $request, Project $project , ProjectDocumentService $projectDocumentService)
+    public function update(Request $request, Project $project , ProjectDocument $document)
     {
         DB::beginTransaction();
         try
@@ -110,17 +110,17 @@ class ProjectDocumentController extends Controller
                 'weekly_deadline' => 'nullable|integer|min:1|max:5', // 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday
                 'monthly_deadline' => 'nullable|integer|min:1|max:31',
                 'deadline_interval' => 'required|integer|in:1,2,3,4',
-                'is_auto' => 'required|boolean',
+                // 'is_auto' => 'required|boolean',
             ]);
 
         $validated['project_id'] = $project->id;
 
-        $projectDocument = ProjectDocument::findOrFail($id);
-        $projectDocument->update($validated);
+        // $document = document::findOrFail($document->id);
+        $document->update($validated);
 
         DB::commit();
 
-        return redirect()->route('projects.show', $project)
+        return redirect()->route('projects.documents.show',  [$project, $document])
             ->with('success', 'Document created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();

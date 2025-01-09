@@ -173,7 +173,7 @@ export default function ProjectDocumentVersionShow({
                     <InfoPair
                         label="Latest Document"
                         value={
-                            projectDocumentVersion.latest_document
+                            projectDocumentVersion.latest_document != "N/A"
                             ?
                             // <TextLink className="text-blue-800 dark:text-blue-400 text-sm" text="View Document" target="_blank" href={projectDocumentVersion.latest_document}/>
                             <a

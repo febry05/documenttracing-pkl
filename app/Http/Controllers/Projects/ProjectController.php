@@ -47,7 +47,7 @@ class ProjectController extends Controller
             'projectManagers' => $this->projectService->getProjectManagers(),
         ]);
     }
-    
+
     public function show($id, ProjectService $projectService, Request $request){
         return Inertia::render('Projects/Show', [
             'project' => $this->projectService->getProjects()->firstWhere('id', $id),

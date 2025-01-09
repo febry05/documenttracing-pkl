@@ -38,6 +38,7 @@ import { ProjectDocumentDeleteDialog } from "./Delete";
 import { deadlineIntervals, weekdays } from "./Create";
 import { Switch } from "@/Components/ui/switch";
 import { useState } from "react";
+import { Label } from "@/Components/ui/label";
 
 const formSchema = z.object({
     name: z.string().min(3).max(255),
@@ -45,7 +46,7 @@ const formSchema = z.object({
     weekly_deadline: z.number().optional(),
     monthly_deadline: z.number().min(1).max(31).optional(),
     priority: z.number(),
-    is_auto: z.boolean().optional(),
+    // is_auto: z.boolean().optional(),
 });
 
 type Priority = {
@@ -73,7 +74,7 @@ export default function ProjectDocumentEditDialog({
             monthly_deadline: projectDocument.monthly_deadline || undefined,
             deadline_interval: projectDocument.deadline_interval || undefined,
             priority: projectDocument.priority,
-            is_auto: projectDocument.is_auto || undefined,
+            // is_auto: projectDocument.is_auto || undefined,
         },
     });
 
@@ -81,8 +82,8 @@ export default function ProjectDocumentEditDialog({
         try {
             router.put(
                 route("projects.documents.update", [
-                    project.id,
-                    projectDocument.id,
+                    project,
+                    projectDocument,
                 ]),
                 values
             , {
@@ -96,6 +97,8 @@ export default function ProjectDocumentEditDialog({
             console.error("Submission error:", error);
         }
     }
+
+    console.log(project, projectDocument);
 
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
@@ -306,9 +309,30 @@ export default function ProjectDocumentEditDialog({
                                 )}
                             />
 
-                            <FormField
+                            <div className="flex flex-row items-center justify-between rounded-lg border border-input px-4 py-2 space-y-0">
+                                <Label htmlFor="is_auto" className="flex gap-2">
+                                    Generate Automatically
+                                    <LearnTooltip
+                                        text={
+                                            <>
+                                                Automatically generate the next document version when the current document version deadline ends.
+                                                <br/>
+                                                <span className="font-bold text-destructive">This cannot be changed later when editing the document properties.</span>
+                                            </>
+                                        }
+                                        className="my-auto"
+                                    />
+                                </Label>
+                                <Switch
+                                    id="is_auto"
+                                    checked={projectDocument.is_auto}
+                                    disabled={true}
+                                />
+                            </div>
+
+                            {/* <FormField
                                 control={form.control}
-                                name="is_auto"
+                                // name="is_auto"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-input px-4 py-2 space-y-0">
                                         <div className="space-y-0.5">
@@ -328,14 +352,14 @@ export default function ProjectDocumentEditDialog({
                                         </div>
                                         <FormControl className="mt-0">
                                             <Switch
-                                                checked={field.value}
+                                                checked={projectDocument.is_auto}
                                                 onCheckedChange={field.onChange}
-                                                disabled={true}
+                                                // readonly={true}
                                             />
                                         </FormControl>
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
 
                         </div>
                     </form>

@@ -25,7 +25,9 @@ class MonitoringController extends Controller
 
         $projects = Project::with([
             'documentVersions' => function ($query) use ($year, $month) {
-                $query->whereYear('release_date', $year)
+                $month == 0
+                ? $query->whereYear('release_date', $year)
+                : $query->whereYear('release_date', $year)
                     ->whereMonth('release_date', $month);
             },
             'documentVersions.document',

@@ -41,7 +41,7 @@ export function DateSelectForm({ availableYears, selectedYear, selectedMonth }: 
         router.get(route("monitoring.index", [data.year, data.month]));
     }
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   return (
     <Form {...form}>
@@ -60,7 +60,7 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
                         </FormControl>
                         <SelectContent>
                             {availableYears.map((year, index) => (
-                                <SelectItem key={index + 1} value={year.toString()}>
+                                <SelectItem key={index} value={year.toString()}>
                                     {year}
                                 </SelectItem>
                             ))}
@@ -85,7 +85,7 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
                     </FormControl>
                     <SelectContent>
                         {months.map((month, index) => (
-                            <SelectItem key={index + 1} value={(index + 1).toString()} onClick={() => form.handleSubmit(onSubmit)()}>
+                            <SelectItem key={index} value={(index).toString()} onClick={() => form.handleSubmit(onSubmit)()}>
                                 {month}
                             </SelectItem>
                         ))}

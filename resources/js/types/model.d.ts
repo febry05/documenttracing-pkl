@@ -76,7 +76,7 @@ export type ProjectDocument = BaseModel & {
     deadline_interval_name: string;
 
     is_auto: boolean;
-    is_auto_name: boolean;
+    is_auto_name: string;
 
     project_id: string;
     project?: string;
