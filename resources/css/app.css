@@ -25,8 +25,8 @@
         --accent: 0 0% 96%;
         --accent-foreground: 0 0% 5%;
 
-        --destructive: 0 86% 97%%;
-        --destructive-foreground: 0 67% 31%;
+        --destructive: 0 82% 57%;
+        --destructive-foreground: 0 86% 97%;
 
         --border: 0 0% 92%;
         --input: 0 0% 85%;
@@ -67,7 +67,9 @@
         --popover-foreground: 300 9% 98%;
 
         --primary: 204 71% 48%;
-        --primary-foreground: 208 63% 11%;
+        --primary-foreground: 0 0% 100%;
+        /* --primary-foreground: 209 63% 11%; */
+        --primary-text: 204 71% 48%; /* Primary text color with good contrast when standing alone, directly over background color */
 
         --secondary: 248 8% 19%;
         --secondary-foreground: 300 9% 98%;
@@ -78,8 +80,8 @@
         --accent: 244 71% 19%;
         --accent-foreground: 300 9% 98%;
 
-        --destructive: 0 86% 97%%;
-        --destructive-foreground: 0 67% 31%;
+        --destructive: 0 82% 57%;
+        --destructive-foreground: 0 86% 97%;
 
         --border: 252 8% 12%;
         --input: 248 9% 18%;

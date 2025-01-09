@@ -36,7 +36,7 @@ function Update({
     projectDocumentVersionUpdate: ProjectDocumentVersionUpdate;
 }) {
     return (
-        <div className="flex md:flex-row flex-col gap-6 bg-neutral-50 p-4 rounded-lg border">
+        <div className="flex md:flex-row flex-col gap-6 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg border">
             <div className="flex flex-col gap-2">
                 <span className="font-semibold">
                     {projectDocumentVersionUpdate.title}

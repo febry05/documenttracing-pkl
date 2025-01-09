@@ -185,11 +185,11 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                                     <React.Fragment key={row.id}>
                                         <TooltipProvider key={row.id}>
                                             <Tooltip>
-                                                <TooltipTrigger asChild>
+                                                <TooltipTrigger asChild className='border-primary'>
                                                     <TableRow
                                                         key={row.id}
                                                         data-state={row.getIsSelected() && "selected"}
-                                                        className={row.depth === 0 ? "bg-primary hover:bg-primary/90 border-primary/20 dark:bg-gray-800 dark:hover:bg-gray-800/90 text-background rounded-md dark:border-gray-800/90 dark:text-foreground" : ""}
+                                                        className={row.depth === 0 ? "bg-primary hover:bg-primary/90 border-primary dark:bg-gray-800 dark:hover:bg-gray-800/90 text-background rounded-md dark:border-gray-800/90 dark:text-foreground" : ""}
                                                         onClick={() => row.toggleExpanded()}
                                                         style={{ cursor: 'pointer' }}
                                                     >
