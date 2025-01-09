@@ -180,7 +180,7 @@ export const columns: ColumnDef<ProjectMonitoring>[] = [
                     ) : ( getValue() == "N/A"
                         ? (
                             <span className="text-sm text-muted-foreground italic">
-                                No document.
+                                No document
                             </span>
                         )
                         : (<a

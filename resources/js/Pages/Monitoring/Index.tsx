@@ -80,6 +80,8 @@ export default function MonitoringIndex({
         },
     ];
 
+    console.log(selectedMonth);
+
     return (
         <DashboardLayout
             header={

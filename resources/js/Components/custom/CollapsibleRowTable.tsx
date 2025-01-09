@@ -24,10 +24,52 @@ interface DataTableProps<TData extends { id: number }, TValue> {
     detailPage: string;
 }
 
+type SearchMode = 'all' | 'parent' | 'child';
+
 export default function CollapsibleRowTable({columns, data, filters = [], detailPage}: DataTableProps<any, any>) {
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = React.useState<string>("");
-    const [sorting, setSorting] = React.useState<SortingState>([]); // Add sorting state
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [searchMode, setSearchMode] = React.useState<SearchMode>('all');
+
+    const getFilteredData = (data: any[], filter: string) => {
+        if (!filter) return data;
+
+        return data.map(row => {
+            const parentMatchesFilter = Object.values(row)
+                .join(' ')
+                .toLowerCase()
+                .includes(filter.toLowerCase());
+
+            const childrenMatchFilter = row.documentVersions && row.documentVersions.some((subRow: any) =>
+                Object.values(subRow).join(' ').toLowerCase().includes(filter.toLowerCase())
+            );
+
+            // Clone the row to avoid mutating original data
+            const filteredRow = { ...row };
+
+            if (searchMode === 'all') {
+                // Show row if either parent or children match
+                if (parentMatchesFilter || childrenMatchFilter) {
+                    return filteredRow;
+                }
+            } else if (searchMode === 'parent') {
+                // Show row if parent matches, keep all children
+                if (parentMatchesFilter) {
+                    return filteredRow;
+                }
+            } else if (searchMode === 'child') {
+                // Show parent if children match, keep matching children only
+                if (childrenMatchFilter) {
+                    filteredRow.documentVersions = row.documentVersions.filter((subRow: any) =>
+                        Object.values(subRow).join(' ').toLowerCase().includes(filter.toLowerCase())
+                    );
+                    return filteredRow;
+                }
+            }
+            return null;
+        }).filter(Boolean);
+    };
 
     const table = useReactTable({
         data,
@@ -38,11 +80,30 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         getRowCanExpand: (row) => row.documentVersions && row.documentVersions.length > 0,
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(), // Add sorting model
-        onSortingChange: setSorting, // Add sorting handler
-        filterFromLeafRows: true,
+        getSortedRowModel: getSortedRowModel(),
+        onSortingChange: setSorting,
+        filterFns: {
+            custom: (row, columnId, filterValue) => {
+                if (!filterValue) return true;
+
+                if (row.depth === 0) {
+                    // Parent row filtering
+                    const filteredData = getFilteredData([row.original], filterValue);
+                    return filteredData.length > 0;
+                } else {
+                    // Child row filtering
+                    if (searchMode === 'parent') return true; // Keep all children when filtering parents
+                    const matches = Object.values(row.original)
+                        .join(' ')
+                        .toLowerCase()
+                        .includes(filterValue.toLowerCase());
+                    return searchMode === 'child' ? matches : true;
+                }
+            },
+        },
+        globalFilterFn: 'custom',
         state: {
-            sorting, // Add sorting state
+            sorting,
             columnFilters,
             globalFilter,
         },
@@ -92,16 +153,32 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                     </Select>
                 )
                 })}
-                <Input
-                    value={globalFilter}
-                    onChange={event => {
-                        const value = String(event.target.value);
-                        setGlobalFilter(value);
-                        table.setGlobalFilter(value);
-                    }}
-                    placeholder="Search in table..."
-                    className="max-w-sm me-auto"
-                />
+                <div className="flex items-center gap-4 pb-4 me-auto">
+                    <Select
+                        value={searchMode}
+                        onValueChange={(value: SearchMode) => setSearchMode(value)}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select search mode" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Search Both</SelectItem>
+                            <SelectItem value="parent">Project Only</SelectItem>
+                            <SelectItem value="child">Document Version Only</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <Input
+                        value={globalFilter}
+                        onChange={event => {
+                            const value = String(event.target.value);
+                            setGlobalFilter(value);
+                            table.setGlobalFilter(value);
+                        }}
+                        placeholder="Search in table..."
+                        className="max-w-sm"
+                    />
+            </div>
             </div>
             {/* Filters [END] */}
 

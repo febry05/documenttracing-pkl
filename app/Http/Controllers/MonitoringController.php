@@ -16,7 +16,7 @@ class MonitoringController extends Controller
     public function index($year = null, $month = null)
     {
         $year = $year ?? date('Y');
-        $month = $month ?? date('m');
+        $month = $month ?? date('n');
 
         $stats = $this->calculateDocumentStats();
 
