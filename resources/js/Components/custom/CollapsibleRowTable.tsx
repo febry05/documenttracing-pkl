@@ -121,6 +121,21 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
         },
     });
 
+    // Add useEffect to handle searchMode changes
+    React.useEffect(() => {
+        // Reapply current filter when search mode changes
+        if (globalFilter) {
+            const currentFilter = globalFilter;
+            // Temporarily clear the filter
+            setGlobalFilter('');
+            // Then reapply it in the next tick to force re-filtering
+            setTimeout(() => {
+                setGlobalFilter(currentFilter);
+                table.setGlobalFilter(currentFilter);
+            }, 0);
+        }
+    }, [searchMode]);
+
     return (
         <div>
             {/* Filters [START] */}
@@ -156,7 +171,10 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                 <div className="flex items-center gap-4 pb-4 me-auto">
                     <Select
                         value={searchMode}
-                        onValueChange={(value: SearchMode) => setSearchMode(value)}
+                        onValueChange={(value: SearchMode) => {
+                            setSearchMode(value);
+                            // The useEffect will handle re-filtering
+                        }}
                     >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select search mode" />
@@ -169,6 +187,7 @@ export default function CollapsibleRowTable({columns, data, filters = [], detail
                     </Select>
 
                     <Input
+                        id="globalFilterSearchInput"
                         value={globalFilter}
                         onChange={event => {
                             const value = String(event.target.value);
