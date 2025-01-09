@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_positions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
             $table->foreignId('user_division_id')->constrained();
         });

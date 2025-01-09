@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('project_business_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

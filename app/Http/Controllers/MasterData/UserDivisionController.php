@@ -33,7 +33,7 @@ class UserDivisionController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'nullable|string|max:255',
             ]);
 
             $userDivision = new UserDivision();
@@ -56,7 +56,7 @@ class UserDivisionController extends Controller
             $userDivision = UserDivision::find($id);
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'nullable|string|max:255',
             ]);
 
             $userDivision->name = $validatedData['name'];
@@ -79,7 +79,7 @@ class UserDivisionController extends Controller
             $userDivision->delete();
 
             DB::commit();
-            
+
             return redirect()->route('user-divisions.index')
             ->with('success', 'Division "'. $userDivision->name .'" has been deleted successfully');
         } catch (Exception $e) {

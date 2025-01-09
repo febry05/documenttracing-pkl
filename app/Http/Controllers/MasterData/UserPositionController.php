@@ -53,7 +53,7 @@ class UserPositionController extends Controller
             try {
             $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'nullable|string|max:255',
                 'user_division_id' => 'required|integer',
             ]);
 
@@ -79,7 +79,7 @@ class UserPositionController extends Controller
             $userPosition = UserPosition::find($id);
             $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'nullable|string|max:255',
                 'user_division_id' => 'required|integer',
             ]);
 

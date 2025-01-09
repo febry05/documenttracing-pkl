@@ -39,7 +39,7 @@ class RoleController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255|unique:roles,name',
-                'description' => 'required|string',
+                'description' => 'nullable|string|max:255',
                 'permissions' => 'required|array|exists:permissions,name',
             ]);
 
@@ -82,7 +82,7 @@ class RoleController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255|unique:roles,name,' . $id,
-                'description' => 'required|string',
+                'description' => 'nullable|string|max:255',
                 'permissions' => 'required|array|exists:permissions,name',
             ]);
 
@@ -113,7 +113,7 @@ class RoleController extends Controller
             $role->delete();
             DB::commit();
             return redirect()->route('user-roles.index')
-            ->with('success', 'Role "'. $role->name .'" has been deleted successfully'); //not working 
+            ->with('success', 'Role "'. $role->name .'" has been deleted successfully'); //not working
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'There was an error deleting the role: ' . $e->getMessage());

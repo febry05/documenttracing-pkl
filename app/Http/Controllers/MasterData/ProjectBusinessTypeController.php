@@ -35,8 +35,8 @@ class ProjectBusinessTypeController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'name' => 'required',
-                'description' => 'required',
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
             ]);
 
             ProjectBusinessType::create([
@@ -60,7 +60,7 @@ class ProjectBusinessTypeController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'nullable|string|max:255',
             ]);
 
             $businessType = ProjectBusinessType::find($id);

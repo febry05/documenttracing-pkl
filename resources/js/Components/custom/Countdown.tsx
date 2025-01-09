@@ -66,19 +66,19 @@ const Countdown: React.FC<CountdownProps> = (
             );
         } else if (timeLeft.days) {
             timerComponents.push(
-                <span key="days">
+                <span key="days" className={timeLeft.days < 7 ? "text-destructive" : timeLeft.days < 15 && "text-yellow-600"}>
                     {timeLeft.days} Days {separateLines && <br />} {timeLeft.hours} Hours
                 </span>
             );
         } else if (timeLeft.hours) {
             timerComponents.push(
-                <span key="hours">
+                <span key="hours" className="text-destructive">
                     {timeLeft.hours} Hours {separateLines && <br />} {timeLeft.minutes} Minutes
                 </span>
             );
         } else if (timeLeft.minutes) {
             timerComponents.push(
-                <span key="minutes">
+                <span key="minutes" className="text-destructive">
                     {timeLeft.minutes} Minutes {separateLines && <br />} {timeLeft.seconds} Seconds
                 </span>
             );

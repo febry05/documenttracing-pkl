@@ -171,7 +171,7 @@ export default function ProjectDocumentVersionShow({
                         }
                     />
                     <InfoPair
-                        label="Latest File"
+                        label="Latest Document"
                         value={
                             projectDocumentVersion.latest_document
                             ?
