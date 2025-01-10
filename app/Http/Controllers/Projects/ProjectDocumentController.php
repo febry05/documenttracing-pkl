@@ -71,7 +71,7 @@ class ProjectDocumentController extends Controller
             if ($now > $project->contract_end) {
                 DB::rollBack();
                 return to_route('projects.show' , $project)
-                ->with(['error' => 'Contract for ' . $project->name . '" already passed in' . $project->contract_end]);
+                ->with(['error' => 'Contract for **' . $project->name . '** already ended in **' . $project->contract_end . '**']);
             }
 
             $validated = $request->validate([
@@ -86,11 +86,11 @@ class ProjectDocumentController extends Controller
             ]);
             $validated['project_id'] = $project->id;
 
-            $debug = ProjectDocument::create($validated);
+            $document = ProjectDocument::create($validated);
 
             DB::commit();
 
-            session()->flash('success', 'Document for "' . $project->name . '" created successfully');
+            session()->flash('success', 'Document for **' . $document->name . '** created successfully');
             return to_route('projects.show' , $project);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -121,7 +121,7 @@ class ProjectDocumentController extends Controller
         DB::commit();
 
         return redirect()->route('projects.documents.show',  [$project, $document])
-            ->with('success', 'Document "' . $document->name . '" updated successfully.');
+            ->with('success', 'Document **' . $document->name . '** updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the document: ' . $e->getMessage()]);
@@ -146,7 +146,7 @@ class ProjectDocumentController extends Controller
             DB::commit();
 
             return redirect()->route('projects.show', $project)
-                ->with('success', 'Document deleted successfully.');
+                ->with('success', 'Document **'. $projectDocument->name .'** deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the document: ' . $e->getMessage()]);

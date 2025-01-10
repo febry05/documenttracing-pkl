@@ -45,7 +45,10 @@ export default function UserPositionCreateDialog({ userDivisions }: PageProps) {
                 },
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                }
+                },
+                onSuccess: () => {
+                    form.reset();
+                },
             });
         } catch (error) {
             console.error('Submission error:', error);

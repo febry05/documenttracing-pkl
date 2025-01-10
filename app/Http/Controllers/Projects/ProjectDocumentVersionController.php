@@ -151,8 +151,8 @@ class ProjectDocumentVersionController extends Controller
             'document' => $document->id,
             ])
             ->with('success', $releaseDate
-                ? "Version {$version->version} created successfully with release date {$releaseDate->format('Y-m-d')}."
-                : "Version {$version->version} created successfully and will be automated.");
+                ? "Version **{$version->version}** created successfully with release date {$releaseDate->format('Y-m-d')}."
+                : "Version **{$version->version}** created successfully and will be automated.");
             } catch (\Exception $e) {
             DB::rollBack();
             // //dd($e);
@@ -211,8 +211,8 @@ class ProjectDocumentVersionController extends Controller
                 'version' => $version->id,
             ])
                 ->with('success', $releaseDate
-                    ? "Version {$version->version} updated successfully with release date {$releaseDate->format('Y-m-d')}."
-                    : "Version {$version->version} updated successfully and will be automated.");
+                    ? "Version **{$version->version}** updated successfully with release date {$releaseDate->format('Y-m-d')}."
+                    : "Version **{$version->version}** updated successfully and will be automated.");
         } catch (\Exception $e) {
             DB::rollBack();
             //dd($e);
@@ -235,7 +235,7 @@ class ProjectDocumentVersionController extends Controller
             return redirect()->route('projects.documents.show', [
                 'project' => $project->id,
                 'document' => $document->id,
-            ])->with('success', "Version {$version->version} deleted successfully.");
+            ])->with('success', "Version **{$version->version}** deleted successfully.");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Failed to delete version: ' . $e->getMessage()]);

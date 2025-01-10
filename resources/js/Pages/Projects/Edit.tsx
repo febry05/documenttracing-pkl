@@ -85,7 +85,10 @@ export default function ProjectEdit({
             router.put(route("projects.update", project.id), values, {
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                }
+                },
+                onSuccess: () => {
+                    form.reset();
+                },
             });
         } catch (error) {
             console.error("Submission error:", error);

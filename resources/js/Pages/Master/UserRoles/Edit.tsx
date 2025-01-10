@@ -58,7 +58,10 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
             router.put(route('user-roles.update', role.id), values, {
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                }
+                },
+                onSuccess: () => {
+                    form.reset();
+                },
             });
         } catch (error) {
             console.error("Submission error:", error);

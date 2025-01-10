@@ -46,7 +46,7 @@ export default function Dashboard({ stats, documents }: PageProps) {
         <DashboardLayout
             header={
                 <span className="font-semibold text-xl leading-tight">
-                    Overview - Uncompleted Documents
+                    Overview - My Document Versions
                 </span>
             }
         >

@@ -94,7 +94,10 @@ export default function ProjectDocumentEditDialog({
                 },
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                }
+                },
+                onSuccess: () => {
+                    form.reset();
+                },
             });
         } catch (error) {
             console.error("Submission error:", error);

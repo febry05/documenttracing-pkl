@@ -82,7 +82,7 @@ class ProjectController extends Controller
             DB::commit();
 
             return redirect()->route('projects.index')
-            ->with('success', 'Project '. $request->name .' created successfully');
+            ->with('success', 'Project **'. $request->name .'** created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to create project: ' . $e->getMessage());
@@ -123,7 +123,7 @@ class ProjectController extends Controller
             DB::commit();
 
             return redirect()->route('projects.show', $id)
-            ->with('success', 'Project "'. $request->name .'" has been updated successfully');
+            ->with('success', 'Project **'. $request->name .'** has been updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to update project: ' . $e->getMessage());
@@ -144,7 +144,7 @@ class ProjectController extends Controller
             DB::commit();
 
             return redirect()->route('projects.index')
-                ->with('success', 'Project "' . $project->name . '" has been deleted successfully');
+                ->with('success', 'Project **' . $project->name . '** has been deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to delete project: ' . $e->getMessage());

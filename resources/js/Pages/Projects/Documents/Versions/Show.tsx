@@ -50,7 +50,7 @@ function Update({
                 </span>
                     {
                         projectDocumentVersionUpdate.document_link
-                        ? <TextLink className="text-blue-800 dark:text-blue-400 text-sm" text="View Document" target="_blank" href={projectDocumentVersionUpdate.document_link}/>
+                        ? <TextLink className="text-blue-800 dark:text-blue-400 text-sm w-fit" text="View Document" target="_blank" href={projectDocumentVersionUpdate.document_link}/>
                         : <span className="text-muted-foreground italic text-sm">No document provided</span>
                     }
             </div>
@@ -181,13 +181,14 @@ export default function ProjectDocumentVersionShow({
                                     projectDocumentVersion.latest_document
                                 }
                                 target="_blank"
+                                className="w-fit"
                             >
                                 <IconButton
                                     icon={Link2}
                                     variant="outline"
                                     text="View Document"
                                     size="xs"
-                                    className="font-normal"
+                                    className="font-normal w-fit"
                                 />
                             </a>
                             : <span className="text-muted-foreground italic text-sm">No document provided</span>

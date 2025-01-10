@@ -56,7 +56,10 @@ export default function UserRoleCreate({ permissions }: PageProps) {
                 },
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                }
+                },
+                onSuccess: () => {
+                    form.reset();
+                },
             });
         } catch (error) {
             console.error("Submission error:", error);

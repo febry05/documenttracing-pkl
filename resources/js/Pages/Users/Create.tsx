@@ -73,7 +73,10 @@ export default function UsersCreate({ userRoles, userDivisions, userPositions }:
             router.post(route("users.store"), values, {
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                }
+                },
+                onSuccess: () => {
+                    form.reset();
+                },
             });
         } catch (error) {
             console.error("Submission error:", error);

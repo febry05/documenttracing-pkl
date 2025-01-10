@@ -27,7 +27,7 @@ class UpdateController extends Controller
             return to_route('projects.documents.show', [
                 'project' => $project->id,
                 'document' => $document->id,
-            ])->with('error', 'When add Update to document "' . $document->name ." version ". $version->version .  '" because Project "' . $project->name . '" ended on ' . $project->contract_end);
+            ])->with('error', 'When add Update to document **' . $document->name .'** version "'. $version->version .  '" because Project "' . $project->name . '" ended on ' . $project->contract_end);
             }
 
             $validated = $request->validate([
@@ -52,7 +52,7 @@ class UpdateController extends Controller
                 'document' => $document->id,
                 'version' => $version->id,
             ])
-            ->with('success', 'Document Version Update created successfully');
+            ->with('success', 'Document Version Update **' . $documentUpdate->title . '** created successfully');
         } catch (\Exception $e) {
             dd($e);
             DB::rollBack();

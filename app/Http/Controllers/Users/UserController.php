@@ -141,7 +141,7 @@ class UserController extends Controller
             ]);
 
             // dd($validatedData);
-            
+
 
             $user = User::findOrFail($id);
             $user->email = $validatedData['email'];
