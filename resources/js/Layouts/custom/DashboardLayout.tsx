@@ -47,7 +47,7 @@ export default function DashboardLayout({
         if (flash.success) {
             toast.success("Success!", {
                 description: <>{flash.success.split('**').map((text, i) =>
-                    i % 2 === 0 ? text : <strong key={i}>{text}</strong>
+                    i % 2 === 0 ? text : <span key={i} className="font-semibold text-neutral-600">{text}</span>
                 )}</>,
                 closeButton: true,
             });
@@ -100,7 +100,16 @@ export default function DashboardLayout({
                         {header}
                     </div>
                     <div className="mb-6">{children}</div>
-                    <Toaster richColors theme={localStorage.getItem("vite-ui-theme") as Theme || 'system'} duration={10000}/>
+                    <Toaster
+                        richColors
+                        theme={localStorage.getItem("vite-ui-theme") as Theme || 'system'}
+                        duration={10000}
+                        // toastOptions={{
+                        //     classNames: {
+                        //         description: 'text-foreground text-sm',
+                        //     },
+                        // }}
+                    />
                 </ScrollArea>
             </main>
         </SidebarProvider>

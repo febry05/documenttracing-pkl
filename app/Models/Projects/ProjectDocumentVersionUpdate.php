@@ -36,7 +36,12 @@ class ProjectDocumentVersionUpdate extends Model
         'status',
         'document_link',
         'project_document_version_id',
+        'release_date',
+    ];
 
+    // Add date cast to ensure proper date handling
+    protected $casts = [
+        'release_date' => 'datetime',
     ];
 
     public function version()

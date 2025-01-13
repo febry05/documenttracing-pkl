@@ -59,9 +59,6 @@ export default function UserRoleEdit({ role, permissions, rolePermissions }: Pag
                 onFinish: () => {
                     dismissToast(loadingToast as string);
                 },
-                onSuccess: () => {
-                    form.reset();
-                },
             });
         } catch (error) {
             console.error("Submission error:", error);

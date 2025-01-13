@@ -145,7 +145,17 @@ class ProjectService {
     }
 
     public function getProjectDocumentVersionUpdates($projectDocumentVersionId){
-        return ProjectDocumentVersionUpdate::select('id', 'title', 'status', 'description', 'document_link', 'project_document_version_id', 'created_at', 'updated_at')
+        return ProjectDocumentVersionUpdate::select(
+            'id',
+            'title',
+            'status',
+            'description',
+            'document_link',
+            'project_document_version_id',
+            'release_date',
+            'created_at',
+            'updated_at'
+        )
             ->where('project_document_version_id', $projectDocumentVersionId)
             ->orderBy('updated_at', 'desc')
             ->get()
@@ -158,6 +168,7 @@ class ProjectService {
                 'description' => $projectDocumentVersionUpdate->description,
                 'document_link' => $projectDocumentVersionUpdate->document_link,
                 'project_document_version_id' => $projectDocumentVersionUpdate->project_document_version_id,
+                'release_date' => $projectDocumentVersionUpdate->release_date,
                 'updated_at' => $projectDocumentVersionUpdate->updated_at,
                 'created_at' => $projectDocumentVersionUpdate->created_at,
             ];

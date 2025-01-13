@@ -57,15 +57,17 @@ function Update({
             {/* <Separator orientation="vertical"/> */}
             <div className="flex flex-col md:basis-2/5 md:items-end md:text-right md:ms-auto gap-2">
                 <span className="font-semibold">
-                    {format(
-                        projectDocumentVersionUpdate.created_at,
+                    {
+                    format(
+                        projectDocumentVersionUpdate.release_date,
                         "EEEE, d MMMM yyyy"
-                    )}
+                    )
+                    }
                 </span>
                 <div>
                     <span className="text-muted-foreground">at </span>
                     {format(
-                        projectDocumentVersionUpdate.created_at,
+                        projectDocumentVersionUpdate.release_date,
                         "kk:mm:ss"
                     )}
                 </div>
@@ -85,6 +87,8 @@ export default function ProjectDocumentVersionShow({
     const { auth  } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
     const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
+
+    console.log(projectDocumentVersionUpdates);
 
     return (
         <DashboardLayout
