@@ -98,7 +98,7 @@ export default function ProjectDocumentVersionShow({
                     button={(can(userPermissions, "Update Project Document Version") || userIsPIC) && (
                         <ProjectDocumentVersionEditDialog
                             project={project}
-                            projectDocumentId={projectDocument.id}
+                            projectDocument={projectDocument}
                             projectDocumentVersion={projectDocumentVersion}
                         />
                     )}

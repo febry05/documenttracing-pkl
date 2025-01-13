@@ -10,31 +10,24 @@ import { Project, ProjectDocument } from "@/types/model";
 import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
-    project: Project;
-    projectDocument: ProjectDocument;
+    project: Project,
+    projectDocument: ProjectDocument,
 }
 
-export function ProjectDocumentDeleteDialog({
-    project,
-    projectDocument,
-}: PageProps) {
+export function ProjectDocumentDeleteDialog({ project, projectDocument }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            const loadingToast = showLoadingToast(
-                "Please wait while we are deleting the project document."
-            );
-            router.delete(
-                route("projects.documents.destroy", [project, projectDocument]),
-                {
-                    onBefore: () => {
-                        setIsOpen(false);
-                    },
-                    onFinish: () => {
-                        dismissToast(loadingToast as string);
-                    },
+            const loadingToast = showLoadingToast("Please wait while we are deleting the project document.");
+            router.delete(route('projects.documents.destroy', [project.id, projectDocument.id]), {
+                onBefore: () => {
+                    setIsOpen(false);
+                    router.visit(route('projects.documents.show', ), { only: ['userDivisions', 'userPositions'] });
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
                 }
             );
         } catch (error) {

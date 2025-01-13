@@ -6,20 +6,16 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
-import { ProjectDocumentVersion } from "@/types/model";
+import { Project, ProjectDocument, ProjectDocumentVersion } from "@/types/model";
 import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
-    projectId: number;
-    projectDocumentId: number;
-    projectDocumentVersion: ProjectDocumentVersion;
+    project: Project,
+    projectDocument: ProjectDocument,
+    projectDocumentVersion: ProjectDocumentVersion,
 }
 
-export function ProjectDocumentVersionDeleteDialog({
-    projectId,
-    projectDocumentId,
-    projectDocumentVersion,
-}: PageProps) {
+export function ProjectDocumentVersionDeleteDialog({ project, projectDocument, projectDocumentVersion }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
@@ -29,11 +25,7 @@ export function ProjectDocumentVersionDeleteDialog({
                 "Please wait while we are deleting the project document version."
             );
             router.delete(
-                route("projects.documents.versions.destroy", [
-                    projectId,
-                    projectDocumentId,
-                    projectDocumentVersion.id,
-                ]),
+                route("projects.documents.versions.destroy", [project.id, projectDocument.id, projectDocumentVersion.id]),
                 {
                     preserveScroll: true,
                     onBefore: () => {

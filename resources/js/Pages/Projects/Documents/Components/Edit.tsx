@@ -90,8 +90,8 @@ export default function ProjectDocumentEditDialog({
             );
             router.put(
                 route("projects.documents.update", [
-                    project,
-                    projectDocument,
+                    project.id,
+                    projectDocument.id,
                 ]),
                 values
             , {
