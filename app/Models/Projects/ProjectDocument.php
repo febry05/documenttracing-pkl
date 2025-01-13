@@ -107,58 +107,6 @@ class ProjectDocument extends Model
      * @return \Carbon\Carbon
      */
 
-    public function generateVersionIfNeeded()
-    {
-        $currentDate = Carbon::now();
-
-        if ($this->next_deadline && $currentDate->greaterThanOrEqualTo($this->next_deadline)) {
-            // Create new version
-            ProjectDocumentVersion::create([
-                'project_document_id' => $this->id,
-                'version' => $this->generateNextVersion(),
-                'release_date' => $this->next_deadline,
-            ]);
-
-            // Update the next deadline
-            $this->next_deadline = $this->calculateNextDeadline($this->deadline_interval, $this->next_deadline);
-            $this->save();
-        }
-    }
-
-    // Generate the next version string
-    public function generateNextVersion()
-    {
-        $lastVersion = $this->document_versions()->latest()->first();
-        $lastVersionNumber = $lastVersion ? intval($lastVersion->version) : 0;
-
-        return str_pad($lastVersionNumber + 1, 3, '0', STR_PAD_LEFT); // Example: 001, 002, 003...
-    }
-
-
-    public function calculateNextDeadline($interval, $currentDate = null)
-    {
-        $currentDate = $currentDate ? Carbon::parse($currentDate) : Carbon::now();
-
-        switch ($interval) {
-            case 1: // Daily
-                return $currentDate->addDay();
-
-            case 2: // Weekly
-                return $currentDate->addWeek();
-
-            case 3: // Monthly
-                $nextMonth = $currentDate->addMonth()->startOfMonth();
-                $nextDeadline = $nextMonth->addDays($this->base_deadline - 1);
-
-                // Handle months with fewer days
-                return $nextDeadline->day > $nextMonth->daysInMonth
-                    ? $nextMonth->endOfMonth()
-                    : $nextDeadline;
-
-            default:
-                throw new \InvalidArgumentException('Invalid deadline interval');
-        }
-    }
 
     //Relationships
     //version(s) is hasMany
@@ -171,6 +119,11 @@ class ProjectDocument extends Model
     public function versions()
     {
         return $this->hasMany(ProjectDocumentVersion::class, 'project_document_id');
+    }
+
+    public function updates()
+    {
+        return $this->hasManyThrough(ProjectDocumentVersionUpdate::class, ProjectDocumentVersion::class, 'project_document_id', 'project_document_version_id');
     }
 
 

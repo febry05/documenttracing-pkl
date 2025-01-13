@@ -140,7 +140,7 @@ class UserController extends Controller
                 'user_position_id' => 'required|integer',
             ]);
 
-            // dd($validatedData);
+            dd($validatedData);
 
 
             $user = User::findOrFail($id);
@@ -168,7 +168,7 @@ class UserController extends Controller
             return to_route('users.index')->with('success', 'User "' . $request->name . '" updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('users.index')->with('error', 'Problem occurred when creating user: "' . $e->getMessage() . '".');
+            return to_route('users.edit', $id)->with('error', 'Problem occurred when creating user: "' . $e->getMessage() . '".');
         }
     }
 

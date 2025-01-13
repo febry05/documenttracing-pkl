@@ -7,11 +7,12 @@ use Inertia\Inertia;
 use App\Models\Users\User;
 use function Ramsey\Uuid\v1;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Projects\Project;
 use App\Services\ProjectService;
 use App\Models\Users\UserProfile;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Projects\ProjectDocument;
 use App\Models\MasterData\ProjectBusinessType;
@@ -65,13 +66,13 @@ class ProjectController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'code' => 'required|string|max:255',
+                'code' => 'required|string|unique:projects,code|max:255',
                 'customer' => 'required|string|max:255',
-                'contract_number' => 'required|string|max:255',
+                'contract_number' => 'required|string|unique:projects,contract_number|max:255',
                 'contract_start' => 'required|date',
                 'contract_end' => 'required|date',
                 'user_profile_id' => 'required|integer',
-                'project_business_type_id' => 'required|integer',
+                'project_business_type_id' => 'required|integer|exists:project_business_types,id',
             ]);
 
             $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
@@ -85,7 +86,7 @@ class ProjectController extends Controller
             ->with('success', 'Project **'. $request->name .'** created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to create project: ' . $e->getMessage());
+            return redirect()->route('projects.create')->with('error', 'Failed to create project: ' . $e->getMessage());
         }
     }
 
@@ -104,13 +105,13 @@ class ProjectController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'code' => 'required|string|max:255',
+                'code' => ['required', 'string', 'max:255', Rule::unique('projects', 'code')->ignore($id)],
                 'customer' => 'required|string|max:255',
-                'contract_number' => 'required|string|max:255',
-                'contract_start' => 'required|date',
-                'contract_end' => 'required|date',
-                'user_profile_id' => 'required|integer',
-                'project_business_type_id' => 'required|integer',
+                'contract_number' => ['required', 'string', 'max:255', Rule::unique('projects', 'contract_number')->ignore($id)],
+                'contract_start' => 'required|date|before:contract_end',
+                'contract_end' => 'required|date|after:contract_start',
+                'user_profile_id' => 'required|integer|exists:user_profiles,id',
+                'project_business_type_id' => 'required|integer|exists:project_business_types,id',
             ]);
 
             $validatedData['contract_start'] = Carbon::parse($validatedData['contract_start'])->format('Y-m-d H:i:s');
@@ -126,7 +127,7 @@ class ProjectController extends Controller
             ->with('success', 'Project **'. $request->name .'** has been updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to update project: ' . $e->getMessage());
+            return redirect()->route('projects.edit', $id)->with('error', 'Failed to update project: ' . $e->getMessage());
         }
     }
 

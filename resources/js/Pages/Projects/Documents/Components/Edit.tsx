@@ -33,7 +33,12 @@ import {
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button";
 import { Auth, Project, ProjectDocument } from "@/types/model";
-import { can, dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
+import {
+    can,
+    dismissToast,
+    handleNumericInput,
+    showLoadingToast,
+} from "@/lib/utils";
 import { ProjectDocumentDeleteDialog } from "./Delete";
 import { deadlineIntervals, weekdays } from "./Create";
 import { Switch } from "@/Components/ui/switch";
@@ -80,25 +85,25 @@ export default function ProjectDocumentEditDialog({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const loadingToast = showLoadingToast("Please wait while we are updating the project document.");
+            const loadingToast = showLoadingToast(
+                "Please wait while we are updating the project document."
+            );
             router.put(
-                route("projects.documents.update", [
-                    project,
-                    projectDocument,
-                ]),
-                values
-            , {
-                preserveScroll: true,
-                onBefore: () => {
-                    setIsOpen(false);
-                },
-                onFinish: () => {
-                    dismissToast(loadingToast as string);
-                },
-                onSuccess: () => {
-                    form.reset();
-                },
-            });
+                route("projects.documents.update", [project, projectDocument]),
+                values,
+                {
+                    preserveScroll: true,
+                    onBefore: () => {
+                        setIsOpen(false);
+                    },
+                    onFinish: () => {
+                        dismissToast(loadingToast as string);
+                    },
+                    onSuccess: () => {
+                        form.reset();
+                    },
+                }
+            );
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -106,9 +111,11 @@ export default function ProjectDocumentEditDialog({
 
     console.log(project, projectDocument);
 
-    const { auth  } = usePage<{ auth: Auth }>().props;
+    const { auth } = usePage<{ auth: Auth }>().props;
     const userPermissions = auth.permissions;
-    const userIsPIC = can(userPermissions, 'Handle Owned Project') && project.person_in_charge === auth.name;
+    const userIsPIC =
+        can(userPermissions, "Handle Owned Project") &&
+        project.person_in_charge === auth.name;
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -174,9 +181,7 @@ export default function ProjectDocumentEditDialog({
                                                     : ""
                                             }
                                             onValueChange={(value) =>
-                                                field.onChange(
-                                                    Number(value)
-                                                )
+                                                field.onChange(Number(value))
                                             }
                                         >
                                             <FormControl>
@@ -216,11 +221,21 @@ export default function ProjectDocumentEditDialog({
                                         <FormItem>
                                             <FormLabel>
                                                 Weekly Deadline Day
-                                                <span className="text-destructive ms-1">*</span>
+                                                <span className="text-destructive ms-1">
+                                                    *
+                                                </span>
                                             </FormLabel>
                                             <Select
-                                                value={field.value ? String(field.value) : ""}
-                                                onValueChange={(value) => field.onChange(Number(value))}
+                                                value={
+                                                    field.value
+                                                        ? String(field.value)
+                                                        : ""
+                                                }
+                                                onValueChange={(value) =>
+                                                    field.onChange(
+                                                        Number(value)
+                                                    )
+                                                }
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
@@ -229,7 +244,12 @@ export default function ProjectDocumentEditDialog({
                                                 </FormControl>
                                                 <SelectContent>
                                                     {weekdays.map((weekday) => (
-                                                        <SelectItem key={weekday.key} value={String(weekday.key)}>
+                                                        <SelectItem
+                                                            key={weekday.key}
+                                                            value={String(
+                                                                weekday.key
+                                                            )}
+                                                        >
                                                             {weekday.value}
                                                         </SelectItem>
                                                     ))}
@@ -249,7 +269,9 @@ export default function ProjectDocumentEditDialog({
                                         <FormItem>
                                             <FormLabel>
                                                 Monthly Deadline Date
-                                                <span className="text-destructive ms-1">*</span>
+                                                <span className="text-destructive ms-1">
+                                                    *
+                                                </span>
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
@@ -261,8 +283,16 @@ export default function ProjectDocumentEditDialog({
                                                     min={1}
                                                     max={31}
                                                     value={field.value || ""}
-                                                    onKeyDown={handleNumericInput}
-                                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                                    onKeyDown={
+                                                        handleNumericInput
+                                                    }
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            Number(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -321,9 +351,16 @@ export default function ProjectDocumentEditDialog({
                                     <LearnTooltip
                                         text={
                                             <>
-                                                Automatically generate the next document version when the current document version deadline ends.
-                                                <br/>
-                                                <span className="font-bold text-destructive">This cannot be changed later when editing the document properties.</span>
+                                                Automatically generate the next
+                                                document version when the
+                                                current document version
+                                                deadline ends.
+                                                <br />
+                                                <span className="font-bold text-destructive">
+                                                    This cannot be changed later
+                                                    when editing the document
+                                                    properties.
+                                                </span>
                                             </>
                                         }
                                         className="my-auto"
@@ -366,7 +403,6 @@ export default function ProjectDocumentEditDialog({
                                     </FormItem>
                                 )}
                             /> */}
-
                         </div>
                     </form>
                 </Form>
@@ -378,9 +414,10 @@ export default function ProjectDocumentEditDialog({
                             type="submit"
                             onClick={form.handleSubmit(onSubmit)}
                         />
-                        {(can(userPermissions, "Delete Project Document") || userIsPIC) && (
+                        {(can(userPermissions, "Delete Project Document") ||
+                            userIsPIC) && (
                             <ProjectDocumentDeleteDialog
-                                projectId={project.id}
+                                project={project}
                                 projectDocument={projectDocument}
                             />
                         )}

@@ -10,20 +10,30 @@ import { ProjectDocumentVersion } from "@/types/model";
 import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
-    projectId: number,
-    projectDocumentId: number,
-    projectDocumentVersion: ProjectDocumentVersion,
+    projectId: number;
+    projectDocumentId: number;
+    projectDocumentVersion: ProjectDocumentVersion;
 }
 
-export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentId, projectDocumentVersion }: PageProps) {
+export function ProjectDocumentVersionDeleteDialog({
+    projectId,
+    projectDocumentId,
+    projectDocumentVersion,
+}: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            const loadingToast = showLoadingToast("Please wait while we are creating the project document version.");
+            const loadingToast = showLoadingToast(
+                "Please wait while we are deleting the project document version."
+            );
             router.delete(
-                route("projects.documents.versions.destroy", [projectId, projectDocumentId, projectDocumentVersion.id]),
+                route("projects.documents.versions.destroy", [
+                    projectId,
+                    projectDocumentId,
+                    projectDocumentVersion.id,
+                ]),
                 {
                     preserveScroll: true,
                     onBefore: () => {
@@ -32,24 +42,23 @@ export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentI
                     },
                     onFinish: () => {
                         dismissToast(loadingToast as string);
-                    }
+                    },
                 }
             );
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error("Submission error:", error);
         }
     }
 
-    return(
+    return (
         <FormDialog
-            open={isOpen} onOpenChange={setIsOpen}
-            trigger={
-                {
-                    text: "Delete",
-                    icon: Trash2,
-                    variant: "destructive"
-                }
-            }
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            trigger={{
+                text: "Delete",
+                icon: Trash2,
+                variant: "destructive",
+            }}
             title="Delete Project Document Version"
             description={
                 <span>
@@ -57,14 +66,20 @@ export function ProjectDocumentVersionDeleteDialog({ projectId, projectDocumentI
                     <strong>{projectDocumentVersion.version}</strong>
                     "?
                 </span>
-                }
+            }
             footer={
                 <Form {...form}>
-                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
-                        <Button type="submit" variant="destructive">Yes, delete it</Button>
+                    <form
+                        action=""
+                        method="POST"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                    >
+                        <Button type="submit" variant="destructive">
+                            Yes, delete it
+                        </Button>
                     </form>
                 </Form>
             }
         />
-    )
+    );
 }

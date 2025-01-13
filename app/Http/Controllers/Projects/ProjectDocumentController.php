@@ -128,25 +128,22 @@ class ProjectDocumentController extends Controller
         }
     }
 
-    public function destroy($id, Project $project)
+    public function destroy(Project $project, ProjectDocument $document)
     {
         DB::beginTransaction();
         try {
-            // Find the document by ID
-            $projectDocument = ProjectDocument::findOrFail($id);
-
-            // Delete all associated versions (cascading updates deletion if set in DB)
-            $projectDocument->versions()->each(function ($version) {
-                $version->delete(); // Will trigger cascading deletion for updates if defined
+            // Delete all associated versions and updates
+            $document->versions->each(function ($version) {
+                $version->updates()->delete();
+                $version->delete(); 
             });
 
-            // Delete the document itself
-            $projectDocument->delete();
+            $document->delete();
 
             DB::commit();
 
             return redirect()->route('projects.show', $project)
-                ->with('success', 'Document **'. $projectDocument->name .'** deleted successfully.');
+                ->with('success', 'Document **'. $document->name .'** deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the document: ' . $e->getMessage()]);
