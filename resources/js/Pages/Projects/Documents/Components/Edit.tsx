@@ -83,8 +83,8 @@ export default function ProjectDocumentEditDialog({
             const loadingToast = showLoadingToast("Please wait while we are updating the project document.");
             router.put(
                 route("projects.documents.update", [
-                    project,
-                    projectDocument,
+                    project.id,
+                    projectDocument.id,
                 ]),
                 values
             , {
@@ -377,7 +377,7 @@ export default function ProjectDocumentEditDialog({
                         />
                         {(can(userPermissions, "Delete Project Document") || userIsPIC) && (
                             <ProjectDocumentDeleteDialog
-                                projectId={project.id}
+                                project={project}
                                 projectDocument={projectDocument}
                             />
                         )}

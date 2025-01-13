@@ -6,22 +6,22 @@ import { Form } from "@/Components/ui/form";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
-import { ProjectDocument } from "@/types/model";
+import { Project, ProjectDocument } from "@/types/model";
 import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
-    projectId: number,
+    project: Project,
     projectDocument: ProjectDocument,
 }
 
-export function ProjectDocumentDeleteDialog({ projectId, projectDocument }: PageProps) {
+export function ProjectDocumentDeleteDialog({ project, projectDocument }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
             const loadingToast = showLoadingToast("Please wait while we are deleting the project document.");
-            router.delete(route('projects.documents.destroy', [projectId, projectDocument.id]), {
+            router.delete(route('projects.documents.destroy', [project.id, projectDocument.id]), {
                 onBefore: () => {
                     setIsOpen(false);
                     router.visit(route('projects.documents.show', ), { only: ['userDivisions', 'userPositions'] });

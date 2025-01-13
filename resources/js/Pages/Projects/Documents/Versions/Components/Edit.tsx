@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { IconButton } from "@/Components/custom/IconButton";
 import { PenLine, Save } from "lucide-react";
 import { Button } from "@/Components/ui/button";
-import { Auth, Project, ProjectDocumentVersion } from "@/types/model";
+import { Auth, Project, ProjectDocument, ProjectDocumentVersion } from "@/types/model";
 import { ProjectDocumentVersionDeleteDialog } from "./Delete";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 import { can, dismissToast, showLoadingToast } from "@/lib/utils";
@@ -31,12 +31,12 @@ const formSchema = z.object({
 
 interface PageProps {
     project: Project,
-    projectDocumentId: number,
+    projectDocument: ProjectDocument,
     projectDocumentVersion: ProjectDocumentVersion,
 }
 
 export default function ProjectDocumentVersionEditDialog(
-    { project, projectDocumentId, projectDocumentVersion }
+    { project, projectDocument, projectDocumentVersion }
     : PageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -50,7 +50,7 @@ export default function ProjectDocumentVersionEditDialog(
         try {
             const loadingToast = showLoadingToast("Please wait while we are updating the project document version.");
             router.put(
-                route("projects.documents.versions.update", [project.id, projectDocumentId, projectDocumentVersion.id]), values, {
+                route("projects.documents.versions.update", [project.id, projectDocument.id, projectDocumentVersion.id]), values, {
                     preserveScroll: true,
                     onBefore: () => {
                         setIsOpen(false);
@@ -134,7 +134,7 @@ export default function ProjectDocumentVersionEditDialog(
                     <div className="flex flex-row-reverse gap-4">
                         <IconButton text="Save" icon={Save} type="submit" onClick={form.handleSubmit(onSubmit)}/>
                         { (can(userPermissions, 'Delete Project Document Version') || userIsPIC)
-                            && <ProjectDocumentVersionDeleteDialog projectId={project.id} projectDocumentId={projectDocumentId} projectDocumentVersion={projectDocumentVersion} />
+                            && <ProjectDocumentVersionDeleteDialog project={project} projectDocument={projectDocument} projectDocumentVersion={projectDocumentVersion} />
                         }
                     </div>
                 </DialogFooter>
