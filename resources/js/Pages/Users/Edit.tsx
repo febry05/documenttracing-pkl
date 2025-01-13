@@ -1,5 +1,5 @@
 import { Inertia } from "@inertiajs/inertia";
-import { Head, router } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -21,7 +21,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/Components/ui/form";
-import { Save } from "lucide-react";
+import { Save, Trash } from "lucide-react";
 
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import { dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
@@ -29,8 +29,9 @@ import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { useEffect, useState } from "react";
 import { IconButton } from "@/Components/custom/IconButton";
 import { UserDeleteDialog } from "./Components/Delete";
-import { User, UserDivision, UserPosition, UserRole } from "@/types/model";
+import { Auth, User, UserDivision, UserPosition, UserRole } from "@/types/model";
 import TogglePasswordInput from "@/Components/custom/TogglePasswordInput";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/Components/ui/tooltip";
 
 const formSchema = z.object({
     email: z.string().min(5).max(255).email(),
@@ -72,18 +73,14 @@ export default function UsersEdit({
         },
     });
 
+    const { auth } = usePage<{ auth: Auth }>().props;
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             const loadingToast = showLoadingToast("Please wait while we are updating the user.");
             router.put(route("users.update", user.id), values, {
-                onBefore: () => {
-                    form.reset();
-                },
                 onFinish: () => {
                     dismissToast(loadingToast as string);
-                },
-                onSuccess: () => {
-                    form.reset();
                 },
             });
         } catch (error) {
@@ -371,15 +368,14 @@ export default function UsersEdit({
                                                     </span>
                                                 </FormLabel>
                                                 <Select
+                                                    value={field.value?.toString()}
                                                     onValueChange={(value) => {
-                                                        handleDivisionChange(
-                                                            Number(value)
-                                                        );
+                                                        const numValue = Number(value);
+                                                        handleDivisionChange(numValue);
+                                                        field.onChange(numValue);
+                                                        // Reset position when division changes
+                                                        form.setValue('user_position_id', undefined);
                                                     }}
-                                                    defaultValue={
-                                                        user.user_division_id?.toString() ||
-                                                        ""
-                                                    }
                                                 >
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select the user's division" />
@@ -419,11 +415,8 @@ export default function UsersEdit({
                                                     </span>
                                                 </FormLabel>
                                                 <Select
-                                                    // onValueChange={(value) => console.log('Selected position:', value)}
-                                                    defaultValue={
-                                                        user.user_position_id?.toString() ||
-                                                        ""
-                                                    }
+                                                    value={field.value?.toString()}
+                                                    onValueChange={(value) => field.onChange(Number(value))}
                                                     disabled={
                                                         !availableUserPositions.length
                                                     } // Disable if no positions available
@@ -470,7 +463,26 @@ export default function UsersEdit({
                             text="Save"
                             onClick={form.handleSubmit(onSubmit)}
                         />
-                        <UserDeleteDialog data={user} />
+                        {
+                            auth.id === user.id
+                            ? (
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className="hover:cursor-not-allowed">
+                                                <IconButton icon={Trash} text="Delete" disabled variant="destructive"/>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                        <p>This action is not available because you are currently using the account.</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )
+                            : (
+                                <UserDeleteDialog data={user} />
+                            )
+                        }
                     </div>
                 </div>
             </Card>

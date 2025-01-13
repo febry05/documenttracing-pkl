@@ -89,21 +89,20 @@ export default function ProjectDocumentEditDialog({
                 "Please wait while we are updating the project document."
             );
             router.put(
-                route("projects.documents.update", [project, projectDocument]),
-                values,
-                {
-                    preserveScroll: true,
-                    onBefore: () => {
-                        setIsOpen(false);
-                    },
-                    onFinish: () => {
-                        dismissToast(loadingToast as string);
-                    },
-                    onSuccess: () => {
-                        form.reset();
-                    },
-                }
-            );
+                route("projects.documents.update", [
+                    project,
+                    projectDocument,
+                ]),
+                values
+            , {
+                preserveScroll: true,
+                onBefore: () => {
+                    setIsOpen(false);
+                },
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                },
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }

@@ -26,7 +26,6 @@ import { Save } from "lucide-react";
 import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
 import { ProjectBusinessType } from "@/types/model";
-import { DatePicker } from "@/Components/custom/DatePicker";
 import { DateTimePicker } from "@/Components/custom/DateTimePicker";
 import { dismissToast, showLoadingToast } from "@/lib/utils";
 
@@ -45,7 +44,13 @@ const formSchema = z
         message:
             "Contract end date must be later than or equal to contract start date",
         path: ["contract_end"],
-    });
+    })
+    // .refine((data) => data.contract_start >= data.contract_end, {
+    //     message:
+    //         "Contract start date must be earlier than or equal to contract end date",
+    //     path: ["contract_start"],
+    // })
+    ;
 
 type ProjectManager = {
     id: number;
@@ -72,6 +77,10 @@ export default function ProjectCreate({
             contract_end: undefined,
             user_profile_id: undefined,
             project_business_type_id: undefined,
+        },
+        // Add this to preserve form values on error
+        resetOptions: {
+            keepValues: true,
         },
     });
 
@@ -220,15 +229,11 @@ export default function ProjectCreate({
                                                     </span>
                                                 </FormLabel>
                                                 <Select
+                                                    value={field.value ? field.value.toString() : ""} // Change defaultValue to value
                                                     onValueChange={(value) =>
                                                         field.onChange(
                                                             Number(value)
                                                         )
-                                                    }
-                                                    defaultValue={
-                                                        field.value
-                                                            ? field.value.toString()
-                                                            : ""
                                                     }
                                                 >
                                                     <FormControl>
@@ -304,15 +309,11 @@ export default function ProjectCreate({
                                                     </span>
                                                 </FormLabel>
                                                 <Select
+                                                    value={field.value ? field.value.toString() : ""} // Change defaultValue to value
                                                     onValueChange={(value) =>
                                                         field.onChange(
                                                             Number(value)
                                                         )
-                                                    }
-                                                    defaultValue={
-                                                        field.value
-                                                            ? field.value.toString()
-                                                            : ""
                                                     }
                                                 >
                                                     <FormControl>
@@ -369,6 +370,7 @@ export default function ProjectCreate({
                                                         onChange={field.onChange}
                                                         hideTime={true}
                                                         placeholder="Select the contract start date"
+                                                        max={new Date(form.getValues("contract_end"))}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />

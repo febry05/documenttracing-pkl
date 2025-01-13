@@ -43,9 +43,6 @@ export default function ProjectBusinessTypeEditDialog({ data, closeDialog }: Pag
                     onFinish: () => {
                         dismissToast(loadingToast as string);
                     },
-                    onSuccess: () => {
-                        form.reset();
-                    },
                 }
             );
         } catch (error) {

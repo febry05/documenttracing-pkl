@@ -58,9 +58,6 @@ export default function ProjectDocumentVersionEditDialog(
                     onFinish: () => {
                         dismissToast(loadingToast as string);
                     },
-                    onSuccess: () => {
-                        form.reset();
-                    },
                 }
             );
         } catch (error) {

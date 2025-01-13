@@ -14,6 +14,7 @@ class UpdateController extends Controller
 {
     public function store(Request $request, Project $project, ProjectDocument $document, ProjectDocumentVersion $version)
     {
+        // dd($request);
         DB::beginTransaction();
         try {
             $now = now();
@@ -35,13 +36,20 @@ class UpdateController extends Controller
                 'status' => 'required|integer',
                 'description' => 'nullable|string',
                 'document_link' => 'nullable|string',
+                'release_date' => 'required|date',
             ]);
+
+            // Parse and format the date before creating the record
+            $release_date = \Carbon\Carbon::parse($validated['release_date'])->format('Y-m-d H:i:s');
+
+            // dd($validated);
 
             $documentUpdate = ProjectDocumentVersionUpdate::create([
                 'title' => $validated['title'],
                 'status' => $validated['status'],
                 'description' => $validated['description'],
                 'document_link' => $validated['document_link'],
+                'release_date' => $release_date, // Use the formatted date
                 'project_document_version_id' => $version->id,
             ]);
 

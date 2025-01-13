@@ -45,9 +45,6 @@ export default function UserPositionEditDialog({ data, userDivisions, closeDialo
                 onFinish: () => {
                     dismissToast(loadingToast as string);
                 },
-                onSuccess: () => {
-                    form.reset();
-                },
             });
         } catch (error) {
             console.error('Submission error:', error);

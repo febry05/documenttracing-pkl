@@ -109,6 +109,7 @@ export type ProjectDocumentVersionUpdate = BaseModel & {
     document_link: string;
     status: number;
     status_name?: string;
+    release_date: Date;
 
     project_document_version_id: number;
 };
@@ -128,6 +129,7 @@ export type ProjectBusinessType = BaseMasterData;
 // MASTER [END]
 
 export type Auth = {
+    id: number;
     name: string;
     role: string;
     permissions: string[];
