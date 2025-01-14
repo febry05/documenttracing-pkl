@@ -52,6 +52,11 @@ class RoleAndPermissionSeeder extends Seeder
             'description' => 'Role that allows its users to view project details in the website app, but not make any changes to it.',
         ]);
 
+        Role::firstOrCreate([
+            'name' => 'Branch Manager',
+            'description' => 'Role that allows its user to view project details in the website app, but not make any changes to it.',
+        ]);
+
         // app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

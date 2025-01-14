@@ -4,6 +4,7 @@ import { Link } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import BreadcrumbBuilder from "./BreadcrumbBuilder";
+import { IconButton } from "./IconButton";
 
 export function HeaderNavigation({
     title,
@@ -36,6 +37,10 @@ export function HeaderNavigation({
                 </Link>
                 )}
 
+                {/* <Link className="flex flex-column gap-1 text-xs hover:underline" href="/dashboard">
+                    <ChevronLeft size={16}/>
+                    <span>Back</span>
+                </Link> */}
                 {breadcrumb && (
                     <AutoBreadcrumb />
                 )}

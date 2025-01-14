@@ -2,6 +2,7 @@
 
 import Countdown from "@/Components/custom/Countdown"
 import PriorityBadge from "@/Components/custom/PriorityBadge"
+import StatusBadge from "@/Components/custom/StatusBadge"
 import { Badge } from "@/Components/ui/badge"
 import { ColumnDef } from "@tanstack/react-table"
 
@@ -117,5 +118,21 @@ export const columns: ColumnDef<Project>[] = [
         size: 40,
         minSize: 40,
         maxSize: 40,
-    }
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ getValue, row }) => (
+            <div className="w-full flex">
+                <div className="mx-auto">
+                {/* { getValue() } */}
+                    <StatusBadge status={getValue()}/>
+                </div>
+            </div>
+        ),
+        size: 50,
+        minSize: 50,
+        maxSize: 50,
+        enableResizing: false,
+    },
 ]

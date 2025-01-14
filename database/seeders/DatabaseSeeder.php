@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Users\User;
 use App\Models\Users\UserRoles;
 use Illuminate\Database\Seeder;
+use Database\Seeders\UserSeeder;
 use App\Models\Users\UserProfile;
 use Spatie\Permission\Models\Role;
 use Database\Seeders\ProjectSeeder;
@@ -23,10 +24,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(DivisionAndPositionSeeder::class);
-        
+
         $this->call(RoleAndPermissionSeeder::class);
 
-        $this->call(UserAndProfileSeeder::class);
+        $this->call(UserSeeder::class);
+
+        $this->call(ProfileSeeder::class);
 
         $this->call(ProjectBusinessSeeder::class);
 
@@ -39,11 +42,11 @@ class DatabaseSeeder extends Seeder
         $this->call(ProjectDocumentVersionSeeder::class);
 
         $this->call(UpdateOnVersionSeeder::class);
-        
-        // $adminRole = Role::where('name', 'Administrator')->first()->id; 
 
-        
-        
-        
+        // $adminRole = Role::where('name', 'Administrator')->first()->id;
+
+
+
+
     }
 }

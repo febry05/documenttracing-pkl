@@ -5,6 +5,7 @@ import { FileBarChart, FileCog, FileClock, FileCheck2 } from "lucide-react";
 import { ColumnFilterConfig, DataTable } from "@/Components/ui/data-table";
 import { columns, Project } from "./columns";
 import DashboardLayout from "@/Layouts/custom/DashboardLayout";
+import { HeaderNavigation } from "@/Components/custom/HeaderNavigation";
 
 interface PageProps {
     stats: {
@@ -18,6 +19,18 @@ interface PageProps {
 
 export default function Dashboard({ stats, documents }: PageProps) {
     const filters: ColumnFilterConfig[] = [
+        {
+            columnId: "status",
+            label: "Status",
+            options: [
+                { value: "all", label: "All Status" },
+                { value: "N/A", label: "N/A" },
+                { value: "Not Started", label: "Not Started" },
+                { value: "On Process", label: "On Process" },
+                { value: "Completed", label: "Completed" },
+                { value: "Pending", label: "Pending" },
+            ],
+        },
         {
             columnId: "priority",
             label: "Priority",
@@ -45,12 +58,12 @@ export default function Dashboard({ stats, documents }: PageProps) {
     return (
         <DashboardLayout
             header={
-                <span className="font-semibold text-xl leading-tight">
-                    Overview - My Document Versions
-                </span>
+                <HeaderNavigation
+                    title="Overview - My Document Versions"
+                />
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Overview" />
             <div className="flex flex-col gap-4 md:gap-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <InfoCard

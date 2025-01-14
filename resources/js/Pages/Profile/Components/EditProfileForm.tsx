@@ -15,7 +15,7 @@ import {
 } from "@/Components/ui/form";
 import { Save } from "lucide-react";
 
-import { handleNumericInput } from "@/lib/utils";
+import { dismissToast, handleNumericInput, showLoadingToast } from "@/lib/utils";
 import { IconButton } from "@/Components/custom/IconButton";
 import { User, UserDivision, UserPosition, UserRole } from "@/types/model";
 
@@ -53,8 +53,12 @@ export default function EditProfileForm({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            console.log("awd");
-            router.put(route("profile.update", user.id), values);
+            const loadingToast = showLoadingToast("Please wait while we are updating your profile information.");
+            router.put(route("profile.update", user.id), values, {
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
