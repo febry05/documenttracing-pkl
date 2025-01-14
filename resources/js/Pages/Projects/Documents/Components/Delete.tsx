@@ -29,7 +29,7 @@ export function ProjectDocumentDeleteDialog({ project, projectDocument }: PagePr
                 onFinish: () => {
                     dismissToast(loadingToast as string);
                 }
-            );
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }
