@@ -54,15 +54,14 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'email' => 'required|email',
-                'password' => 'nullable|min:6',
+                'email' => 'required|email|unique:users,email,' . Auth::user()->id,
                 'name' => 'required|string|max:255',
-                'nik' => 'nullable|string',
-                'phone' => 'nullable|string',
-                'employee_no' => 'string',
+                'nik' => 'nullable|string|unique:user_profiles,nik,' . Auth::user()->id,
+                'phone' => 'nullable|string|unique:user_profiles,phone,' . Auth::user()->id,
+                'employee_no' => 'string|unique:user_profiles,employee_no,' . Auth::user()->id,
             ]);
 
-            $user = User::findOrFail($userId);
+            $user = User::findOrFail(Auth::user()->id);
             $user->email = $validatedData['email'];
             $user->save();
 
@@ -76,10 +75,10 @@ class ProfileController extends Controller
             $request->user()->save();
             DB::commit();
 
-            return to_route('profile.edit')->with('success', 'Profile updated successfully');
+            return to_route('profile.edit')->with('success', 'Your profile information updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return to_route('profile.edit')->with('error', 'Failed to update profile');
+            return to_route('profile.edit')->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
     }
 

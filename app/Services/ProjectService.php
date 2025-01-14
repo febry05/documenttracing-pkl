@@ -43,6 +43,7 @@ class ProjectService {
                                 'name' => $version->version,
                                 'document' => $document->name,
                                 'project' => $project->name,
+                                'status' => !$version->updates->isEmpty() ? $version->updates->last()->status_type_name : 'N/A',
                                 'due_date' => $version->deadline ? Carbon::parse($version->deadline)->toDateString() : 'N/A',
                                 'days_left' => $version->deadline ? Carbon::parse($version->deadline)->toDateString() : 'N/A',
                                 'priority' => $document->priority_type_name,

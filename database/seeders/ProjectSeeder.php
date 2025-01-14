@@ -25,7 +25,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2020-02-14',
                 'contract_end' => '2025-02-15',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Jasa Sistem Pelaporan Keberangkatan Penumpang Pesawat Common Use Check In System (CUCS) di 15 Lokasi 22',
@@ -35,7 +35,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2021-11-10',
                 'contract_end' => '2027-04-21',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Rental')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pengelolaan Layanan Penguat Sinyal IBCS dan Outdoor Terminal Baru Bandara Syamsudin Noor Banjarmasin',
@@ -45,7 +45,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2024-07-01',
                 'contract_end' => '2025-06-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pengelolaan Seat Management Peralatan TI di Bandara Syamsudin Noor Banjarmasin',
@@ -55,7 +55,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2020-04-30',
                 'contract_end' => '2024-12-31',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Rental')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pengelolaan Wifi Managed Service Concordia Lounge PT. Angkasa Pura Hotel',
@@ -65,7 +65,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2022-07-07',
                 'contract_end' => '2025-07-07',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pekerjaan Jasa Layanan UHOSS di Cordia Hotel Banjarbaru',
@@ -75,7 +75,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-01-12',
                 'contract_end' => '2024-11-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Penyedia Jasa Manage Service Jaringan LAN di 13 Bandara Angkasa Pura 1 (Air Asia)',
@@ -85,7 +85,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-01-01',
                 'contract_end' => '2024-12-31',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pekerjaan Jasa Layanan Internet Lintang Cafe (Bakso Tengkleng)',
@@ -95,7 +95,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-10-01',
                 'contract_end' => '2024-09-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pekerjaan Jasa Layanan Internet Lintang Cafe (Pawon Semarang)',
@@ -105,7 +105,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-11-01',
                 'contract_end' => '2024-11-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pekerjaan Jasa Layanan Internet di Tenant KFC Bandara Syamsudin Noor Banjarmasin',
@@ -115,7 +115,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-01-12',
                 'contract_end' => '2024-11-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Penyediaan Jasa Layanan Internet 50 Mbps (CentrePark)',
@@ -125,7 +125,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2024-01-05',
                 'contract_end' => '2025-04-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Service')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
             [
                 'name' => 'Pengelolaan Seat Management Peralatan TI di Carg APLOG',
@@ -135,7 +135,7 @@ class ProjectSeeder extends Seeder
                 'contract_start' => '2023-01-12',
                 'contract_end' => '2025-11-30',
                 'project_business_type_id' => ProjectBusinessType::where('name', 'Rental')->first()->id,
-                'user_profile_id' => UserProfile::where('name', 'Muhammad Ferdy Maulana')->first()->id,
+                'user_profile_id' => UserProfile::where('name', 'Trya Suma Anggarini')->first()->id,
             ],
         ];
 

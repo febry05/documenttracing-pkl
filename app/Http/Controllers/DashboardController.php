@@ -28,8 +28,6 @@ class DashboardController extends Controller
             'completed_documents' => 420,
         ];
 
-        
-
         return Inertia::render('Dashboard', [
             'stats' => $this->calculateDocumentStats(),
             'documents' => $this->projectService->getDashboard(),
@@ -40,12 +38,10 @@ class DashboardController extends Controller
     {
         $user = User::find(Auth::user()->id);
 
-        
         $totalDocuments = ProjectDocumentVersion::whereHas('document.project.profile', function ($query) use ($user) {
             $query->where('id', $user->id);
             // dd($query);
         })->count();
-        
 
         $documentVersions = ProjectDocumentVersion::with(['updates', 'document.project.profile'])
             ->whereHas('document.project.profile', function ($query) use ($user) {

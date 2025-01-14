@@ -73,10 +73,16 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'Manage Master Data',
             'Access Monitoring Page',
         ]);
-        $admin = User::where('email', 'admin@example.com')->first();
-        // $admin->assignRole($adminRole);
-        if ($admin && $adminRole) {
-            $admin->assignRole($adminRole);
+        // $admin = User::where('email', 'admin@example.com')->first();
+        // // $admin->assignRole($adminRole);
+        // if ($admin && $adminRole) {
+        //     $admin->assignRole($adminRole);
+        // }
+        $administratorUsers = User::where('roles_id', '1')->get();
+        foreach ($administratorUsers as $administratorUser) {
+            if ($adminRole) {
+                $administratorUser->assignRole($adminRole);
+            }
         }
 
         $projectManagerRole = Role::where('name', 'Project Manager')->first();
@@ -101,11 +107,17 @@ class SyncRolesAndPermissionSeeder extends Seeder
 
             'Access Monitoring Page',
         ]);
-        $projectManager = User::where('email', 'projectmanager@example.com')->first();
-        // $projectManager->assignRole($projectManagerRole);
-        if ($projectManager && $projectManagerRole) {
-            $projectManager->assignRole($projectManagerRole);
+        $projectManagerUsers = User::where('roles_id', '2')->get();
+        foreach ($projectManagerUsers as $projectManagerUser) {
+            if ($projectManagerRole) {
+                $projectManagerUser->assignRole($projectManagerRole);
+            }
         }
+        // $projectManager = User::where('email', 'projectmanager@example.com')->first();
+        // // $projectManager->assignRole($projectManagerRole);
+        // if ($projectManager && $projectManagerRole) {
+        //     $projectManager->assignRole($projectManagerRole);
+        // }
 
         $guestRole = Role::where('name', 'Guest')->first();
         $guestRole->givePermissionTo([
@@ -115,12 +127,38 @@ class SyncRolesAndPermissionSeeder extends Seeder
             'View Project Document Version Update',
             'Access Monitoring Page',
         ]);
-        $guest = User::where('email', 'guest@example.com')->first();
-        $guest->assignRole($guestRole);
-        if ($guest && $guestRole) {
-            $guest->assignRole($guestRole);
+
+        $guestUsers = User::where('roles_id', '3')->get();
+        foreach ($guestUsers as $guestUser) {
+            if ($guestRole) {
+                $guestUser->assignRole($guestRole);
+            }
         }
+        // $guest = User::where('email', 'guest@example.com')->first();
+        // $guest->assignRole($guestRole);
+        // if ($guest && $guestRole) {
+        //     $guest->assignRole($guestRole);
+        // }
 
 
+        $branchManagerRole = Role::where('name', 'Branch Manager')->first();
+        $branchManagerRole->givePermissionTo([
+            'View Project',
+            'View Project Document',
+            'View Project Document Version',
+            'View Project Document Version Update',
+            'Access Monitoring Page',
+        ]);
+        $branchManagerUsers = User::where('roles_id', '4')->get();
+        foreach ($branchManagerUsers as $branchManagerUser) {
+            if ($branchManagerRole) {
+                $branchManagerUser->assignRole($branchManagerRole);
+            }
+        }
+        // $branchManager = User::where('email', 'branchmanager@example.com')->first();
+        // $branchManager->assignRole($branchManagerRole);
+        // if ($branchManager && $branchManagerRole) {
+        //     $branchManager->assignRole($branchManagerRole);
+        // }
     }
 }

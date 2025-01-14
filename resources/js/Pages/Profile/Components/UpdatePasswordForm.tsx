@@ -18,6 +18,7 @@ import { IconButton } from "@/Components/custom/IconButton";
 import { User } from "@/types/model";
 import TogglePasswordInput from "@/Components/custom/TogglePasswordInput";
 import { router } from "@inertiajs/react";
+import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 const formSchema = z.object({
     password: z.string().min(6).max(255),
@@ -43,7 +44,12 @@ export default function updatePasswordForm({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            router.put(route("update-password.update", user.id), values);
+            const loadingToast = showLoadingToast("Please wait while we are updating your password.");
+            router.put(route("update-password.update", user.id), values, {
+                onFinish: () => {
+                    dismissToast(loadingToast as string);
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
         }

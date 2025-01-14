@@ -9,6 +9,7 @@ use App\Models\Users\UserProfile;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\MasterData\UserDivision;
 use App\Models\MasterData\UserPosition;
 use Illuminate\Routing\Controllers\Middleware;
@@ -129,12 +130,12 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'email' => 'required|email',
+                'email' => 'required|email|unique:users,email,' . $id,
                 'password' => 'nullable|min:6',
                 'name' => 'required|string|max:255',
-                'nik' => 'nullable|string',
-                'phone' => 'nullable|string',
-                'employee_no' => 'string',
+                'nik' => 'nullable|string|unique:user_profiles,nik,' . $id,
+                'phone' => 'nullable|string|unique:user_profiles,phone,' . $id,
+                'employee_no' => 'string|unique:user_profiles,employee_no,' . $id,
                 'roles_id' => 'required|integer',
                 'user_division_id' => 'required|integer',
                 'user_position_id' => 'required|integer',
