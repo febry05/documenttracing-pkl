@@ -20,8 +20,8 @@ return new class extends Migration
             $table->date('contract_start');
             $table->date('contract_end');
             $table->timestamps();
-            $table->foreignId('user_profile_id')->constrained()->default(0);
-            $table->foreignId('project_business_type_id')->constrained()->default(0);
+            $table->foreignId('user_profile_id')->nullable()->default(0);
+            $table->foreignId('project_business_type_id')->nullable()->default(0);
 
         });
     }

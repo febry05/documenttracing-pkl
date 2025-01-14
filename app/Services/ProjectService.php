@@ -72,9 +72,9 @@ class ProjectService {
                     'contract_end' => $project->contract_end,
                     'days_left' => $daysLeft,
                     'duration' => $this->calculateDuration($project->contract_start, $project->contractEnd),
-                    'person_in_charge' => $project->profile->name,
-                    'user_profile_id' => $project->user_profile_id,
-                    'project_business_type_id' => $project->project_business_type_id,
+                    'person_in_charge' => $project->profile->name ?? 'N/A',
+                    'user_profile_id' => $project->user_profile_id ?? 'N/A',
+                    'project_business_type_id' => $project->project_business_type_id ?? 'N/A',
                     'documents' => $project->documents->map(function ($documents) {
                         return [
                             'id' => $documents->id,

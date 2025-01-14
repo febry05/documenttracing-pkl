@@ -115,8 +115,8 @@ class UserController extends Controller
                 'phone' => $user->phone ,
                 'employee_no' => $user->employee_no,
                 'roles_id' => $user->user->roles->first()->id ?? "N/A",
-                'user_division_id' => $user->division->id,
-                'user_position_id' => $user->position->id,
+                'user_division_id' => $user->division->id ?? "N/A",
+                'user_position_id' => $user->position->id ?? "N/A",
             ],
             'userRoles' => Role::select('id', 'name')->get(),
             'userDivisions' => UserDivision::select('id', 'name')->get(),
@@ -140,7 +140,7 @@ class UserController extends Controller
                 'user_position_id' => 'required|integer',
             ]);
 
-            dd($validatedData);
+            // dd($validatedData);
 
 
             $user = User::findOrFail($id);
@@ -177,9 +177,12 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $user = User::findOrFail($id);
+            // $name = $user->name;
+            $name = $user->userProfile->name ?? $user->email;
             $user->delete();
             DB::commit();
-            return to_route('users.index')->with('success', 'User "' . $user->name . '" deleted successfully.');
+            // DB::rollBack();
+            return to_route('users.index')->with('success', 'User "' . $name . '" deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return to_route('users.index')->with('error', 'Problem occurred when deleting user: "' . $e->getMessage() . '".');

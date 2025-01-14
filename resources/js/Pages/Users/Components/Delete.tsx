@@ -10,17 +10,19 @@ import { User } from "@/types/model";
 import { dismissToast, showLoadingToast } from "@/lib/utils";
 
 interface PageProps {
-    data: User,
+    data: User;
 }
 
-export function UserDeleteDialog({data}: PageProps) {
+export function UserDeleteDialog({ data }: PageProps) {
     const [isOpen, setIsOpen] = useState(false);
     const form = useForm();
 
     async function onSubmit() {
         try {
-            const loadingToast = showLoadingToast("Please wait while we are deleting the user.");
-            router.delete(route('user.destroy', data.id), {
+            const loadingToast = showLoadingToast(
+                "Please wait while we are deleting the user."
+            );
+            router.delete(route("users.destroy", data.id), {
                 onBefore: () => {
                     setIsOpen(false);
                 },
@@ -29,20 +31,19 @@ export function UserDeleteDialog({data}: PageProps) {
                 },
             });
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error("Submission error:", error);
         }
     }
 
-    return(
+    return (
         <FormDialog
-            open={isOpen} onOpenChange={setIsOpen}
-            trigger={
-                {
-                    text: "Delete",
-                    icon: Trash2,
-                    variant: "destructive"
-                }
-            }
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            trigger={{
+                text: "Delete",
+                icon: Trash2,
+                variant: "destructive",
+            }}
             title="Delete User Role"
             description={
                 <span>
@@ -50,14 +51,20 @@ export function UserDeleteDialog({data}: PageProps) {
                     <strong>{data.name}</strong>
                     "?
                 </span>
-                }
+            }
             footer={
                 <Form {...form}>
-                    <form action="" method="POST" onSubmit={form.handleSubmit(onSubmit)}>
-                        <Button type="submit" variant="destructive">Yes, delete it</Button>
+                    <form
+                        action=""
+                        method="POST"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                    >
+                        <Button type="submit" variant="destructive">
+                            Yes, delete it
+                        </Button>
                     </form>
                 </Form>
             }
         />
-    )
+    );
 }

@@ -106,7 +106,9 @@ class UserPositionController extends Controller
             return redirect()->route('user-positions.index')->with('success', 'Position **'. $userPosition->name .'** deleted successfully.');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Failed to delete user position.']);
+            session()->flash('error', 'There was an error delete user position: ' . $e->getMessage());
+            return redirect()->back();
+            // return redirect()->back()->withErrors(['error' => 'Failed to delete user position.']);
         }
     }
 }
