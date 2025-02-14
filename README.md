@@ -1,46 +1,82 @@
-# Laravel + shadcn/ui + InertiaJS Starter Template
+# Document Tracing
 
-![Laravel + shadcn/ui + InertiaJS Starter Template](https://raw.githubusercontent.com/mahmudz/laravel-shadcn-app-panel/main/public/repository-cover.png)
+A web-based application built with the [Laravel](https://laravel.com/)-[Inertia](https://inertiajs.com/)-[React](https://react.dev) tech stack for tracing project documents at PT. Angkasa Pura Supports Banjarmasin. This project is a product of internship program.
 
-This is a template to start building a custom user/admin panel quickly.
-Feel free to customize this template to fit the specific needs of your Laravel application!
+## Table of Contents
 
-## Technologies
-
-- [Laravel 11](https://laravel.com/docs/)
-- [shadcn/ui](https://ui.shadcn.com/docs)
-- [InertiaJS](https://inertiajs.com/)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 
-- PHP >= 8.2
-- Composer (for package management)
-- Node.js & npm (for frontend dependencies)
-- MySQL or another [compatible database](https://laravel.com/docs/11.x/database#configuration)
+- **PHP**: 8.2 - 8.4
+- **Composer**: >= 2
+- **Node.js**: >= 16
+- **npm**: (Node Package Manager)
+- **MySQL**: >= 8
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/mahmudz/laravel-shadcn-app-panel.git`
-2. Navigate into the project directory: `cd [project directory]`
-3. Install PHP dependencies: `composer install`
-4. Copy `.env.example` to `.env` and configure your environment variables, including database settings and application key.
-5. Generate application key: `php artisan key:generate`
-6. Run database migrations: `php artisan migrate`
-7. Optionally, seed the database: `php artisan db:seed`
-8. Install frontend dependencies: `npm install && npm run dev` (for development) or `npm install && npm run production` (for production)
+Follow these steps to set up the project locally:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/febry05/documenttracing-pkl.git
+   ```
+2. **Navigate into the project directory**:
+   ```bash
+   cd documenttracing-pkl
+   ```
+3. **Install PHP dependencies**:
+   ```bash
+   composer install
+   ```
+4. **Copy the environment file**:
+   ```bash
+   cp .env.example .env
+   ```
+   Configure your environment variables in the `.env` file, including database settings and application key.
+5. **Generate the application key**:
+   ```bash
+   php artisan key:generate
+   ```
+6. **Run database migrations**:
+   ```bash
+   php artisan migrate
+   ```
+7. **Seed the database** (optional):
+   ```bash
+   php artisan db:seed
+   ```
+8. **Install frontend dependencies**:
+   ```bash
+   npm install
+   ```
 
 ## Usage
 
-To start the development server, run:
+To start the application, follow these steps:
 
-```
-php artisan serve
-```
+1. **Start the back-end server**:
+   ```bash
+   php artisan serve
+   ```
+   The application will be served at `http://localhost:8000` by default.
 
-Access the application in your browser at `http://localhost:8000` by default.
+2. **Start the front-end server**:
+   - In **development mode**:
+     ```bash
+     npm run dev
+     ```
+   - In **production mode**:
+     ```bash
+     npm run production
+     ```
 
-## Contact
-
-If you have any questions, feedback, or support requests, you can reach me here [mahmudbappy.pri@gmail.com](https://github.com/mahmudz/laravel-shadcn-app-panel.git)
+3. **Run the scheduler** for automatic document version generation:
+   ```bash
+   php artisan schedule:work
+   ```
